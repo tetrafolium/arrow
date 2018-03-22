@@ -1,5 +1,18 @@
 inspecode:
   ktlint:
+  - ignore:
+    - modules/core/
+    - modules/core/
+    auto-fix: true
+    thresholds:
+      num-issues: 999
+  - input:
+    - modules/core/
+    auto-fix: true
+    thresholds:
+      num-issues: 999
+  - input:
+    - modules/docs/
     auto-fix: true
     thresholds:
       num-issues: 999
