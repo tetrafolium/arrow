@@ -11,10 +11,10 @@ inspecode:
     auto-fix: true
     thresholds:
       num-issues: 999
-  - input:
-    - modules/docs/
-    auto-fix: true
-    thresholds:
-      num-issues: 999
+  #- input:
+  #  - modules/docs/
+  #  auto-fix: true
+  #  thresholds:
+  #    num-issues: 999
   grep:     default
   misspell: auto-fix
