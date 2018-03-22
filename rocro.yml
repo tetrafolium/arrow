@@ -1,0 +1,7 @@
+inspecode:
+  ktlint:
+    auto-fix: true
+    thresholds:
+      num-issues: 999
+  grep:     default
+  misspell: auto-fix
