@@ -2,7 +2,7 @@ inspecode:
   ktlint:
   - ignore:
     - modules/core/
-    - modules/core/
+    - modules/docs/
     auto-fix: true
     thresholds:
       num-issues: 999
