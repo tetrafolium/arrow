@@ -183,7 +183,7 @@ This is a commonly encountered problem, especially in the context of async servi
 ### Monad Transformers to the Rescue!
 
 Monad Transformers enable you to combine two monads into a super monad. In this case, we're going to use `EitherT`
-from Arrow to express the effect of potential known controled biz error inside our async computations.
+from Arrow to express the effect of potential known controlled biz error inside our async computations.
 
 `EitherT` has the form of `EitherT<F, L, A>`.
 

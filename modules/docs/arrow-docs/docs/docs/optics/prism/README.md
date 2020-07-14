@@ -99,7 +99,7 @@ val doubleToInt: Prism<Double, Int> = Prism(
 
 ## Composition
 
-Nesting pattern matching blocks are tedious. We would prefer to define them seperately and compose them together. We can do that by composing mulitple `Prisms`.
+Nesting pattern matching blocks are tedious. We would prefer to define them separately and compose them together. We can do that by composing multiple `Prisms`.
 
 Let's imagine from our previous example we want to retrieve an `Int` from the network. We get a `Success` OR a `Failure` from the network. In case of a `Success` we want to safely cast the `String` to an `Int`.
 

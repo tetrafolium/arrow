@@ -17,7 +17,7 @@ object Platform {
     /**
      * Establishes the maximum stack depth for `IO#map` operations.
      *
-     * The default is `128`, from which we substract one as an
+     * The default is `128`, from which we subtract one as an
      * optimization. This default has been reached like this:
      *
      *  - according to official docs, the default stack size on 32-bits
