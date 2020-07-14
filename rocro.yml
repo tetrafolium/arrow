@@ -2,6 +2,8 @@
 inspecode:
 
   detekt:
+  - thresholds: { num-issues: 999 }
+  - config-file: .rocro/detekt-config.yml
     thresholds: { num-issues: 999 }
 
   fossology:
@@ -29,6 +31,7 @@ inspecode:
       - indent
       - parameter-list-wrapping
       - no-wildcard-imports
+      - modifier-order
     <<: *base-settings
 
   misspell:
