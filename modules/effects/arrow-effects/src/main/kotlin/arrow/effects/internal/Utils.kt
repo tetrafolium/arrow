@@ -66,11 +66,11 @@ object Platform {
 
 private class OneShotLatch : AbstractQueuedSynchronizer() {
     override fun tryAcquireShared(ignored: Int): Int =
-            if (state != 0) {
-                1
-            } else {
-                -1
-            }
+        if (state != 0) {
+            1
+        } else {
+            -1
+        }
 
     override fun tryReleaseShared(ignore: Int): Boolean {
         state = 1

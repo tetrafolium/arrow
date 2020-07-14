@@ -1,10 +1,10 @@
 package arrow.optics
 
-import io.kotlintest.properties.Gen
 import arrow.core.identity
 import arrow.syntax.either.left
 import arrow.syntax.either.right
 import arrow.typeclasses.Eq
+import io.kotlintest.properties.Gen
 
 sealed class SumType {
     data class A(val string: String) : SumType()
@@ -20,28 +20,28 @@ object SumGen : Gen<SumType> {
 }
 
 val sumPrism: Prism<SumType, String> = Prism(
-        {
-            when (it) {
-                is SumType.A -> it.string.right()
-                else -> it.left()
-            }
-        },
-        SumType::A
+    {
+        when (it) {
+            is SumType.A -> it.string.right()
+            else -> it.left()
+        }
+    },
+    SumType::A
 )
 
 val stringPrism: Prism<String, List<Char>> = Prism(
-        { it.toList().right() },
-        { it.joinToString(separator = "") }
+    { it.toList().right() },
+    { it.joinToString(separator = "") }
 )
 
 internal val tokenLens: Lens<Token, String> = Lens(
-        { token: Token -> token.value },
-        { value: String -> { token: Token -> token.copy(value = value) } }
+    { token: Token -> token.value },
+    { value: String -> { token: Token -> token.copy(value = value) } }
 )
 
 internal val tokenIso: Iso<Token, String> = Iso(
-        { token: Token -> token.value },
-        ::Token
+    { token: Token -> token.value },
+    ::Token
 )
 
 internal val tokenSetter: Setter<Token, String> = Setter { s ->
@@ -49,8 +49,8 @@ internal val tokenSetter: Setter<Token, String> = Setter { s ->
 }
 
 internal val userIso: Iso<User, Token> = Iso(
-        { user: User -> user.token },
-        ::User
+    { user: User -> user.token },
+    ::User
 )
 
 internal val userSetter: Setter<User, Token> = Setter { s ->
@@ -76,16 +76,16 @@ internal object UserGen : Gen<User> {
 internal val tokenGetter: Getter<Token, String> = Getter(Token::value)
 
 internal val userLens: Lens<User, Token> = Lens(
-        { user: User -> user.token },
-        { token: Token -> { user: User -> user.copy(token = token) } }
+    { user: User -> user.token },
+    { token: Token -> { user: User -> user.copy(token = token) } }
 )
 
 internal val optionalHead: Optional<List<Int>, Int> = Optional(
-        { it.firstOrNull()?.right() ?: it.left() },
-        { int -> { list -> listOf(int) + if (list.size > 1) list.drop(1) else emptyList() } }
+    { it.firstOrNull()?.right() ?: it.left() },
+    { int -> { list -> listOf(int) + if (list.size > 1) list.drop(1) else emptyList() } }
 )
 
 internal val defaultHead: Optional<Int, Int> = Optional(
-        { it.right() },
-        { ::identity }
+    { it.right() },
+    { ::identity }
 )

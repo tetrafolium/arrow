@@ -18,24 +18,23 @@ class FlowableKTests : UnitSpec() {
 
     fun <T> EQ(): Eq<FlowableKOf<T>> = object : Eq<FlowableKOf<T>> {
         override fun eqv(a: FlowableKOf<T>, b: FlowableKOf<T>): Boolean =
-                try {
-                    a.value().blockingFirst() == b.value().blockingFirst()
-                } catch (throwable: Throwable) {
-                    val errA = try {
-                        a.value().blockingFirst()
-                        throw IllegalArgumentException()
-                    } catch (err: Throwable) {
-                        err
-                    }
-                    val errB = try {
-                        b.value().blockingFirst()
-                        throw IllegalStateException()
-                    } catch (err: Throwable) {
-                        err
-                    }
-                    errA == errB
+            try {
+                a.value().blockingFirst() == b.value().blockingFirst()
+            } catch (throwable: Throwable) {
+                val errA = try {
+                    a.value().blockingFirst()
+                    throw IllegalArgumentException()
+                } catch (err: Throwable) {
+                    err
                 }
-
+                val errB = try {
+                    b.value().blockingFirst()
+                    throw IllegalStateException()
+                } catch (err: Throwable) {
+                    err
+                }
+                errA == errB
+            }
     }
 
     init {
@@ -73,8 +72,8 @@ class FlowableKTests : UnitSpec() {
         testLaws(AsyncLaws.laws(FlowableK.asyncMissing(), EQ(), EQ()))
 
         testLaws(
-                FoldableLaws.laws(FlowableK.foldable(), { FlowableK.pure(it) }, Eq.any()),
-                TraverseLaws.laws(FlowableK.traverse(), FlowableK.functor(), { FlowableK.pure(it) }, EQ())
+            FoldableLaws.laws(FlowableK.foldable(), { FlowableK.pure(it) }, Eq.any()),
+            TraverseLaws.laws(FlowableK.traverse(), FlowableK.functor(), { FlowableK.pure(it) }, EQ())
         )
 
         "Multi-thread Flowables finish correctly" {

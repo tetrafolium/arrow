@@ -17,26 +17,29 @@ import arrow.syntax.either.right
 
 @instance(NonEmptyList::class)
 interface NonEmptyListFilterIndexInstance<A> : FilterIndex<NonEmptyListOf<A>, Int, A> {
-    override fun filter(p: (Int) -> Boolean): Traversal<NonEmptyListOf<A>, A> = FilterIndex.fromTraverse<ForNonEmptyList, A>({ aas ->
-        aas.fix().all.mapIndexed { index, a -> a toT index }.let {
-            NonEmptyList.fromListUnsafe(it)
-        }
-    }, NonEmptyList.traverse()).filter(p)
+    override fun filter(p: (Int) -> Boolean): Traversal<NonEmptyListOf<A>, A> = FilterIndex.fromTraverse<ForNonEmptyList, A>(
+        { aas ->
+            aas.fix().all.mapIndexed { index, a -> a toT index }.let {
+                NonEmptyList.fromListUnsafe(it)
+            }
+        },
+        NonEmptyList.traverse()
+    ).filter(p)
 }
 
 @instance(NonEmptyList::class)
 interface NonEmptyListIndexInstance<A> : Index<NonEmptyListOf<A>, Int, A> {
 
     override fun index(i: Int): Optional<NonEmptyListOf<A>, A> = POptional(
-            getOrModify = { l ->
-                l.fix().all.getOrNull(i)?.right() ?: l.fix().left()
-            },
-            set = { a ->
-                { l ->
-                    NonEmptyList.fromListUnsafe(
-                            l.fix().all.mapIndexed { index: Int, aa: A -> if (index == i) a else aa }
-                    )
-                }
+        getOrModify = { l ->
+            l.fix().all.getOrNull(i)?.right() ?: l.fix().left()
+        },
+        set = { a ->
+            { l ->
+                NonEmptyList.fromListUnsafe(
+                    l.fix().all.mapIndexed { index: Int, aa: A -> if (index == i) a else aa }
+                )
             }
+        }
     )
 }

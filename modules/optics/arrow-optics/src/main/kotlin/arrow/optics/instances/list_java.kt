@@ -18,11 +18,11 @@ import arrow.typeclasses.Applicative
 interface ListEachInstance<A> : Each<List<A>, A> {
     override fun each() = object : Traversal<List<A>, A> {
         override fun <F> modifyF(FA: Applicative<F>, s: List<A>, f: (A) -> Kind<F, A>): Kind<F, List<A>> =
-                ListK.traverse().traverse(s.k(), f, FA).let {
-                    FA.map(it) {
-                        it.list
-                    }
+            ListK.traverse().traverse(s.k(), f, FA).let {
+                FA.map(it) {
+                    it.list
                 }
+            }
     }
 }
 
@@ -34,13 +34,17 @@ object ListEachInstanceImplicits {
 interface ListFilterIndexInstance<A> : FilterIndex<List<A>, Int, A> {
     override fun filter(p: (Int) -> Boolean): Traversal<List<A>, A> = object : Traversal<List<A>, A> {
         override fun <F> modifyF(FA: Applicative<F>, s: List<A>, f: (A) -> Kind<F, A>): Kind<F, List<A>> =
-                ListK.traverse().traverse(s.mapIndexed { index, a -> a toT index }.k(), { (a, j) ->
+            ListK.traverse().traverse(
+                s.mapIndexed { index, a -> a toT index }.k(),
+                { (a, j) ->
                     if (p(j)) f(a) else FA.pure(a)
-                }, FA).let {
-                    FA.map(it) {
-                        it.list
-                    }
+                },
+                FA
+            ).let {
+                FA.map(it) {
+                    it.list
                 }
+            }
     }
 }
 
@@ -51,8 +55,8 @@ object ListFilterIndexInstanceImplicits {
 
 interface ListIndexInstance<A> : Index<List<A>, Int, A> {
     override fun index(i: Int): Optional<List<A>, A> = POptional(
-            getOrModify = { it.getOrNull(i)?.right() ?: it.left() },
-            set = { a -> { l -> l.mapIndexed { index: Int, aa: A -> if (index == i) a else aa } } }
+        getOrModify = { it.getOrNull(i)?.right() ?: it.left() },
+        set = { a -> { l -> l.mapIndexed { index: Int, aa: A -> if (index == i) a else aa } } }
     )
 }
 

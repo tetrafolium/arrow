@@ -10,5 +10,5 @@ import arrow.optics.typeclasses.Each
 @instance(Option::class)
 interface OptionEachInstance<A> : Each<OptionOf<A>, A> {
     override fun each(): Traversal<OptionOf<A>, A> =
-            Traversal.fromTraversable(Option.traverse())
+        Traversal.fromTraversable(Option.traverse())
 }

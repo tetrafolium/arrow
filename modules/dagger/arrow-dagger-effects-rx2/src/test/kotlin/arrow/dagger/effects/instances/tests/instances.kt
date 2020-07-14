@@ -12,9 +12,11 @@ import javax.inject.Singleton
  * and need explicit evidence of a @Module such as `LocalStateTInstances`
  */
 @Singleton
-@Component(modules = [
-    ArrowEffectsRx2Instances::class
-])
+@Component(
+    modules = [
+        ArrowEffectsRx2Instances::class
+    ]
+)
 interface Runtime {
     fun observableKWFunctor(): Functor<ForObservableK>
     fun observableKWApplicative(): Applicative<ForObservableK>
@@ -37,6 +39,3 @@ interface Runtime {
 object Arrow {
     val instances = DaggerRuntime.builder().build()
 }
-
-
-

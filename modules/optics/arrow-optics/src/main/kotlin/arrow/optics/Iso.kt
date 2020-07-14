@@ -69,21 +69,21 @@ interface PIso<S, T, A, B> : PIsoOf<S, T, A, B> {
      * Lift a [PIso] to a Functor level
      */
     fun <F> mapping(FF: Functor<F>): PIso<Kind<F, S>, Kind<F, T>, Kind<F, A>, Kind<F, B>> = PIso(
-            { fa -> FF.map(fa, this::get) },
-            { fb -> FF.map(fb, this::reverseGet) }
+        { fa -> FF.map(fa, this::get) },
+        { fb -> FF.map(fb, this::reverseGet) }
     )
 
     /**
      * Modify polymorphically the target of a [PIso] with a Functor function
      */
     fun <F> modifyF(FF: Functor<F>, s: S, f: (A) -> Kind<F, B>): Kind<F, T> =
-            FF.map(f(get(s)), this::reverseGet)
+        FF.map(f(get(s)), this::reverseGet)
 
     /**
      * Lift a function [f] with a functor: `(A) -> Kind<F, B> to the context of `S`: `(S) -> Kind<F, T>`
      */
     fun <F> liftF(FF: Functor<F>, f: (A) -> Kind<F, B>): (S) -> Kind<F, T> =
-            { s -> FF.map(f(get(s)), this::reverseGet) }
+        { s -> FF.map(f(get(s)), this::reverseGet) }
 
     /**
      * Reverse a [PIso]: the source becomes the target and the target becomes the source
@@ -106,48 +106,48 @@ interface PIso<S, T, A, B> : PIsoOf<S, T, A, B> {
      * Pair two disjoint [PIso]
      */
     infix fun <S1, T1, A1, B1> split(other: PIso<S1, T1, A1, B1>): PIso<Tuple2<S, S1>, Tuple2<T, T1>, Tuple2<A, A1>, Tuple2<B, B1>> = PIso(
-            { (a, c) -> get(a) toT other.get(c) },
-            { (b, d) -> reverseGet(b) toT other.reverseGet(d) }
+        { (a, c) -> get(a) toT other.get(c) },
+        { (b, d) -> reverseGet(b) toT other.reverseGet(d) }
     )
 
     /**
      * Create a pair of the [PIso] and a type [C]
      */
     fun <C> first(): PIso<Tuple2<S, C>, Tuple2<T, C>, Tuple2<A, C>, Tuple2<B, C>> = Iso(
-            { (a, c) -> get(a) toT c },
-            { (b, c) -> reverseGet(b) toT c }
+        { (a, c) -> get(a) toT c },
+        { (b, c) -> reverseGet(b) toT c }
     )
 
     /**
      * Create a pair of a type [C] and the [PIso]
      */
     fun <C> second(): PIso<Tuple2<C, S>, Tuple2<C, T>, Tuple2<C, A>, Tuple2<C, B>> = PIso(
-            { (c, a) -> c toT get(a) },
-            { (c, b) -> c toT reverseGet(b) }
+        { (c, a) -> c toT get(a) },
+        { (c, b) -> c toT reverseGet(b) }
     )
 
     /**
      * Create a sum of the [PIso] and a type [C]
      */
     fun <C> left(): PIso<Either<S, C>, Either<T, C>, Either<A, C>, Either<B, C>> = PIso(
-            { it.bimap(this::get, ::identity) },
-            { it.bimap(this::reverseGet, ::identity) }
+        { it.bimap(this::get, ::identity) },
+        { it.bimap(this::reverseGet, ::identity) }
     )
 
     /**
      * Create a sum of a type [C] and the [PIso]
      */
     fun <C> right(): PIso<Either<C, S>, Either<C, T>, Either<C, A>, Either<C, B>> = PIso(
-            { it.bimap(::identity, this::get) },
-            { it.bimap(::identity, this::reverseGet) }
+        { it.bimap(::identity, this::get) },
+        { it.bimap(::identity, this::reverseGet) }
     )
 
     /**
      * Compose a [PIso] with a [PIso]
      */
     infix fun <C, D> compose(other: PIso<A, B, C, D>): PIso<S, T, C, D> = PIso(
-            other::get compose this::get,
-            this::reverseGet compose other::reverseGet
+        other::get compose this::get,
+        this::reverseGet compose other::reverseGet
     )
 
     /**
@@ -206,8 +206,8 @@ interface PIso<S, T, A, B> : PIsoOf<S, T, A, B> {
      * View a [PIso] as a [PPrism]
      */
     fun asPrism(): PPrism<S, T, A, B> = PPrism(
-            { a -> Either.Right(get(a)) },
-            this::reverseGet
+        { a -> Either.Right(get(a)) },
+        this::reverseGet
     )
 
     /**
@@ -224,8 +224,8 @@ interface PIso<S, T, A, B> : PIsoOf<S, T, A, B> {
      * View a [PIso] as a [POptional]
      */
     fun asOptional(): POptional<S, T, A, B> = POptional(
-            { s -> Either.Right(get(s)) },
-            { b -> { _ -> set(b) } }
+        { s -> Either.Right(get(s)) },
+        { b -> { _ -> set(b) } }
     )
 
     /**
@@ -245,17 +245,16 @@ interface PIso<S, T, A, B> : PIsoOf<S, T, A, B> {
      */
     fun asTraversal(): PTraversal<S, T, A, B> = object : PTraversal<S, T, A, B> {
         override fun <F> modifyF(FA: Applicative<F>, s: S, f: (A) -> Kind<F, B>): Kind<F, T> =
-                FA.map(f(get(s)), this@PIso::reverseGet)
+            FA.map(f(get(s)), this@PIso::reverseGet)
     }
-
 }
 
 /**
  * Lift a [PIso] to a Functor level
  */
 inline fun <S, T, A, B, reified F> PIso<S, T, A, B>.mapping(FF: Functor<F> = functor(), dummy: Unit = Unit): PIso<Kind<F, S>, Kind<F, T>, Kind<F, A>, Kind<F, B>> = PIso(
-        { fa -> FF.map(fa, this::get) },
-        { fb -> FF.map(fb, this::reverseGet) }
+    { fa -> FF.map(fa, this::get) },
+    { fb -> FF.map(fb, this::reverseGet) }
 )
 
 /**
@@ -277,10 +276,10 @@ inline fun <S, T, A, B> PIso<S, T, A, B>.lift(crossinline f: (A) -> B): (S) -> T
  * Modify polymorphically the focus of a [PIso] with a Functor function
  */
 inline fun <S, T, A, B, reified F> PIso<S, T, A, B>.modifyF(s: S, crossinline f: (A) -> Kind<F, B>, FF: Functor<F> = functor()): Kind<F, T> =
-        modifyF(FF, s, { a -> f(a) })
+    modifyF(FF, s, { a -> f(a) })
 
 /**
  * Lift a function [f] with a functor: `(A) -> Kind<F, B> to the context of `S`: `(S) -> Kind<F, T>`
  */
 inline fun <S, T, A, B, reified F> PIso<S, T, A, B>.liftF(FF: Functor<F> = functor(), dummy: Unit = Unit, crossinline f: (A) -> Kind<F, B>): (S) -> Kind<F, T> =
-        liftF(FF) { a -> f(a) }
+    liftF(FF) { a -> f(a) }

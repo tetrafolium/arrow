@@ -27,7 +27,6 @@ abstract class CoproductInstances<F, G> {
 
     @Provides
     fun coproductTraverse(ev: DaggerCoproductTraverseInstance<F, G>): Traverse<CoproductPartialOf<F, G>> = ev
-
 }
 
 class DaggerCoproductFunctorInstance<F, G> @Inject constructor(val FF: Functor<F>, val FG: Functor<G>) : CoproductFunctorInstance<F, G> {

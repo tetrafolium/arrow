@@ -29,37 +29,44 @@ class AtInstanceTest : UnitSpec() {
             at<Set<String>, String, Boolean>() shouldNotBe null
         }
 
-        testLaws(LensLaws.laws(
+        testLaws(
+            LensLaws.laws(
                 lens = at<MapK<String, Int>, String, Option<Int>>().at(Gen.string().generate()),
                 aGen = genMapK(Gen.string(), Gen.int()),
                 bGen = genOption(Gen.int()),
                 funcGen = genFunctionAToB(genOption(Gen.int()))
-        ))
+            )
+        )
 
-        testLaws(LensLaws.laws(
+        testLaws(
+            LensLaws.laws(
                 lens = at<Map<String, Int>, String, Option<Int>>().at(Gen.string().generate()),
                 aGen = Gen.map(Gen.string(), Gen.int()),
                 bGen = genOption(Gen.int()),
                 funcGen = genFunctionAToB(genOption(Gen.int())),
                 EQA = Eq.any()
-        ))
+            )
+        )
 
-        testLaws(LensLaws.laws(
+        testLaws(
+            LensLaws.laws(
                 lens = at<SetK<String>, String, Boolean>().at(Gen.string().generate()),
                 aGen = genSetK(Gen.string()),
                 bGen = Gen.bool(),
                 funcGen = genFunctionAToB(Gen.bool()),
                 MB = AndMonoid
-        ))
+            )
+        )
 
-        testLaws(LensLaws.laws(
+        testLaws(
+            LensLaws.laws(
                 lens = at<Set<String>, String, Boolean>().at(Gen.string().generate()),
                 aGen = Gen.set(Gen.string()),
                 bGen = Gen.bool(),
                 funcGen = genFunctionAToB(Gen.bool()),
                 EQA = Eq.any(),
                 MB = AndMonoid
-        ))
-
+            )
+        )
     }
 }

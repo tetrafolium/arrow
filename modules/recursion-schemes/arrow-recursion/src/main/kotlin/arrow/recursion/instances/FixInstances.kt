@@ -11,8 +11,8 @@ interface FixInstances<F> : Birecursive<ForFix, F> {
     fun FF(): Functor<F>
 
     override fun projectT(fg: FixOf<F>): Kind<Nested<ForFix, F>, FixOf<F>> =
-            fg.fix().projectT()
+        fg.fix().projectT()
 
     override fun embedT(compFG: Kind<Nested<ForFix, F>, FixOf<F>>): FixOf<F> =
-            Fix.embedT(compFG, FF())
+        Fix.embedT(compFG, FF())
 }

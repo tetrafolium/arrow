@@ -48,18 +48,20 @@ typealias K = String
  * and need explicit evidence of a @Module such as `LocalStateTInstances`
  */
 @Singleton
-@Component(modules = [
-    ArrowInstances::class,
-    LocalCoproductInstances::class,
-    LocalEitherInstances::class,
-    LocalEitherTInstances::class,
-    LocalFunction1Instances::class,
-    LocalKleisliInstances::class,
-    LocalMapKInstances::class,
-    LocalOptionTTInstances::class,
-    LocalSortedMapKInstances::class,
-    LocalStateTInstances::class
-])
+@Component(
+    modules = [
+        ArrowInstances::class,
+        LocalCoproductInstances::class,
+        LocalEitherInstances::class,
+        LocalEitherTInstances::class,
+        LocalFunction1Instances::class,
+        LocalKleisliInstances::class,
+        LocalMapKInstances::class,
+        LocalOptionTTInstances::class,
+        LocalSortedMapKInstances::class,
+        LocalStateTInstances::class
+    ]
+)
 interface Runtime {
     fun coproductFunctor(): Functor<CoproductPartialOf<F, G>>
     fun coproductComonad(): Functor<CoproductPartialOf<F, G>>
@@ -196,7 +198,3 @@ object test {
         println(Arrow.instances.optionApplicative().pure(1))
     }
 }
-
-
-
-

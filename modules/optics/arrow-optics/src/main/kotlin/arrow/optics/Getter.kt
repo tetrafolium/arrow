@@ -121,7 +121,6 @@ interface Getter<S, A> : GetterOf<S, A> {
     fun asFold(): Fold<S, A> = object : Fold<S, A> {
         override fun <R> foldMap(M: Monoid<R>, s: S, f: (A) -> R): R = f(get(s))
     }
-
 }
 
 /**

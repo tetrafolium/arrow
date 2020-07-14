@@ -52,8 +52,8 @@ interface POptional<S, T, A, B> : POptionalOf<S, T, A, B> {
          * [POptional] that takes either [S] or [S] and strips the choice of [S].
          */
         fun <S> codiagonal(): Optional<Either<S, S>, S> = Optional(
-                { it.fold({ Either.Right(it) }, { Either.Right(it) }) },
-                { a -> { aa -> aa.bimap({ a }, { a }) } }
+            { it.fold({ Either.Right(it) }, { Either.Right(it) }) },
+            { a -> { aa -> aa.bimap({ a }, { a }) } }
         )
 
         /**
@@ -71,26 +71,25 @@ interface POptional<S, T, A, B> : POptionalOf<S, T, A, B> {
          * Can also be used to construct [Optional]
          */
         operator fun <S, A> invoke(partialFunction: PartialFunction<S, A>, set: (A) -> (S) -> S): Optional<S, A> = Optional(
-                getOrModify = { s -> partialFunction.lift()(s).fold({ Either.Left(s) }, { Either.Right(it) }) },
-                set = set
+            getOrModify = { s -> partialFunction.lift()(s).fold({ Either.Left(s) }, { Either.Right(it) }) },
+            set = set
         )
 
         /**
          * [POptional] that never sees its focus
          */
         fun <A, B> void(): Optional<A, B> = Optional(
-                { Either.Left(it) },
-                { _ -> ::identity }
+            { Either.Left(it) },
+            { _ -> ::identity }
         )
-
     }
 
     /**
      * Modify the focus of a [POptional] with an Applicative function [f]
      */
     fun <F> modifyF(FA: Applicative<F>, s: S, f: (A) -> Kind<F, B>): Kind<F, T> = getOrModify(s).fold(
-            FA::pure,
-            { FA.map(f(it), { set(s, it) }) }
+        FA::pure,
+        { FA.map(f(it), { set(s, it) }) }
     )
 
     /**
@@ -125,35 +124,35 @@ interface POptional<S, T, A, B> : POptionalOf<S, T, A, B> {
      * Join two [POptional] with the same focus [B]
      */
     infix fun <S1, T1> choice(other: POptional<S1, T1, A, B>): POptional<Either<S, S1>, Either<T, T1>, A, B> =
-            POptional(
-                    { ss -> ss.fold({ getOrModify(it).bimap({ Either.Left(it) }, ::identity) }, { other.getOrModify(it).bimap({ Either.Right(it) }, ::identity) }) },
-                    { b -> { it.bimap({ s -> this.set(s, b) }, { s -> other.set(s, b) }) } }
-            )
+        POptional(
+            { ss -> ss.fold({ getOrModify(it).bimap({ Either.Left(it) }, ::identity) }, { other.getOrModify(it).bimap({ Either.Right(it) }, ::identity) }) },
+            { b -> { it.bimap({ s -> this.set(s, b) }, { s -> other.set(s, b) }) } }
+        )
 
     /**
      * Create a product of the [POptional] and a type [C]
      */
     fun <C> first(): POptional<Tuple2<S, C>, Tuple2<T, C>, Tuple2<A, C>, Tuple2<B, C>> =
-            POptional(
-                    { (s, c) -> getOrModify(s).bimap({ it toT c }, { it toT c }) },
-                    { (b, c) -> { (s, c2) -> setOption(s, b).fold({ set(s, b) toT c2 }, { it toT c }) } }
-            )
+        POptional(
+            { (s, c) -> getOrModify(s).bimap({ it toT c }, { it toT c }) },
+            { (b, c) -> { (s, c2) -> setOption(s, b).fold({ set(s, b) toT c2 }, { it toT c }) } }
+        )
 
     /**
      * Create a product of a type [C] and the [POptional]
      */
     fun <C> second(): POptional<Tuple2<C, S>, Tuple2<C, T>, Tuple2<C, A>, Tuple2<C, B>> =
-            POptional(
-                    { (c, s) -> getOrModify(s).bimap({ c toT it }, { c toT it }) },
-                    { (c, b) -> { (c2, s) -> setOption(s, b).fold({ c2 toT set(s, b) }, { c toT it }) } }
-            )
+        POptional(
+            { (c, s) -> getOrModify(s).bimap({ c toT it }, { c toT it }) },
+            { (c, b) -> { (c2, s) -> setOption(s, b).fold({ c2 toT set(s, b) }, { c toT it }) } }
+        )
 
     /**
      * Compose a [POptional] with a [POptional]
      */
     infix fun <C, D> compose(other: POptional<A, B, C, D>): POptional<S, T, C, D> = POptional(
-            { s -> getOrModify(s).flatMap { a -> other.getOrModify(a).bimap({ set(s, it) }, ::identity) } },
-            { d -> { s -> modify(s) { a -> other.set(a, d) } } }
+        { s -> getOrModify(s).flatMap { a -> other.getOrModify(a).bimap({ set(s, it) }, ::identity) } },
+        { d -> { s -> modify(s) { a -> other.set(a, d) } } }
     )
 
     /**
@@ -227,9 +226,8 @@ interface POptional<S, T, A, B> : POptionalOf<S, T, A, B> {
      */
     fun asTraversal(): PTraversal<S, T, A, B> = object : PTraversal<S, T, A, B> {
         override fun <F> modifyF(FA: Applicative<F>, s: S, f: (A) -> Kind<F, B>): Kind<F, T> =
-                this@POptional.modifyF(FA, s, f)
+            this@POptional.modifyF(FA, s, f)
     }
-
 }
 
 /**
@@ -246,7 +244,7 @@ inline fun <S, T, A, B> POptional<S, T, A, B>.lift(crossinline f: (A) -> B): (S)
  * Modify the focus of a [POptional] with an [Applicative] function [f]
  */
 inline fun <S, T, A, B, reified F> POptional<S, T, A, B>.modifyF(s: S, crossinline f: (A) -> Kind<F, B>, FA: Applicative<F> = applicative()): Kind<F, T> =
-        modifyF(FA, s) { a -> f(a) }
+    modifyF(FA, s) { a -> f(a) }
 
 /**
  * Lift a function [f]: `(A) -> Kind<F, B> to the context of `S`: `(S) -> Kind<F, T>` with an [Applicative] function [f]
@@ -263,7 +261,7 @@ inline fun <S, T, A, B> POptional<S, T, A, B>.modifiyOption(s: S, crossinline f:
  * Find the focus that satisfies the predicate [p]
  */
 inline fun <S, T, A, B> POptional<S, T, A, B>.find(s: S, crossinline p: (A) -> Boolean): Option<A> =
-        getOption(s).flatMap { b -> if (p(b)) Some(b) else None }
+    getOption(s).flatMap { b -> if (p(b)) Some(b) else None }
 
 /**
  * Check if there is a focus and it satisfies the predicate [p]

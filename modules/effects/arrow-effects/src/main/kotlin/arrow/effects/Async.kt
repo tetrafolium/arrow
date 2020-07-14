@@ -6,7 +6,7 @@ import arrow.core.Either
 import arrow.typeclass
 import arrow.typeclasses.*
 
-        /** An asynchronous computation that might fail. **/
+/** An asynchronous computation that might fail. **/
 typealias Proc<A> = ((Either<Throwable, A>) -> Unit) -> Unit
 
 /** The context required to run an asynchronous computation that may fail. **/
@@ -15,7 +15,7 @@ interface Async<F> : MonadSuspend<F>, TC {
     fun <A> async(fa: Proc<A>): Kind<F, A>
 
     fun <A> never(): Kind<F, A> =
-            async { }
+        async { }
 }
 
 interface AsyncSyntax<F> : MonadSuspendSyntax<F> {
@@ -35,8 +35,8 @@ interface AsyncSyntax<F> : MonadSuspendSyntax<F> {
     override fun monad(): Monad<F> = async()
 
     fun <A> Proc<A>.`async`(dummy: Unit = Unit): Kind<F, A> =
-            this@AsyncSyntax.async().`async`(this)
+        this@AsyncSyntax.async().`async`(this)
 
     fun <A> `never`(dummy: Unit = Unit): Kind<F, A> =
-            this@AsyncSyntax.async().`never`()
+        this@AsyncSyntax.async().`never`()
 }

@@ -10,7 +10,7 @@ import arrow.optics.typeclasses.At
 @instance(SetK::class)
 interface SetKAtInstance<A> : At<SetK<A>, A, Boolean> {
     override fun at(i: A): Lens<SetK<A>, Boolean> = PLens(
-            get = { it.contains(i) },
-            set = { b -> { (if (b) it + i else it - i).k() } }
+        get = { it.contains(i) },
+        set = { b -> { (if (b) it + i else it - i).k() } }
     )
 }

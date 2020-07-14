@@ -30,7 +30,6 @@ abstract class OptionTInstances<F> {
 
     @Provides
     fun optionTMonoidK(ev: DaggerOptionTMonoidKInstance<F>): MonoidK<OptionTPartialOf<F>> = ev
-
 }
 
 class DaggerOptionTFunctorInstance<F> @Inject constructor(val FF: Functor<F>) : OptionTFunctorInstance<F> {

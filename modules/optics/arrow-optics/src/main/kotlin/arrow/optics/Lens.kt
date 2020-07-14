@@ -47,8 +47,8 @@ interface PLens<S, T, A, B> : PLensOf<S, T, A, B> {
          * [PLens] that takes either [S] or [S] and strips the choice of [S].
          */
         fun <S> codiagonal(): Lens<Either<S, S>, S> = Lens(
-                get = { it.fold(::identity, ::identity) },
-                set = { a -> { it.bimap({ a }, { a }) } }
+            get = { it.fold(::identity, ::identity) },
+            set = { a -> { it.bimap({ a }, { a }) } }
         )
 
         /**
@@ -66,7 +66,7 @@ interface PLens<S, T, A, B> : PLensOf<S, T, A, B> {
      * Modify the focus of a [PLens] using Functor function
      */
     fun <F> modifyF(FF: Functor<F>, s: S, f: (A) -> Kind<F, B>): Kind<F, T> =
-            FF.map(f(get(s)), { b -> set(s, b) })
+        FF.map(f(get(s)), { b -> set(s, b) })
 
     /**
      * Lift a function [f]: `(A) -> Kind<F, B> to the context of `S`: `(S) -> Kind<F, T>`
@@ -77,41 +77,41 @@ interface PLens<S, T, A, B> : PLensOf<S, T, A, B> {
      * Join two [PLens] with the same focus in [A]
      */
     infix fun <S1, T1> choice(other: PLens<S1, T1, A, B>): PLens<Either<S, S1>, Either<T, T1>, A, B> = PLens(
-            { ss -> ss.fold(this::get, other::get) },
-            { b -> { ss -> ss.bimap({ s -> set(s, b) }, { s -> other.set(s, b) }) } }
+        { ss -> ss.fold(this::get, other::get) },
+        { b -> { ss -> ss.bimap({ s -> set(s, b) }, { s -> other.set(s, b) }) } }
     )
 
     /**
      * Pair two disjoint [PLens]
      */
     infix fun <S1, T1, A1, B1> split(other: PLens<S1, T1, A1, B1>): PLens<Tuple2<S, S1>, Tuple2<T, T1>, Tuple2<A, A1>, Tuple2<B, B1>> =
-            PLens(
-                    { (s, c) -> get(s) toT other.get(c) },
-                    { (b, b1) -> { (s, s1) -> set(s, b) toT other.set(s1, b1) } }
-            )
+        PLens(
+            { (s, c) -> get(s) toT other.get(c) },
+            { (b, b1) -> { (s, s1) -> set(s, b) toT other.set(s1, b1) } }
+        )
 
     /**
      * Create a product of the [PLens] and a type [C]
      */
     fun <C> first(): PLens<Tuple2<S, C>, Tuple2<T, C>, Tuple2<A, C>, Tuple2<B, C>> = PLens(
-            { (s, c) -> get(s) toT c },
-            { (b, c) -> { (s, _) -> set(s, b) toT c } }
+        { (s, c) -> get(s) toT c },
+        { (b, c) -> { (s, _) -> set(s, b) toT c } }
     )
 
     /**
      * Create a product of a type [C] and the [PLens]
      */
     fun <C> second(): PLens<Tuple2<C, S>, Tuple2<C, T>, Tuple2<C, A>, Tuple2<C, B>> = PLens(
-            { (c, s) -> c toT get(s) },
-            { (c, b) -> { (_, s) -> c toT set(s, b) } }
+        { (c, s) -> c toT get(s) },
+        { (c, b) -> { (_, s) -> c toT set(s, b) } }
     )
 
     /**
      * Compose a [PLens] with another [PLens]
      */
     infix fun <C, D> compose(l: PLens<A, B, C, D>): PLens<S, T, C, D> = Lens(
-            { a -> l.get(get(a)) },
-            { c -> { s -> set(s, l.set(get(s), c)) } }
+        { a -> l.get(get(a)) },
+        { c -> { s -> set(s, l.set(get(s), c)) } }
     )
 
     /**
@@ -177,8 +177,8 @@ interface PLens<S, T, A, B> : PLensOf<S, T, A, B> {
      * View a [PLens] as a [POptional]
      */
     fun asOptional(): POptional<S, T, A, B> = POptional(
-            { s -> Either.Right(get(s)) },
-            { b -> { s -> set(s, b) } }
+        { s -> Either.Right(get(s)) },
+        { b -> { s -> set(s, b) } }
     )
 
     /**
@@ -198,9 +198,8 @@ interface PLens<S, T, A, B> : PLensOf<S, T, A, B> {
      */
     fun asTraversal(): PTraversal<S, T, A, B> = object : PTraversal<S, T, A, B> {
         override fun <F> modifyF(FA: Applicative<F>, s: S, f: (A) -> Kind<F, B>): Kind<F, T> =
-                FA.map(f(get(s)), { b -> this@PLens.set(s, b) })
+            FA.map(f(get(s)), { b -> this@PLens.set(s, b) })
     }
-
 }
 
 /**
@@ -217,7 +216,7 @@ inline fun <S, T, A, B> PLens<S, T, A, B>.lift(crossinline f: (A) -> B): (S) -> 
  * Modify the focus of a [PLens] using [Functor] function
  */
 inline fun <S, T, A, B, reified F> PLens<S, T, A, B>.modifyF(s: S, f: (A) -> Kind<F, B>, FF: Functor<F> = functor()): Kind<F, T> =
-        FF.map(f(get(s)), { b -> set(s, b) })
+    FF.map(f(get(s)), { b -> set(s, b) })
 
 /**
  * Lift a function [f]: `(A) -> Kind<F, B> to the context of `S`: `(S) -> Kind<F, T>` using [Functor] function

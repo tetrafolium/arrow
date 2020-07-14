@@ -62,17 +62,17 @@ abstract class Tuple10Instances<A, B, C, D, E, F, G, H, I, J> {
 }
 
 class DaggerTuple2EqInstance<A, B> @Inject constructor(
-        val eqA: Eq<A>,
-        val eqB: Eq<B>
+    val eqA: Eq<A>,
+    val eqB: Eq<B>
 ) : Tuple2EqInstance<A, B> {
     override fun EQA(): Eq<A> = eqA
     override fun EQB(): Eq<B> = eqB
 }
 
 class DaggerTuple3EqInstance<A, B, C> @Inject constructor(
-        val eqA: Eq<A>,
-        val eqB: Eq<B>,
-        val eqC: Eq<C>
+    val eqA: Eq<A>,
+    val eqB: Eq<B>,
+    val eqC: Eq<C>
 ) : Tuple3EqInstance<A, B, C> {
     override fun EQA(): Eq<A> = eqA
     override fun EQB(): Eq<B> = eqB
@@ -80,10 +80,10 @@ class DaggerTuple3EqInstance<A, B, C> @Inject constructor(
 }
 
 class DaggerTuple4EqInstance<A, B, C, D> @Inject constructor(
-        val eqA: Eq<A>,
-        val eqB: Eq<B>,
-        val eqC: Eq<C>,
-        val eqD: Eq<D>
+    val eqA: Eq<A>,
+    val eqB: Eq<B>,
+    val eqC: Eq<C>,
+    val eqD: Eq<D>
 ) : Tuple4EqInstance<A, B, C, D> {
     override fun EQA(): Eq<A> = eqA
     override fun EQB(): Eq<B> = eqB
@@ -92,11 +92,11 @@ class DaggerTuple4EqInstance<A, B, C, D> @Inject constructor(
 }
 
 class DaggerTuple5EqInstance<A, B, C, D, E> @Inject constructor(
-        val eqA: Eq<A>,
-        val eqB: Eq<B>,
-        val eqC: Eq<C>,
-        val eqD: Eq<D>,
-        val eqE: Eq<E>
+    val eqA: Eq<A>,
+    val eqB: Eq<B>,
+    val eqC: Eq<C>,
+    val eqD: Eq<D>,
+    val eqE: Eq<E>
 ) : Tuple5EqInstance<A, B, C, D, E> {
     override fun EQA(): Eq<A> = eqA
     override fun EQB(): Eq<B> = eqB
@@ -106,12 +106,12 @@ class DaggerTuple5EqInstance<A, B, C, D, E> @Inject constructor(
 }
 
 class DaggerTuple6EqInstance<A, B, C, D, E, F> @Inject constructor(
-        val eqA: Eq<A>,
-        val eqB: Eq<B>,
-        val eqC: Eq<C>,
-        val eqD: Eq<D>,
-        val eqE: Eq<E>,
-        val eqF: Eq<F>
+    val eqA: Eq<A>,
+    val eqB: Eq<B>,
+    val eqC: Eq<C>,
+    val eqD: Eq<D>,
+    val eqE: Eq<E>,
+    val eqF: Eq<F>
 ) : Tuple6EqInstance<A, B, C, D, E, F> {
     override fun EQA(): Eq<A> = eqA
     override fun EQB(): Eq<B> = eqB
@@ -122,13 +122,13 @@ class DaggerTuple6EqInstance<A, B, C, D, E, F> @Inject constructor(
 }
 
 class DaggerTuple7EqInstance<A, B, C, D, E, F, G> @Inject constructor(
-        val eqA: Eq<A>,
-        val eqB: Eq<B>,
-        val eqC: Eq<C>,
-        val eqD: Eq<D>,
-        val eqE: Eq<E>,
-        val eqF: Eq<F>,
-        val eqG: Eq<G>
+    val eqA: Eq<A>,
+    val eqB: Eq<B>,
+    val eqC: Eq<C>,
+    val eqD: Eq<D>,
+    val eqE: Eq<E>,
+    val eqF: Eq<F>,
+    val eqG: Eq<G>
 ) : Tuple7EqInstance<A, B, C, D, E, F, G> {
     override fun EQA(): Eq<A> = eqA
     override fun EQB(): Eq<B> = eqB
@@ -140,14 +140,14 @@ class DaggerTuple7EqInstance<A, B, C, D, E, F, G> @Inject constructor(
 }
 
 class DaggerTuple8EqInstance<A, B, C, D, E, F, G, H> @Inject constructor(
-        val eqA: Eq<A>,
-        val eqB: Eq<B>,
-        val eqC: Eq<C>,
-        val eqD: Eq<D>,
-        val eqE: Eq<E>,
-        val eqF: Eq<F>,
-        val eqG: Eq<G>,
-        val eqH: Eq<H>
+    val eqA: Eq<A>,
+    val eqB: Eq<B>,
+    val eqC: Eq<C>,
+    val eqD: Eq<D>,
+    val eqE: Eq<E>,
+    val eqF: Eq<F>,
+    val eqG: Eq<G>,
+    val eqH: Eq<H>
 ) : Tuple8EqInstance<A, B, C, D, E, F, G, H> {
     override fun EQA(): Eq<A> = eqA
     override fun EQB(): Eq<B> = eqB
@@ -160,15 +160,15 @@ class DaggerTuple8EqInstance<A, B, C, D, E, F, G, H> @Inject constructor(
 }
 
 class DaggerTuple9EqInstance<A, B, C, D, E, F, G, H, I> @Inject constructor(
-        val eqA: Eq<A>,
-        val eqB: Eq<B>,
-        val eqC: Eq<C>,
-        val eqD: Eq<D>,
-        val eqE: Eq<E>,
-        val eqF: Eq<F>,
-        val eqG: Eq<G>,
-        val eqH: Eq<H>,
-        val eqI: Eq<I>
+    val eqA: Eq<A>,
+    val eqB: Eq<B>,
+    val eqC: Eq<C>,
+    val eqD: Eq<D>,
+    val eqE: Eq<E>,
+    val eqF: Eq<F>,
+    val eqG: Eq<G>,
+    val eqH: Eq<H>,
+    val eqI: Eq<I>
 ) : Tuple9EqInstance<A, B, C, D, E, F, G, H, I> {
     override fun EQA(): Eq<A> = eqA
     override fun EQB(): Eq<B> = eqB
@@ -182,16 +182,16 @@ class DaggerTuple9EqInstance<A, B, C, D, E, F, G, H, I> @Inject constructor(
 }
 
 class DaggerTuple10EqInstance<A, B, C, D, E, F, G, H, I, J> @Inject constructor(
-        val eqA: Eq<A>,
-        val eqB: Eq<B>,
-        val eqC: Eq<C>,
-        val eqD: Eq<D>,
-        val eqE: Eq<E>,
-        val eqF: Eq<F>,
-        val eqG: Eq<G>,
-        val eqH: Eq<H>,
-        val eqI: Eq<I>,
-        val eqJ: Eq<J>
+    val eqA: Eq<A>,
+    val eqB: Eq<B>,
+    val eqC: Eq<C>,
+    val eqD: Eq<D>,
+    val eqE: Eq<E>,
+    val eqF: Eq<F>,
+    val eqG: Eq<G>,
+    val eqH: Eq<H>,
+    val eqI: Eq<I>,
+    val eqJ: Eq<J>
 ) : Tuple10EqInstance<A, B, C, D, E, F, G, H, I, J> {
     override fun EQA(): Eq<A> = eqA
     override fun EQB(): Eq<B> = eqB

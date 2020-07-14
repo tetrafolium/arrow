@@ -23,7 +23,6 @@ abstract class ValidatedInstances<L> {
 
     @Provides
     fun validatedSemigroupK(ev: DaggerValidatedSemigroupKInstance<L>): SemigroupK<ValidatedPartialOf<L>> = ev
-
 }
 
 class DaggerValidatedFunctorInstance<F> @Inject constructor() : ValidatedFunctorInstance<F>

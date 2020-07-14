@@ -25,5 +25,4 @@ class TryInstances {
 
     @Provides
     fun tryTraverse(): Traverse<ForTry> = Try.traverse()
-
 }

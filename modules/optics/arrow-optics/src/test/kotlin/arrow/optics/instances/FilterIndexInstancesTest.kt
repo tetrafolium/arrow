@@ -36,57 +36,69 @@ class FilterIndexInstanceTest : UnitSpec() {
             filterIndex<String, Int, Char>() shouldNotBe null
         }
 
-        testLaws(TraversalLaws.laws(
+        testLaws(
+            TraversalLaws.laws(
                 traversal = FilterIndex.filterIndex<ListK<String>, Int, String> { true },
                 aGen = genListK(Gen.string()),
                 bGen = Gen.string(),
                 funcGen = genFunctionAToB(Gen.string())
-        ))
+            )
+        )
 
-        testLaws(TraversalLaws.laws(
+        testLaws(
+            TraversalLaws.laws(
                 traversal = FilterIndex.filterIndex<List<String>, Int, String> { true },
                 aGen = Gen.list(Gen.string()),
                 bGen = Gen.string(),
                 funcGen = genFunctionAToB(Gen.string()),
                 EQA = Eq.any()
-        ))
+            )
+        )
 
-        testLaws(TraversalLaws.laws(
+        testLaws(
+            TraversalLaws.laws(
                 traversal = FilterIndex.filterIndex<NonEmptyList<String>, Int, String> { true },
                 aGen = genNonEmptyList(Gen.string()),
                 bGen = Gen.string(),
                 funcGen = genFunctionAToB(Gen.string())
-        ))
+            )
+        )
 
-        testLaws(TraversalLaws.laws(
-                traversal =  FilterIndex.filterIndex<SequenceK<Char>, Int, Char> { true },
+        testLaws(
+            TraversalLaws.laws(
+                traversal = FilterIndex.filterIndex<SequenceK<Char>, Int, Char> { true },
                 aGen = genSequenceK(genChars()),
                 bGen = genChars(),
                 funcGen = genFunctionAToB(genChars())
-        ))
+            )
+        )
 
-        testLaws(TraversalLaws.laws(
+        testLaws(
+            TraversalLaws.laws(
                 traversal = FilterIndex.filterIndex<MapK<Char, Int>, Char, Int> { true },
                 aGen = genMapK(genChars(), genIntSmall()),
                 bGen = Gen.int(),
                 funcGen = genFunctionAToB(Gen.int())
-        ))
+            )
+        )
 
-        testLaws(TraversalLaws.laws(
+        testLaws(
+            TraversalLaws.laws(
                 traversal = FilterIndex.filterIndex<Map<Char, Int>, Char, Int> { true },
                 aGen = genMapK(genChars(), genIntSmall()),
                 bGen = Gen.int(),
                 funcGen = genFunctionAToB(Gen.int()),
                 EQA = Eq.any()
-        ))
+            )
+        )
 
-        testLaws(TraversalLaws.laws(
+        testLaws(
+            TraversalLaws.laws(
                 traversal = FilterIndex.filterIndex<String, Int, Char> { true },
                 aGen = Gen.string(),
                 bGen = genChars(),
                 funcGen = genFunctionAToB(genChars())
-        ))
-
+            )
+        )
     }
-
 }

@@ -1,18 +1,16 @@
 package arrow.optics
 
+import arrow.core.Tuple2
+import arrow.core.toT
+import arrow.data.k
+import arrow.syntax.either.left
+import arrow.syntax.either.right
+import arrow.syntax.foldable.combineAll
+import arrow.syntax.option.some
+import arrow.test.UnitSpec
 import io.kotlintest.KTestJUnitRunner
 import io.kotlintest.properties.Gen
 import io.kotlintest.properties.forAll
-import arrow.core.Tuple2
-import arrow.core.getOrElse
-import arrow.test.UnitSpec
-import arrow.syntax.either.left
-import arrow.syntax.either.right
-import arrow.core.toT
-import arrow.data.k
-import arrow.syntax.collections.firstOption
-import arrow.syntax.foldable.combineAll
-import arrow.syntax.option.some
 import org.junit.runner.RunWith
 
 @RunWith(KTestJUnitRunner::class)
@@ -109,25 +107,32 @@ class GetterTest : UnitSpec() {
 
         "Pairing two disjoint getters should yield a pair of their results" {
             val splitGetter: Getter<Tuple2<Token, User>, Tuple2<String, Token>> = tokenGetter.split(userGetter)
-            forAll(TokenGen, UserGen, { token: Token, user: User ->
-                splitGetter.get(token toT user) == token.value toT user.token
-            })
+            forAll(
+                TokenGen, UserGen,
+                { token: Token, user: User ->
+                    splitGetter.get(token toT user) == token.value toT user.token
+                }
+            )
         }
 
         "Creating a first pair with a type should result in the target to value" {
             val first = tokenGetter.first<Int>()
-            forAll(TokenGen, Gen.int(), { token: Token, int: Int ->
-                first.get(token toT int) == token.value toT int
-            })
+            forAll(
+                TokenGen, Gen.int(),
+                { token: Token, int: Int ->
+                    first.get(token toT int) == token.value toT int
+                }
+            )
         }
 
         "Creating a second pair with a type should result in the value target" {
             val first = tokenGetter.second<Int>()
-            forAll(Gen.int(), TokenGen, { int: Int, token: Token ->
-                first.get(int toT token) == int toT token.value
-            })
+            forAll(
+                Gen.int(), TokenGen,
+                { int: Int, token: Token ->
+                    first.get(int toT token) == int toT token.value
+                }
+            )
         }
-
     }
-
 }

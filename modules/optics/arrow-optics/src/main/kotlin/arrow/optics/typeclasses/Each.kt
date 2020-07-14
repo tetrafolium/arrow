@@ -37,7 +37,6 @@ interface Each<S, A> : TC {
             override fun each(): Traversal<Kind<S, A>, A> = Traversal.fromTraversable(T)
         }
     }
-
 }
 
 /**
@@ -45,5 +44,4 @@ interface Each<S, A> : TC {
  */
 inline fun <reified S, A> Each.Companion.fromTraverse(T: Traverse<S>, dummy: Unit = Unit) = object : Each<Kind<S, A>, A> {
     override fun each(): Traversal<Kind<S, A>, A> = Traversal.fromTraversable(T)
-
 }

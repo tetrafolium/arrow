@@ -29,23 +29,26 @@ import arrow.typeclasses.Applicative
 @instance(MapK::class)
 interface MapKAtInstance<K, V> : At<MapK<K, V>, K, Option<V>> {
     override fun at(i: K): Lens<MapK<K, V>, Option<V>> = PLens(
-            get = { it.fix().getOption(i) },
-            set = { optV ->
-                { map ->
-                    optV.fold({
+        get = { it.fix().getOption(i) },
+        set = { optV ->
+            { map ->
+                optV.fold(
+                    {
                         (map - i).k()
-                    }, {
+                    },
+                    {
                         (map + (i to it)).k()
-                    })
-                }
+                    }
+                )
             }
+        }
     )
 }
 
 @instance(MapK::class)
 interface MapKEachInstance<K> : Each<MapKPartialOf<K>, K> {
     override fun each(): Traversal<MapKPartialOf<K>, K> =
-            Traversal.fromTraversable()
+        Traversal.fromTraversable()
 }
 
 @instance(MapK::class)
@@ -53,23 +56,26 @@ interface MapKFilterIndexInstance<K, V> : FilterIndex<MapKOf<K, V>, K, V> {
 
     override fun filter(p: (K) -> Boolean): Traversal<MapKOf<K, V>, V> = object : Traversal<MapKOf<K, V>, V> {
         override fun <F> modifyF(FA: Applicative<F>, s: Kind<Kind<ForMapK, K>, V>, f: (V) -> Kind<F, V>): Kind<F, Kind<Kind<ForMapK, K>, V>> =
-                ListK.traverse().traverse(s.fix().map.toList().k(), { (k, v) ->
+            ListK.traverse().traverse(
+                s.fix().map.toList().k(),
+                { (k, v) ->
                     FA.map(if (p(k)) f(v) else FA.pure(v)) {
                         k to it
                     }
-                }, FA).let {
-                    FA.map(it) {
-                        it.toMap().k()
-                    }
+                },
+                FA
+            ).let {
+                FA.map(it) {
+                    it.toMap().k()
                 }
-
+            }
     }
 }
 
 @instance(MapK::class)
 interface MapKIndexInstance<K, V> : Index<MapKOf<K, V>, K, V> {
     override fun index(i: K): Optional<MapKOf<K, V>, V> = POptional(
-            getOrModify = { it.fix()[i]?.right() ?: it.left() },
-            set = { v -> { m -> m.fix().mapValues { (k, vv) -> if (k == i) v else vv }.k() } }
+        getOrModify = { it.fix()[i]?.right() ?: it.left() },
+        set = { v -> { m -> m.fix().mapValues { (k, vv) -> if (k == i) v else vv }.k() } }
     )
 }

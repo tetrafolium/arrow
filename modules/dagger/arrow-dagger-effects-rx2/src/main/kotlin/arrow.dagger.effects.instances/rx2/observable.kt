@@ -31,5 +31,4 @@ class ObservableKInstances {
 
     @Provides
     fun observableKEffect(): Effect<ForObservableK> = ObservableK.effect()
-
 }

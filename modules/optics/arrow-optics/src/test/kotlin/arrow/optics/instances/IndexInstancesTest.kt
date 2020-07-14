@@ -34,57 +34,69 @@ class IndexInstanceTest : UnitSpec() {
             index<String, Int, Char>() shouldNotBe null
         }
 
-        testLaws(OptionalLaws.laws(
+        testLaws(
+            OptionalLaws.laws(
                 optional = index<ListK<String>, Int, String>().index(5),
                 aGen = genListK(Gen.string()),
                 bGen = Gen.string(),
                 funcGen = genFunctionAToB(Gen.string())
-        ))
+            )
+        )
 
-        testLaws(OptionalLaws.laws(
+        testLaws(
+            OptionalLaws.laws(
                 optional = index<List<String>, Int, String>().index(5),
                 aGen = Gen.list(Gen.string()),
                 bGen = Gen.string(),
                 funcGen = genFunctionAToB(Gen.string()),
                 EQA = Eq.any()
-        ))
+            )
+        )
 
-        testLaws(OptionalLaws.laws(
+        testLaws(
+            OptionalLaws.laws(
                 optional = index<NonEmptyList<String>, Int, String>().index(5),
                 aGen = genNonEmptyList(Gen.string()),
                 bGen = Gen.string(),
                 funcGen = genFunctionAToB(Gen.string())
-        ))
+            )
+        )
 
-        testLaws(OptionalLaws.laws(
+        testLaws(
+            OptionalLaws.laws(
                 optional = index<SequenceK<String>, Int, String>().index(5),
                 aGen = genSequenceK(Gen.string()),
                 bGen = Gen.string(),
                 funcGen = genFunctionAToB(Gen.string())
-        ))
+            )
+        )
 
-        testLaws(OptionalLaws.laws(
+        testLaws(
+            OptionalLaws.laws(
                 optional = index<MapK<String, Int>, String, Int>().index(Gen.string().generate()),
                 aGen = genMapK(Gen.string(), Gen.int()),
                 bGen = Gen.int(),
                 funcGen = genFunctionAToB(Gen.int())
-        ))
+            )
+        )
 
-        testLaws(OptionalLaws.laws(
+        testLaws(
+            OptionalLaws.laws(
                 optional = index<Map<String, Int>, String, Int>().index(Gen.string().generate()),
                 aGen = Gen.map(Gen.string(), Gen.int()),
                 bGen = Gen.int(),
                 funcGen = genFunctionAToB(Gen.int()),
                 EQA = Eq.any()
-        ))
+            )
+        )
 
-        testLaws(OptionalLaws.laws(
+        testLaws(
+            OptionalLaws.laws(
                 optional = index<String, Int, Char>().index(5),
                 aGen = Gen.string(),
                 bGen = genChars(),
                 funcGen = genFunctionAToB(genChars())
-        ))
-
+            )
+        )
     }
-
 }

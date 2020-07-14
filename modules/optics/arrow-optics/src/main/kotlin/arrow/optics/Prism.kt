@@ -55,8 +55,8 @@ interface PPrism<S, T, A, B> : PPrismOf<S, T, A, B> {
          * Can also be used to construct [Prism]
          */
         operator fun <S, A : S> invoke(getOrModify: (S) -> Either<S, A>): Prism<S, A> = Prism(
-                getOrModify = getOrModify,
-                reverseGet = ::identity
+            getOrModify = getOrModify,
+            reverseGet = ::identity
         )
 
         /**
@@ -64,26 +64,25 @@ interface PPrism<S, T, A, B> : PPrismOf<S, T, A, B> {
          * Can also be used to construct [Prism]
          */
         operator fun <S, A> invoke(partialFunction: PartialFunction<S, A>, reverseGet: (A) -> S): Prism<S, A> = Prism(
-                getOrModify = { s -> partialFunction.lift()(s).fold({ Either.Left(s) }, { Either.Right(it) }) },
-                reverseGet = reverseGet
+            getOrModify = { s -> partialFunction.lift()(s).fold({ Either.Left(s) }, { Either.Right(it) }) },
+            reverseGet = reverseGet
         )
 
         /**
          * A [PPrism] that checks for equality with a given value [a]
          */
         inline fun <reified A> only(a: A, EQA: Eq<A> = eq()): Prism<A, Unit> = Prism(
-                getOrModify = { a2 -> (if (EQA.eqv(a, a2)) Either.Left(a) else Either.Right(Unit)) },
-                reverseGet = { a }
+            getOrModify = { a2 -> (if (EQA.eqv(a, a2)) Either.Left(a) else Either.Right(Unit)) },
+            reverseGet = { a }
         )
-
     }
 
     /**
      * Modify the focus of a [PPrism] with an [Applicative] function
      */
     fun <F> modifyF(FA: Applicative<F>, s: S, f: (A) -> Kind<F, B>): Kind<F, T> = getOrModify(s).fold(
-            FA::pure,
-            { FA.map(f(it), this::reverseGet) }
+        FA::pure,
+        { FA.map(f(it), this::reverseGet) }
     )
 
     /**
@@ -91,8 +90,8 @@ interface PPrism<S, T, A, B> : PPrismOf<S, T, A, B> {
      */
     fun <F> liftF(FA: Applicative<F>, f: (A) -> Kind<F, B>): (S) -> Kind<F, T> = { s ->
         getOrModify(s).fold(
-                FA::pure,
-                { FA.map(f(it), this::reverseGet) }
+            FA::pure,
+            { FA.map(f(it), this::reverseGet) }
         )
     }
 
@@ -125,24 +124,24 @@ interface PPrism<S, T, A, B> : PPrismOf<S, T, A, B> {
      * Create a product of the [PPrism] and a type [C]
      */
     fun <C> first(): PPrism<Tuple2<S, C>, Tuple2<T, C>, Tuple2<A, C>, Tuple2<B, C>> = PPrism(
-            { (s, c) -> getOrModify(s).bimap({ it toT c }, { it toT c }) },
-            { (b, c) -> reverseGet(b) toT c }
+        { (s, c) -> getOrModify(s).bimap({ it toT c }, { it toT c }) },
+        { (b, c) -> reverseGet(b) toT c }
     )
 
     /**
      * Create a product of a type [C] and the [PPrism]
      */
     fun <C> second(): PPrism<Tuple2<C, S>, Tuple2<C, T>, Tuple2<C, A>, Tuple2<C, B>> = PPrism(
-            { (c, s) -> getOrModify(s).bimap({ c toT it }, { c toT it }) },
-            { (c, b) -> c toT reverseGet(b) }
+        { (c, s) -> getOrModify(s).bimap({ c toT it }, { c toT it }) },
+        { (c, b) -> c toT reverseGet(b) }
     )
 
     /**
      * Compose a [PPrism] with another [PPrism]
      */
     infix fun <C, D> compose(other: PPrism<A, B, C, D>): PPrism<S, T, C, D> = PPrism(
-            getOrModify = { s -> getOrModify(s).flatMap { a -> other.getOrModify(a).bimap({ set(s, it) }, ::identity) } },
-            reverseGet = this::reverseGet compose other::reverseGet
+        getOrModify = { s -> getOrModify(s).flatMap { a -> other.getOrModify(a).bimap({ set(s, it) }, ::identity) } },
+        reverseGet = this::reverseGet compose other::reverseGet
     )
 
     /**
@@ -196,8 +195,8 @@ interface PPrism<S, T, A, B> : PPrismOf<S, T, A, B> {
      * View a [PPrism] as an [POptional]
      */
     fun asOptional(): POptional<S, T, A, B> = POptional(
-            this::getOrModify,
-            { b -> { s -> set(s, b) } }
+        this::getOrModify,
+        { b -> { s -> set(s, b) } }
     )
 
     /**
@@ -217,24 +216,23 @@ interface PPrism<S, T, A, B> : PPrismOf<S, T, A, B> {
      */
     fun asTraversal(): PTraversal<S, T, A, B> = object : PTraversal<S, T, A, B> {
         override fun <F> modifyF(FA: Applicative<F>, s: S, f: (A) -> Kind<F, B>): Kind<F, T> = getOrModify(s).fold(
-                FA::pure,
-                { FA.map(f(it), this@PPrism::reverseGet) }
+            FA::pure,
+            { FA.map(f(it), this@PPrism::reverseGet) }
         )
     }
-
 }
 
 /**
  * Modify the focus of a [PPrism] with an [Applicative] function
  */
 inline fun <S, T, A, B, reified F> PPrism<S, T, A, B>.modifyF(s: S, crossinline f: (A) -> Kind<F, B>, FA: Applicative<F> = applicative()): Kind<F, T> =
-        modifyF(FA, s) { a -> f(a) }
+    modifyF(FA, s) { a -> f(a) }
 
 /**
  * Lift a function [f]: `(A) -> Kind<F, B> to the context of `S`: `(S) -> Kind<F, T>` with an [Applicative] function
  */
 inline fun <S, T, A, B, reified F> PPrism<S, T, A, B>.liftF(FA: Applicative<F> = applicative(), dummy: Unit = Unit, crossinline f: (A) -> Kind<F, B>): (S) -> Kind<F, T> =
-        liftF(FA) { a -> f(a) }
+    liftF(FA) { a -> f(a) }
 
 /**
  * Modify the focus of a [PPrism] with a function
@@ -275,19 +273,19 @@ inline fun <S, T, A, B> PPrism<S, T, A, B>.all(s: S, crossinline p: (A) -> Boole
  * Create a sum of the [PPrism] and a type [C]
  */
 fun <S, T, A, B, C> PPrism<S, T, A, B>.left(): PPrism<Either<S, C>, Either<T, C>, Either<A, C>, Either<B, C>> = Prism(
-        { it.fold({ a -> getOrModify(a).bimap({ Either.Left(it) }, { Either.Left(it) }) }, { c -> Either.Right(Either.Right(c)) }) },
-        {
-            when (it) {
-                is Either.Left<B, C> -> Either.Left(reverseGet(it.a))
-                is Either.Right<B, C> -> Either.Right(it.b)
-            }
+    { it.fold({ a -> getOrModify(a).bimap({ Either.Left(it) }, { Either.Left(it) }) }, { c -> Either.Right(Either.Right(c)) }) },
+    {
+        when (it) {
+            is Either.Left<B, C> -> Either.Left(reverseGet(it.a))
+            is Either.Right<B, C> -> Either.Right(it.b)
         }
+    }
 )
 
 /**
  * Create a sum of a type [C] and the [PPrism]
  */
 fun <S, T, A, B, C> PPrism<S, T, A, B>.right(): PPrism<Either<C, S>, Either<C, T>, Either<C, A>, Either<C, B>> = Prism(
-        { it.fold({ c -> Either.Right(Either.Left(c)) }, { s -> getOrModify(s).bimap({ Either.Right(it) }, { Either.Right(it) }) }) },
-        { it.map(this::reverseGet) }
+    { it.fold({ c -> Either.Right(Either.Left(c)) }, { s -> getOrModify(s).bimap({ Either.Right(it) }, { Either.Right(it) }) }) },
+    { it.map(this::reverseGet) }
 )

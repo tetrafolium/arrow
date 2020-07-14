@@ -9,14 +9,14 @@ internal interface IOFrame<in A, out R> : (A) -> R {
     fun recover(e: Throwable): R
 
     fun fold(value: Either<Throwable, A>): R =
-            when (value) {
-                is Either.Right -> invoke(value.b)
-                is Either.Left -> recover(value.a)
-            }
+        when (value) {
+            is Either.Right -> invoke(value.b)
+            is Either.Left -> recover(value.a)
+        }
 
     companion object {
         fun <A> errorHandler(fe: (Throwable) -> IOOf<A>): IOFrame<A, IO<A>> =
-                ErrorHandler(fe)
+            ErrorHandler(fe)
 
         internal data class ErrorHandler<A>(val fe: (Throwable) -> IOOf<A>) : IOFrame<A, IO<A>> {
             override fun invoke(a: A): IO<A> = Pure(a)

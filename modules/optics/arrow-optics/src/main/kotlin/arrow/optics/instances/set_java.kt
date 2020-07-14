@@ -6,8 +6,8 @@ import arrow.optics.typeclasses.At
 
 interface SetAtInstance<A> : At<Set<A>, A, Boolean> {
     override fun at(i: A): Lens<Set<A>, Boolean> = PLens(
-            get = { it.contains(i) },
-            set = { b -> { (if (b) it + i else it - i) } }
+        get = { it.contains(i) },
+        set = { b -> { (if (b) it + i else it - i) } }
     )
 }
 

@@ -18,15 +18,18 @@ import arrow.syntax.either.right
 
 @instance(SequenceK::class)
 interface SequenceKFilterIndexInstance<A> : FilterIndex<SequenceKOf<A>, Int, A> {
-    override fun filter(p: (Int) -> Boolean): Traversal<SequenceKOf<A>, A> = FilterIndex.fromTraverse<ForSequenceK, A>({ aas ->
-        aas.fix().mapIndexed { index, a -> a toT index }.k()
-    }, SequenceK.traverse()).filter(p)
+    override fun filter(p: (Int) -> Boolean): Traversal<SequenceKOf<A>, A> = FilterIndex.fromTraverse<ForSequenceK, A>(
+        { aas ->
+            aas.fix().mapIndexed { index, a -> a toT index }.k()
+        },
+        SequenceK.traverse()
+    ).filter(p)
 }
 
 @instance(SequenceK::class)
 interface SequenceKIndexInstance<A> : Index<SequenceKOf<A>, Int, A> {
     override fun index(i: Int): Optional<SequenceKOf<A>, A> = POptional(
-            getOrModify = { it.fix().sequence.elementAtOrNull(i)?.right() ?: it.fix().left() },
-            set = { a -> { it.fix().mapIndexed { index, aa -> if (index == i) a else aa }.k() } }
+        getOrModify = { it.fix().sequence.elementAtOrNull(i)?.right() ?: it.fix().left() },
+        set = { a -> { it.fix().mapIndexed { index, aa -> if (index == i) a else aa }.k() } }
     )
 }

@@ -7,50 +7,50 @@ import arrow.typeclasses.MonadError
 
 @instance(ObservableK::class)
 interface ObservableKApplicativeErrorInstance :
-        ObservableKApplicativeInstance,
-        ApplicativeError<ForObservableK, Throwable> {
+    ObservableKApplicativeInstance,
+    ApplicativeError<ForObservableK, Throwable> {
     override fun <A> raiseError(e: Throwable): ObservableK<A> =
-            ObservableK.raiseError(e)
+        ObservableK.raiseError(e)
 
     override fun <A> handleErrorWith(fa: ObservableKOf<A>, f: (Throwable) -> ObservableKOf<A>): ObservableK<A> =
-            fa.handleErrorWith { f(it).fix() }
+        fa.handleErrorWith { f(it).fix() }
 }
 
 @instance(ObservableK::class)
 interface ObservableKMonadErrorInstance :
-        ObservableKApplicativeErrorInstance,
-        ObservableKMonadInstance,
-        MonadError<ForObservableK, Throwable> {
+    ObservableKApplicativeErrorInstance,
+    ObservableKMonadInstance,
+    MonadError<ForObservableK, Throwable> {
     override fun <A, B> ap(fa: ObservableKOf<A>, ff: ObservableKOf<(A) -> B>): ObservableK<B> =
-            super<ObservableKMonadInstance>.ap(fa, ff)
+        super<ObservableKMonadInstance>.ap(fa, ff)
 
     override fun <A, B> map(fa: ObservableKOf<A>, f: (A) -> B): ObservableK<B> =
-            super<ObservableKMonadInstance>.map(fa, f)
+        super<ObservableKMonadInstance>.map(fa, f)
 
     override fun <A> pure(a: A): ObservableK<A> =
-            super<ObservableKMonadInstance>.pure(a)
+        super<ObservableKMonadInstance>.pure(a)
 }
 
 @instance(ObservableK::class)
 interface ObservableKMonadSuspendInstance :
-        ObservableKMonadErrorInstance,
-        MonadSuspend<ForObservableK> {
+    ObservableKMonadErrorInstance,
+    MonadSuspend<ForObservableK> {
     override fun <A> suspend(fa: () -> ObservableKOf<A>): ObservableK<A> =
-            ObservableK.suspend(fa)
+        ObservableK.suspend(fa)
 }
 
 @instance(ObservableK::class)
 interface ObservableKAsyncInstance :
-        ObservableKMonadSuspendInstance,
-        Async<ForObservableK> {
+    ObservableKMonadSuspendInstance,
+    Async<ForObservableK> {
     override fun <A> async(fa: Proc<A>): ObservableK<A> =
-            ObservableK.runAsync(fa)
+        ObservableK.runAsync(fa)
 }
 
 @instance(ObservableK::class)
 interface ObservableKEffectInstance :
-        ObservableKAsyncInstance,
-        Effect<ForObservableK> {
+    ObservableKAsyncInstance,
+    Effect<ForObservableK> {
     override fun <A> runAsync(fa: ObservableKOf<A>, cb: (Either<Throwable, A>) -> ObservableKOf<Unit>): ObservableK<Unit> =
-            fa.fix().runAsync(cb)
+        fa.fix().runAsync(cb)
 }

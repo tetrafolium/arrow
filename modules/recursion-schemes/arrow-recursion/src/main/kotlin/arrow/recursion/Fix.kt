@@ -10,10 +10,9 @@ import arrow.typeclasses.*
 
     companion object {
         inline fun <reified F> embedT(compFG: NestedType<Nested<ForFix, F>, ForFix, F>, dummy: Unit = Unit, FF: Functor<F> = functor<F>()): FixOf<F> =
-                embedT(compFG.unnest(), FF)
+            embedT(compFG.unnest(), FF)
 
         inline fun <F> embedT(compFG: Kind<Nested<ForFix, F>, FixOf<F>>, FF: Functor<F>): FixOf<F> =
-                Fix(FF, compFG.unnest().fix())
-
+            Fix(FF, compFG.unnest().fix())
     }
 }

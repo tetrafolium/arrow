@@ -23,25 +23,30 @@ import org.junit.runner.RunWith
 class TryInstancesTest : UnitSpec() {
     init {
 
-        testLaws(PrismLaws.laws(
+        testLaws(
+            PrismLaws.laws(
                 prism = trySuccess(),
                 aGen = genTry(Gen.int()),
                 bGen = Gen.int(),
                 funcGen = genFunctionAToB(Gen.int()),
                 EQA = Eq.any(),
                 EQOptionB = Eq.any()
-        ))
+            )
+        )
 
-        testLaws(PrismLaws.laws(
+        testLaws(
+            PrismLaws.laws(
                 prism = tryFailure(),
                 aGen = genTry(Gen.int()),
                 bGen = genThrowable(),
                 funcGen = genFunctionAToB(genThrowable()),
                 EQA = Eq.any(),
                 EQOptionB = Eq.any()
-        ))
+            )
+        )
 
-        testLaws(IsoLaws.laws(
+        testLaws(
+            IsoLaws.laws(
                 iso = tryToEither(),
                 aGen = genTry(Gen.int()),
                 bGen = genEither(genThrowable(), Gen.int()),
@@ -50,13 +55,15 @@ class TryInstancesTest : UnitSpec() {
                 EQB = Eq.any(),
                 bMonoid = object : Monoid<Either<Throwable, Int>> {
                     override fun combine(a: Either<Throwable, Int>, b: Either<Throwable, Int>): Either<Throwable, Int> =
-                            Either.applicative<Throwable>().map2(a, b) { (a, b) -> a + b }.fix()
+                        Either.applicative<Throwable>().map2(a, b) { (a, b) -> a + b }.fix()
 
                     override fun empty(): Either<Throwable, Int> = 0.right()
                 }
-        ))
+            )
+        )
 
-        testLaws(IsoLaws.laws(
+        testLaws(
+            IsoLaws.laws(
                 iso = tryToValidated(),
                 aGen = genTry(Gen.int()),
                 bGen = genValidated(genThrowable(), Gen.int()),
@@ -65,24 +72,24 @@ class TryInstancesTest : UnitSpec() {
                 EQB = Eq.any(),
                 bMonoid = object : Monoid<Validated<Throwable, Int>> {
                     override fun combine(a: Validated<Throwable, Int>, b: Validated<Throwable, Int>): Validated<Throwable, Int> =
-                            when (a) {
-                                is Invalid -> {
-                                    when (b) {
-                                        is Invalid -> (a.e).invalid()
-                                        is Valid -> b
-                                    }
-                                }
-                                is Valid -> {
-                                    when (b) {
-                                        is Invalid -> b
-                                        is Valid -> (a.a + b.a).valid()
-                                    }
+                        when (a) {
+                            is Invalid -> {
+                                when (b) {
+                                    is Invalid -> (a.e).invalid()
+                                    is Valid -> b
                                 }
                             }
+                            is Valid -> {
+                                when (b) {
+                                    is Invalid -> b
+                                    is Valid -> (a.a + b.a).valid()
+                                }
+                            }
+                        }
 
                     override fun empty() = 0.valid<Throwable, Int>()
                 }
-        ))
-
+            )
+        )
     }
 }

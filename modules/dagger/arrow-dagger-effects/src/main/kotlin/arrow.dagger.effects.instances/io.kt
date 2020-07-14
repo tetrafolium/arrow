@@ -32,7 +32,6 @@ class IOInstances {
 
     @Provides
     fun ioEffect(): Effect<ForIO> = IO.effect()
-
 }
 
 class DaggerIOSemigroupInstance<A> @Inject constructor(val monoidA: Monoid<A>) : IOSemigroupInstance<A> {

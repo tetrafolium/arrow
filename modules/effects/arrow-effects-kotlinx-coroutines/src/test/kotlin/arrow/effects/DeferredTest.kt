@@ -24,7 +24,7 @@ class DeferredKTest : UnitSpec() {
     init {
         testLaws(AsyncLaws.laws(DeferredK.async(), EQ(), EQ()))
 
-        "instances can be resolved implicitly"{
+        "instances can be resolved implicitly" {
             functor<ForDeferredK>() shouldNotBe null
             applicative<ForDeferredK>() shouldNotBe null
             monad<ForDeferredK>() shouldNotBe null
@@ -36,14 +36,17 @@ class DeferredKTest : UnitSpec() {
         }
 
         "DeferredK is awaitable" {
-            forAll(genIntSmall(), genIntSmall(), genIntSmall(), { x: Int, y: Int, z: Int ->
-                runBlocking {
-                    val a = DeferredK { x }.await()
-                    val b = DeferredK { y + a }.await()
-                    val c = DeferredK { z + b }.await()
-                    c
-                } == x + y + z
-            })
+            forAll(
+                genIntSmall(), genIntSmall(), genIntSmall(),
+                { x: Int, y: Int, z: Int ->
+                    runBlocking {
+                        val a = DeferredK { x }.await()
+                        val b = DeferredK { y + a }.await()
+                        val c = DeferredK { z + b }.await()
+                        c
+                    } == x + y + z
+                }
+            )
         }
 
         "should complete when running a pure value with unsafeRunAsync" {
@@ -57,13 +60,16 @@ class DeferredKTest : UnitSpec() {
 
         "should return an error when running an exception with unsafeRunAsync" {
             DeferredK.raiseError<Int>(MyException()).unsafeRunAsync { either ->
-                either.fold({
-                    when (it) {
-                        is MyException -> {
+                either.fold(
+                    {
+                        when (it) {
+                            is MyException -> {
+                            }
+                            else -> fail("Should only throw MyException")
                         }
-                        else -> fail("Should only throw MyException")
-                    }
-                }, { fail("") })
+                    },
+                    { fail("") }
+                )
             }
         }
 
@@ -96,7 +102,6 @@ class DeferredKTest : UnitSpec() {
             }
         }
 
-
         "should complete when running a return value with runAsync" {
             val expected = 0
             DeferredK(Unconfined, CoroutineStart.DEFAULT) { expected }.runAsync { either ->
@@ -106,14 +111,17 @@ class DeferredKTest : UnitSpec() {
 
         "should return an error when running an exception with runAsync" {
             DeferredK.raiseError<Int>(MyException()).runAsync { either ->
-                either.fold({
-                    when (it) {
-                        is MyException -> {
-                            DeferredK { }
+                either.fold(
+                    {
+                        when (it) {
+                            is MyException -> {
+                                DeferredK { }
+                            }
+                            else -> fail("Should only throw MyException")
                         }
-                        else -> fail("Should only throw MyException")
-                    }
-                }, { fail("") })
+                    },
+                    { fail("") }
+                )
             }
         }
 

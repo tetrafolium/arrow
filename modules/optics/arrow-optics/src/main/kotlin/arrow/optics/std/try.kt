@@ -8,8 +8,8 @@ import arrow.syntax.validated.*
  * [PPrism] to focus into an [arrow.Try.Success]
  */
 fun <A, B> pTrySuccess(): PPrism<Try<A>, Try<B>, A, B> = PPrism(
-        getOrModify = { aTry -> aTry.fold({ Either.Left(Failure<B>(it)) }, { Either.Right(it) }) },
-        reverseGet = { b -> Success(b) }
+    getOrModify = { aTry -> aTry.fold({ Either.Left(Failure<B>(it)) }, { Either.Right(it) }) },
+    reverseGet = { b -> Success(b) }
 )
 
 /**
@@ -21,16 +21,16 @@ fun <A> trySuccess(): Prism<Try<A>, A> = pTrySuccess()
  * [Prism] to focus into an [arrow.Try.Failure]
  */
 fun <A> tryFailure(): Prism<Try<A>, Throwable> = Prism(
-        getOrModify = { aTry -> aTry.fold({ Either.Right(it) }, { Either.Left(Success(it)) }) },
-        reverseGet = { throwable -> Failure(throwable) }
+    getOrModify = { aTry -> aTry.fold({ Either.Right(it) }, { Either.Left(Success(it)) }) },
+    reverseGet = { throwable -> Failure(throwable) }
 )
 
 /**
  * [PIso] that defines the equality between a [Try] and [Either] of [Throwable] and [A]
  */
 fun <A, B> pTryToEither(): PIso<Try<A>, Try<B>, Either<Throwable, A>, Either<Throwable, B>> = PIso(
-        get = { it.fold({ Either.Left(it) }, { Either.Right(it) }) },
-        reverseGet = { it.fold({ Failure(it) }, { Success(it) }) }
+    get = { it.fold({ Either.Left(it) }, { Either.Right(it) }) },
+    reverseGet = { it.fold({ Failure(it) }, { Success(it) }) }
 )
 
 /**
@@ -42,8 +42,8 @@ fun <A> tryToEither(): Iso<Try<A>, Either<Throwable, A>> = pTryToEither()
  * [PIso] that defines the equality between a [Try] and [Validated] of [Throwable] and [A]
  */
 fun <A1, A2> pTryToValidated(): PIso<Try<A1>, Try<A2>, Validated<Throwable, A1>, Validated<Throwable, A2>> = PIso(
-        get = { it.fold({ it.invalid() }, { it.valid() }) },
-        reverseGet = { it.fold({ Failure(it) }, { Success(it) }) }
+    get = { it.fold({ it.invalid() }, { it.valid() }) },
+    reverseGet = { it.fold({ Failure(it) }, { Success(it) }) }
 )
 
 /**

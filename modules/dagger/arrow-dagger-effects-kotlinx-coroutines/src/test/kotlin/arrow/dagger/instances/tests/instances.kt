@@ -2,8 +2,8 @@ package arrow.dagger.instances.tests
 
 import arrow.dagger.effects.instances.coroutines.ArrowEffectsCoroutinesInstances
 import arrow.effects.Async
-import arrow.effects.ForDeferredK
 import arrow.effects.Effect
+import arrow.effects.ForDeferredK
 import arrow.effects.MonadSuspend
 import arrow.typeclasses.*
 import dagger.Component
@@ -15,9 +15,11 @@ import javax.inject.Singleton
  * and need explicit evidence of a @Module such as `LocalStateTInstances`
  */
 @Singleton
-@Component(modules = [
-    ArrowEffectsCoroutinesInstances::class
-])
+@Component(
+    modules = [
+        ArrowEffectsCoroutinesInstances::class
+    ]
+)
 interface Runtime {
     fun deferredKWFunctor(): Functor<ForDeferredK>
     fun deferredKWApplicative(): Applicative<ForDeferredK>
@@ -32,6 +34,3 @@ interface Runtime {
 object Arrow {
     val instances = DaggerRuntime.builder().build()
 }
-
-
-

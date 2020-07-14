@@ -55,7 +55,6 @@ interface Fold<S, A> : FoldOf<S, A> {
         inline fun <reified F, S> fromFoldable(Foldable: Foldable<F> = foldable()) = object : Fold<Kind<F, S>, S> {
             override fun <R> foldMap(M: Monoid<R>, s: Kind<F, S>, f: (S) -> R): R = Foldable.foldMap(M, s, f)
         }
-
     }
 
     /**
@@ -108,7 +107,7 @@ interface Fold<S, A> : FoldOf<S, A> {
      */
     infix fun <C> choice(other: Fold<C, A>): Fold<Either<S, C>, A> = object : Fold<Either<S, C>, A> {
         override fun <R> foldMap(M: Monoid<R>, s: Either<S, C>, f: (A) -> R): R =
-                s.fold({ ac -> this@Fold.foldMap(M, ac, f) }, { c -> other.foldMap(M, c, f) })
+            s.fold({ ac -> this@Fold.foldMap(M, ac, f) }, { c -> other.foldMap(M, c, f) })
     }
 
     /**
@@ -116,7 +115,7 @@ interface Fold<S, A> : FoldOf<S, A> {
      */
     fun <C> left(): Fold<Either<S, C>, Either<A, C>> = object : Fold<Either<S, C>, Either<A, C>> {
         override fun <R> foldMap(M: Monoid<R>, s: Either<S, C>, f: (Either<A, C>) -> R): R =
-                s.fold({ a1: S -> this@Fold.foldMap(M, a1, { b -> f(Either.Left(b)) }) }, { c -> f(Either.Right(c)) })
+            s.fold({ a1: S -> this@Fold.foldMap(M, a1, { b -> f(Either.Left(b)) }) }, { c -> f(Either.Right(c)) })
     }
 
     /**
@@ -124,7 +123,7 @@ interface Fold<S, A> : FoldOf<S, A> {
      */
     fun <C> right(): Fold<Either<C, S>, Either<C, A>> = object : Fold<Either<C, S>, Either<C, A>> {
         override fun <R> foldMap(M: Monoid<R>, s: Either<C, S>, f: (Either<C, A>) -> R): R =
-                s.fold({ c -> f(Either.Left(c)) }, { a1 -> this@Fold.foldMap(M, a1, { b -> f(Either.Right(b)) }) })
+            s.fold({ c -> f(Either.Left(c)) }, { a1 -> this@Fold.foldMap(M, a1, { b -> f(Either.Right(b)) }) })
     }
 
     /**
@@ -132,7 +131,7 @@ interface Fold<S, A> : FoldOf<S, A> {
      */
     infix fun <C> compose(other: Fold<A, C>): Fold<S, C> = object : Fold<S, C> {
         override fun <R> foldMap(M: Monoid<R>, s: S, f: (C) -> R): R =
-                this@Fold.foldMap(M, s, { c -> other.foldMap(M, c, f) })
+            this@Fold.foldMap(M, s, { c -> other.foldMap(M, c, f) })
     }
 
     /**
@@ -192,7 +191,7 @@ inline fun <S, A, reified R> Fold<S, A>.foldMap(s: S, noinline f: (A) -> R, M: M
  * Find the first element matching the predicate, if one exists.
  */
 inline fun <S, A> Fold<S, A>.find(s: S, crossinline p: (A) -> Boolean): Option<A> =
-        foldMap(firstOptionMonoid<A>(), s, { b -> (if (p(b)) Const(Some(b)) else Const(None)) }).value
+    foldMap(firstOptionMonoid<A>(), s, { b -> (if (p(b)) Const(Some(b)) else Const(None)) }).value
 
 /**
  * Check whether at least one element satisfies the predicate.

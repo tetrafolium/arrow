@@ -18,7 +18,7 @@ typealias Disposable = () -> Unit
 
 @RestrictsSuspension
 open class MonadSuspendCancellableContinuation<F, A>(SC: MonadSuspend<F>, override val context: CoroutineContext = EmptyCoroutineContext) :
-        MonadErrorContinuation<F, A>(SC), MonadSuspend<F> by SC {
+    MonadErrorContinuation<F, A>(SC), MonadSuspend<F> by SC {
 
     protected val cancelled: AtomicBoolean = AtomicBoolean(false)
 
@@ -27,24 +27,27 @@ open class MonadSuspendCancellableContinuation<F, A>(SC: MonadSuspend<F>, overri
     override fun returnedMonad(): Kind<F, A> = returnedMonad
 
     suspend fun <B> bindDefer(f: () -> B): B =
-            invoke(f).bind()
+        invoke(f).bind()
 
     suspend fun <B> bindDeferIn(context: CoroutineContext, f: () -> B): B =
-            suspend { bindingCatch { bindIn(context, f) } }.bind()
+        suspend { bindingCatch { bindIn(context, f) } }.bind()
 
     suspend fun <B> bindDeferUnsafe(f: () -> Either<Throwable, B>): B =
-            deferUnsafe(f).bind()
+        deferUnsafe(f).bind()
 
     override suspend fun <B> bind(m: () -> Kind<F, B>): B = suspendCoroutineOrReturn { c ->
         val labelHere = c.stackLabels // save the whole coroutine stack labels
-        returnedMonad = flatMap(m(), { x: B ->
-            c.stackLabels = labelHere
-            if (cancelled.get()) {
-                throw BindingCancellationException()
+        returnedMonad = flatMap(
+            m(),
+            { x: B ->
+                c.stackLabels = labelHere
+                if (cancelled.get()) {
+                    throw BindingCancellationException()
+                }
+                c.resume(x)
+                returnedMonad
             }
-            c.resume(x)
-            returnedMonad
-        })
+        )
         COROUTINE_SUSPENDED
     }
 
@@ -56,24 +59,30 @@ open class MonadSuspendCancellableContinuation<F, A>(SC: MonadSuspend<F>, overri
             } catch (t: Throwable) {
                 ME.raiseError<B>(t)
             }
-            flatMap(datatype, { xx: B ->
-                c.stackLabels = labelHere
-                if (cancelled.get()) {
-                    throw BindingCancellationException()
+            flatMap(
+                datatype,
+                { xx: B ->
+                    c.stackLabels = labelHere
+                    if (cancelled.get()) {
+                        throw BindingCancellationException()
+                    }
+                    c.resume(xx)
+                    returnedMonad
                 }
-                c.resume(xx)
-                returnedMonad
-            })
+            )
         }
         val completion = bindingInContextContinuation(context)
-        returnedMonad = flatMap(pure(Unit), {
-            monadCreation.startCoroutine(completion)
-            val error = completion.await()
-            if (error != null) {
-                throw error
+        returnedMonad = flatMap(
+            pure(Unit),
+            {
+                monadCreation.startCoroutine(completion)
+                val error = completion.await()
+                if (error != null) {
+                    throw error
+                }
+                returnedMonad
             }
-            returnedMonad
-        })
+        )
         COROUTINE_SUSPENDED
     }
 }

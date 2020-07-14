@@ -18,25 +18,25 @@ class ObservableKTest : UnitSpec() {
 
     fun <T> EQ(): Eq<ObservableKOf<T>> = object : Eq<ObservableKOf<T>> {
         override fun eqv(a: ObservableKOf<T>, b: ObservableKOf<T>): Boolean =
-                try {
-                    a.value().blockingFirst() == b.value().blockingFirst()
-                } catch (throwable: Throwable) {
-                    val errA = try {
-                        a.value().blockingFirst()
-                        throw IllegalArgumentException()
-                    } catch (err: Throwable) {
-                        err
-                    }
-
-                    val errB = try {
-                        b.value().blockingFirst()
-                        throw IllegalStateException()
-                    } catch (err: Throwable) {
-                        err
-                    }
-
-                    errA == errB
+            try {
+                a.value().blockingFirst() == b.value().blockingFirst()
+            } catch (throwable: Throwable) {
+                val errA = try {
+                    a.value().blockingFirst()
+                    throw IllegalArgumentException()
+                } catch (err: Throwable) {
+                    err
                 }
+
+                val errB = try {
+                    b.value().blockingFirst()
+                    throw IllegalStateException()
+                } catch (err: Throwable) {
+                    err
+                }
+
+                errA == errB
+            }
     }
 
     init {
@@ -59,8 +59,8 @@ class ObservableKTest : UnitSpec() {
         testLaws(AsyncLaws.laws(ObservableK.async(), EQ(), EQ()))
 
         testLaws(
-                FoldableLaws.laws(ObservableK.foldable(), { ObservableK.pure(it) }, Eq.any()),
-                TraverseLaws.laws(ObservableK.traverse(), ObservableK.functor(), { ObservableK.pure(it) }, EQ())
+            FoldableLaws.laws(ObservableK.foldable(), { ObservableK.pure(it) }, Eq.any()),
+            TraverseLaws.laws(ObservableK.traverse(), ObservableK.functor(), { ObservableK.pure(it) }, EQ())
         )
 
         "Multi-thread Observables finish correctly" {

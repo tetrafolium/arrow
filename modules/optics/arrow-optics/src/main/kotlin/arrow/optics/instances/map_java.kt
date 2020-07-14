@@ -24,16 +24,19 @@ import arrow.typeclasses.Applicative
 
 interface MapAtInstance<K, V> : At<Map<K, V>, K, Option<V>> {
     override fun at(i: K): Lens<Map<K, V>, Option<V>> = PLens(
-            get = { it.getOption(i) },
-            set = { optV ->
-                { map ->
-                    optV.fold({
+        get = { it.getOption(i) },
+        set = { optV ->
+            { map ->
+                optV.fold(
+                    {
                         (map - i)
-                    }, {
+                    },
+                    {
                         (map + (i to it))
-                    })
-                }
+                    }
+                )
             }
+        }
     )
 }
 
@@ -45,12 +48,11 @@ object MapAtInstanceImplicits {
 interface MapKEachInstance<K, V> : Each<Map<K, V>, V> {
     override fun each() = object : Traversal<Map<K, V>, V> {
         override fun <F> modifyF(FA: Applicative<F>, s: Map<K, V>, f: (V) -> Kind<F, V>): Kind<F, Map<K, V>> =
-                MapK.traverse<K>().traverse(s.k(), f, FA).let {
-                    FA.map(it) {
-                        it.fix().map
-                    }
+            MapK.traverse<K>().traverse(s.k(), f, FA).let {
+                FA.map(it) {
+                    it.fix().map
                 }
-
+            }
     }
 }
 
@@ -62,15 +64,19 @@ object MapEachInstanceImplicits {
 interface MapFilterIndexInstance<K, V> : FilterIndex<Map<K, V>, K, V> {
     override fun filter(p: Predicate<K>) = object : Traversal<Map<K, V>, V> {
         override fun <F> modifyF(FA: Applicative<F>, s: Map<K, V>, f: (V) -> Kind<F, V>): Kind<F, Map<K, V>> =
-                ListK.traverse().traverse(s.toList().k(), { (k, v) ->
+            ListK.traverse().traverse(
+                s.toList().k(),
+                { (k, v) ->
                     FA.map(if (p(k)) f(v) else FA.pure(v)) {
                         k to it
                     }
-                }, FA).let {
-                    FA.map(it) {
-                        it.toMap()
-                    }
+                },
+                FA
+            ).let {
+                FA.map(it) {
+                    it.toMap()
                 }
+            }
     }
 }
 
@@ -81,8 +87,8 @@ object MapFilterIndexInstanceImplicits {
 
 interface MapIndexInstance<K, V> : Index<Map<K, V>, K, V> {
     override fun index(i: K): Optional<Map<K, V>, V> = POptional(
-            getOrModify = { it[i]?.right() ?: it.left() },
-            set = { v -> { m -> m.mapValues { (k, vv) -> if (k == i) v else vv } } }
+        getOrModify = { it[i]?.right() ?: it.left() },
+        set = { v -> { m -> m.mapValues { (k, vv) -> if (k == i) v else vv } } }
     )
 }
 

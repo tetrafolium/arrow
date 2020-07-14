@@ -1,8 +1,8 @@
 package arrow.optics
 
+import arrow.*
 import arrow.core.Either
 import arrow.typeclasses.Functor
-import arrow.*
 import arrow.typeclasses.functor
 
 /**
@@ -123,7 +123,6 @@ interface PSetter<S, T, A, B> : PSetterOf<S, T, A, B> {
     operator fun <C, D> plus(o: PIso<A, B, C, D>): PSetter<S, T, C, D> = compose(o)
 
     operator fun <C, D> plus(o: PTraversal<A, B, C, D>): PSetter<S, T, C, D> = compose(o)
-
 }
 
 /**

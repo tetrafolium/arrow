@@ -1,18 +1,16 @@
 package arrow.optics
 
 import arrow.core.getOrElse
-import arrow.data.k
-import io.kotlintest.KTestJUnitRunner
-import io.kotlintest.properties.Gen
-import io.kotlintest.properties.forAll
-import arrow.typeclasses.Eq
-import arrow.test.laws.SetterLaws
+import arrow.syntax.either.left
+import arrow.syntax.either.right
 import arrow.test.UnitSpec
 import arrow.test.generators.genFunctionAToB
 import arrow.test.generators.genOption
-import arrow.syntax.either.left
-import arrow.syntax.either.right
-import arrow.syntax.foldable.combineAll
+import arrow.test.laws.SetterLaws
+import arrow.typeclasses.Eq
+import io.kotlintest.KTestJUnitRunner
+import io.kotlintest.properties.Gen
+import io.kotlintest.properties.forAll
 import org.junit.runner.RunWith
 
 @RunWith(KTestJUnitRunner::class)
@@ -20,29 +18,35 @@ class SetterTest : UnitSpec() {
 
     init {
 
-        testLaws(SetterLaws.laws(
+        testLaws(
+            SetterLaws.laws(
                 setter = Setter.id(),
                 aGen = Gen.int(),
                 bGen = Gen.int(),
                 funcGen = genFunctionAToB(Gen.int()),
                 EQA = Eq.any()
-        ))
+            )
+        )
 
-        testLaws(SetterLaws.laws(
+        testLaws(
+            SetterLaws.laws(
                 setter = tokenSetter,
                 aGen = TokenGen,
                 bGen = Gen.string(),
                 funcGen = genFunctionAToB(Gen.string()),
                 EQA = Eq.any()
-        ))
+            )
+        )
 
-        testLaws(SetterLaws.laws(
+        testLaws(
+            SetterLaws.laws(
                 setter = Setter.fromFunctor(),
                 aGen = genOption(TokenGen),
                 bGen = Gen.string(),
                 funcGen = genFunctionAToB(Gen.string()),
                 EQA = Eq.any()
-        ))
+            )
+        )
 
         "Joining two lenses together with same target should yield same result" {
             val userTokenStringSetter = userSetter compose tokenSetter
@@ -53,16 +57,17 @@ class SetterTest : UnitSpec() {
 
             forAll({ value: String ->
                 joinedSetter.set(token.left(), value).swap().getOrElse { Token("Wrong value") }.value ==
-                        joinedSetter.set(user.right(), value).getOrElse { User(Token("Wrong value")) }.token.value
+                    joinedSetter.set(user.right(), value).getOrElse { User(Token("Wrong value")) }.token.value
             })
         }
 
         "Lifting a function should yield the same result as direct modify" {
-            forAll(TokenGen, Gen.string(), { token, value ->
-                tokenSetter.modify(token) { value } == tokenSetter.lift { value }(token)
-            })
+            forAll(
+                TokenGen, Gen.string(),
+                { token, value ->
+                    tokenSetter.modify(token) { value } == tokenSetter.lift { value }(token)
+                }
+            )
         }
-
     }
-
 }

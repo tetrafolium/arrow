@@ -12,4 +12,3 @@ object StringIndexInstanceImplicits {
     @JvmStatic
     fun instance(): StringIndexInstance = StringIndexInstance
 }
-

@@ -120,7 +120,6 @@ class IOTest : UnitSpec() {
             }
         }
 
-
         "should complete when running a return value with unsafeRunAsync" {
             val expected = 0
             IO { expected }.unsafeRunAsync { either ->
@@ -130,13 +129,16 @@ class IOTest : UnitSpec() {
 
         "should return an error when running an exception with unsafeRunAsync" {
             IO.raiseError<Int>(MyException()).unsafeRunAsync { either ->
-                either.fold({
-                    when (it) {
-                        is MyException -> {
+                either.fold(
+                    {
+                        when (it) {
+                            is MyException -> {
+                            }
+                            else -> fail("Should only throw MyException")
                         }
-                        else -> fail("Should only throw MyException")
-                    }
-                }, { fail("") })
+                    },
+                    { fail("") }
+                )
             }
         }
 
@@ -169,7 +171,6 @@ class IOTest : UnitSpec() {
             }
         }
 
-
         "should complete when running a return value with runAsync" {
             val expected = 0
             IO { expected }.runAsync { either ->
@@ -179,14 +180,17 @@ class IOTest : UnitSpec() {
 
         "should return an error when running an exception with runAsync" {
             IO.raiseError<Int>(MyException()).runAsync { either ->
-                either.fold({
-                    when (it) {
-                        is MyException -> {
-                            IO { }
+                either.fold(
+                    {
+                        when (it) {
+                            is MyException -> {
+                                IO { }
+                            }
+                            else -> fail("Should only throw MyException")
                         }
-                        else -> fail("Should only throw MyException")
-                    }
-                }, { fail("") })
+                    },
+                    { fail("") }
+                )
             }
         }
 
