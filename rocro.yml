@@ -14,8 +14,22 @@ inspecode:
     thresholds: { num-issues: 999 }
 
   ktlint:
+  - &base-settings
     auto-fix: true
     thresholds: { num-issues: 999 }
+  - options:
+      --editorconfig: .rocro/.editorconfig
+    <<: *base-settings
+  - options:
+      --disabled_rules:
+      - indent
+    <<: *base-settings
+  - options:
+      --disabled_rules:
+      - indent
+      - parameter-list-wrapping
+      - no-wildcard-imports
+    <<: *base-settings
 
   misspell:
     auto-fix: true
