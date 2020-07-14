@@ -1,20 +1,29 @@
+---
 inspecode:
+
+  detekt:
+    thresholds: { num-issues: 999 }
+
+  fossology:
+    thresholds: { num-issues: 999 }
+
+  grep:
+    thresholds: { num-issues: 999 }
+
+  jscpd:
+    thresholds: { num-issues: 999 }
+
   ktlint:
+  - input:
+    - modules/core/
+    auto-fix: true
+    thresholds: { num-issues: 999 }
   - ignore:
     - modules/core/
     - modules/docs/
     auto-fix: true
-    thresholds:
-      num-issues: 999
-  - input:
-    - modules/core/
+    thresholds: { num-issues: 999 }
+
+  misspell:
     auto-fix: true
-    thresholds:
-      num-issues: 999
-  #- input:
-  #  - modules/docs/
-  #  auto-fix: true
-  #  thresholds:
-  #    num-issues: 999
-  grep:     default
-  misspell: auto-fix
+    thresholds: { num-issues: 999 }
