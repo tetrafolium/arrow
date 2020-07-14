@@ -14,13 +14,6 @@ inspecode:
     thresholds: { num-issues: 999 }
 
   ktlint:
-  - input:
-    - modules/core/
-    auto-fix: true
-    thresholds: { num-issues: 999 }
-  - ignore:
-    - modules/core/
-    - modules/docs/
     auto-fix: true
     thresholds: { num-issues: 999 }
 
