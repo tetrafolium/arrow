@@ -33,6 +33,5 @@ data class Function0<out A>(internal val f: () -> A) : Function0Of<A> {
         }
 
         fun <A, B> tailRecM(a: A, f: (A) -> Kind<ForFunction0, Either<A, B>>): Function0<B> = { loop(a, f) }.k()
-
     }
 }

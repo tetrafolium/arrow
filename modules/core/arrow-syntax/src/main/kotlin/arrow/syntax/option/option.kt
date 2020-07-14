@@ -4,9 +4,9 @@ import arrow.core.Either
 import arrow.core.None
 import arrow.core.Option
 import arrow.core.Some
+import arrow.legacy.Disjunction
 import arrow.syntax.either.left
 import arrow.syntax.either.right
-import arrow.legacy.Disjunction
 
 fun <T> T?.toOption(): Option<T> = if (this != null) {
     Some(this)
@@ -19,7 +19,7 @@ fun <A> A.some(): Option<A> = Some(this)
 fun <A> none(): Option<A> = None
 
 fun <A, L> Option<A>.toEither(ifEmpty: () -> L): Either<L, A> =
-        this.fold({ ifEmpty().left() }, { it.right() })
+    this.fold({ ifEmpty().left() }, { it.right() })
 
 @Deprecated("arrow.data.Either is right biased. This method will be removed in future releases")
 inline fun <X, T> Option<T>.toEitherRight(left: () -> X): Either<X, T> = if (isEmpty()) {

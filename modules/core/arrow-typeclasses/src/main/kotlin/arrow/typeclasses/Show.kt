@@ -25,9 +25,9 @@ interface Show<in A> : TC {
          * @param fshow function that defines a textual representation for type [A].
          * @returns a [Show] instance that is defined by the [fshow] function.
          */
-        operator inline fun <A> invoke(crossinline fshow: (A) -> String): Show<A> = object : Show<A> {
+        inline operator fun <A> invoke(crossinline fshow: (A) -> String): Show<A> = object : Show<A> {
             override fun show(a: A): String =
-                    fshow(a)
+                fshow(a)
         }
 
         /**
@@ -37,7 +37,7 @@ interface Show<in A> : TC {
          */
         fun <A> fromToString(): Show<A> = object : Show<A> {
             override fun show(a: A): String =
-                    a.toString()
+                a.toString()
         }
 
         /**
@@ -47,7 +47,7 @@ interface Show<in A> : TC {
 
         private object ShowAny : Show<Any?> {
             override fun show(a: Any?): String =
-                    a.toString()
+                a.toString()
         }
     }
 }

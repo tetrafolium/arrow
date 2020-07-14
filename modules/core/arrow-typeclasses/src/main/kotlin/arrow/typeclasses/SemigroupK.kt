@@ -15,6 +15,6 @@ interface SemigroupK<F> : TC {
      */
     fun <A> algebra(): Semigroup<Kind<F, A>> = object : Semigroup<Kind<F, A>> {
         override fun combine(a: Kind<F, A>, b: Kind<F, A>): Kind<F, A> =
-                combineK(a, b)
+            combineK(a, b)
     }
 }

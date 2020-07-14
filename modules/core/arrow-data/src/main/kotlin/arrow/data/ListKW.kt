@@ -27,19 +27,19 @@ data class ListK<out A> constructor(val list: List<A>) : ListKOf<A>, List<A> by 
     fun <B> ap(ff: ListKOf<(A) -> B>): ListK<B> = ff.fix().flatMap { f -> map(f) }.fix()
 
     fun <G, B> traverse(f: (A) -> Kind<G, B>, GA: Applicative<G>): Kind<G, ListK<B>> =
-            foldRight(Eval.always { GA.pure(emptyList<B>().k()) }) { a, eval ->
-                GA.map2Eval(f(a), eval) { (listOf(it.a) + it.b).k() }
-            }.value()
+        foldRight(Eval.always { GA.pure(emptyList<B>().k()) }) { a, eval ->
+            GA.map2Eval(f(a), eval) { (listOf(it.a) + it.b).k() }
+        }.value()
 
     fun <B, Z> map2(fb: ListKOf<B>, f: (Tuple2<A, B>) -> Z): ListK<Z> =
-            this.fix().flatMap { a ->
-                fb.fix().map { b ->
-                    f(Tuple2(a, b))
-                }
-            }.fix()
+        this.fix().flatMap { a ->
+            fb.fix().map { b ->
+                f(Tuple2(a, b))
+            }
+        }.fix()
 
     fun <B> mapFilter(f: (A) -> Option<B>): ListK<B> =
-            flatMap({ a -> f(a).fold({ empty<B>() }, { pure(it) }) })
+        flatMap({ a -> f(a).fold({ empty<B>() }, { pure(it) }) })
 
     companion object {
 
@@ -49,9 +49,10 @@ data class ListK<out A> constructor(val list: List<A>) : ListKOf<A>, List<A> by 
 
         @Suppress("UNCHECKED_CAST")
         private tailrec fun <A, B> go(
-                buf: ArrayList<B>,
-                f: (A) -> Kind<ForListK, Either<A, B>>,
-                v: ListK<Either<A, B>>) {
+            buf: ArrayList<B>,
+            f: (A) -> Kind<ForListK, Either<A, B>>,
+            v: ListK<Either<A, B>>
+        ) {
             if (!v.isEmpty()) {
                 val head: Either<A, B> = v.first()
                 when (head) {
@@ -70,7 +71,6 @@ data class ListK<out A> constructor(val list: List<A>) : ListKOf<A>, List<A> by 
             return ListK(buf)
         }
     }
-
 }
 
 fun <A> ListK<A>.combineK(y: ListKOf<A>): ListK<A> = (this.list + y.fix().list).k()

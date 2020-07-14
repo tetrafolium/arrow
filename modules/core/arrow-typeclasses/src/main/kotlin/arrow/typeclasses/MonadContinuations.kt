@@ -12,7 +12,7 @@ interface BindingInContextContinuation<in T> : Continuation<T> {
 
 @RestrictsSuspension
 open class MonadContinuation<F, A>(M: Monad<F>, override val context: CoroutineContext = EmptyCoroutineContext) :
-        Continuation<Kind<F, A>>, Monad<F> by M {
+    Continuation<Kind<F, A>>, Monad<F> by M {
 
     override fun resume(value: Kind<F, A>) {
         returnedMonad = value
@@ -23,25 +23,25 @@ open class MonadContinuation<F, A>(M: Monad<F>, override val context: CoroutineC
     }
 
     protected fun bindingInContextContinuation(context: CoroutineContext): BindingInContextContinuation<Kind<F, A>> =
-            object : BindingInContextContinuation<Kind<F, A>> {
-                val latch: CountDownLatch = CountDownLatch(1)
+        object : BindingInContextContinuation<Kind<F, A>> {
+            val latch: CountDownLatch = CountDownLatch(1)
 
-                var error: Throwable? = null
+            var error: Throwable? = null
 
-                override fun await() = latch.await().let { error }
+            override fun await() = latch.await().let { error }
 
-                override val context: CoroutineContext = context
+            override val context: CoroutineContext = context
 
-                override fun resume(value: Kind<F, A>) {
-                    returnedMonad = value
-                    latch.countDown()
-                }
-
-                override fun resumeWithException(exception: Throwable) {
-                    error = exception
-                    latch.countDown()
-                }
+            override fun resume(value: Kind<F, A>) {
+                returnedMonad = value
+                latch.countDown()
             }
+
+            override fun resumeWithException(exception: Throwable) {
+                error = exception
+                latch.countDown()
+            }
+        }
 
     protected lateinit var returnedMonad: Kind<F, A>
 
@@ -50,36 +50,45 @@ open class MonadContinuation<F, A>(M: Monad<F>, override val context: CoroutineC
     suspend fun <B> Kind<F, B>.bind(): B = bind { this }
 
     suspend fun <B> (() -> B).bindIn(context: CoroutineContext): B =
-            bindIn(context, this)
+        bindIn(context, this)
 
     open suspend fun <B> bind(m: () -> Kind<F, B>): B = suspendCoroutineOrReturn { c ->
         val labelHere = c.stackLabels // save the whole coroutine stack labels
-        returnedMonad = flatMap(m(), { x: B ->
-            c.stackLabels = labelHere
-            c.resume(x)
-            returnedMonad
-        })
+        returnedMonad = flatMap(
+            m(),
+            { x: B ->
+                c.stackLabels = labelHere
+                c.resume(x)
+                returnedMonad
+            }
+        )
         COROUTINE_SUSPENDED
     }
 
     open suspend fun <B> bindIn(context: CoroutineContext, m: () -> B): B = suspendCoroutineOrReturn { c ->
         val labelHere = c.stackLabels // save the whole coroutine stack labels
         val monadCreation: suspend () -> Kind<F, A> = {
-            flatMap(pure(m()), { xx: B ->
-                c.stackLabels = labelHere
-                c.resume(xx)
-                returnedMonad
-            })
+            flatMap(
+                pure(m()),
+                { xx: B ->
+                    c.stackLabels = labelHere
+                    c.resume(xx)
+                    returnedMonad
+                }
+            )
         }
         val completion = bindingInContextContinuation(context)
-        returnedMonad = flatMap(pure(Unit), {
-            monadCreation.startCoroutine(completion)
-            val error = completion.await()
-            if (error != null) {
-                throw error
+        returnedMonad = flatMap(
+            pure(Unit),
+            {
+                monadCreation.startCoroutine(completion)
+                val error = completion.await()
+                if (error != null) {
+                    throw error
+                }
+                returnedMonad
             }
-            returnedMonad
-        })
+        )
         COROUTINE_SUSPENDED
     }
 

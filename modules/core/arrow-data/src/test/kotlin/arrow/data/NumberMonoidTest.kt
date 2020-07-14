@@ -1,13 +1,13 @@
 package arrow.data
 
 import arrow.instances.*
+import arrow.test.UnitSpec
+import arrow.typeclasses.monoid
+import arrow.typeclasses.semigroup
 import io.kotlintest.KTestJUnitRunner
 import io.kotlintest.matchers.shouldNotBe
 import io.kotlintest.properties.forAll
 import org.junit.runner.RunWith
-import arrow.test.UnitSpec
-import arrow.typeclasses.monoid
-import arrow.typeclasses.semigroup
 
 @RunWith(KTestJUnitRunner::class)
 class NumberMonoidTest : UnitSpec() {

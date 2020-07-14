@@ -1,10 +1,10 @@
 package arrow.data
 
 import arrow.core.Tuple2
+import arrow.test.UnitSpec
 import io.kotlintest.KTestJUnitRunner
 import org.junit.Assert
 import org.junit.runner.RunWith
-import arrow.test.UnitSpec
 
 @RunWith(KTestJUnitRunner::class)
 class MapsTest : UnitSpec() {
@@ -34,6 +34,5 @@ class MapsTest : UnitSpec() {
             val mapOfPair = mapOf("one" to 1)
             Assert.assertEquals(mapOfPair, mapOfTuple)
         }
-
     }
 }

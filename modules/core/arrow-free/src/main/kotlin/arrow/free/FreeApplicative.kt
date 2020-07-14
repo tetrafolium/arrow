@@ -6,7 +6,7 @@ import arrow.data.*
 import arrow.typeclasses.*
 
 inline fun <F, reified G, A> FreeApplicativeOf<F, A>.foldMapK(f: FunctionK<F, G>, GA: Applicative<G> = applicative<G>()): Kind<G, A> =
-        (this as FreeApplicative<F, A>).foldMap(f, GA)
+    (this as FreeApplicative<F, A>).foldMap(f, GA)
 
 inline fun <reified F, A> FreeApplicativeOf<F, A>.foldK(FA: Applicative<F> = applicative<F>()): Kind<F, A> = (this as FreeApplicative<F, A>).fold(FA)
 
@@ -23,44 +23,46 @@ inline fun <reified F, A> FreeApplicativeOf<F, A>.foldK(FA: Applicative<F> = app
         fun <F, A> liftF(fa: Kind<F, A>): FreeApplicative<F, A> = Lift(fa)
 
         internal fun <F, G> functionKF(f: FunctionK<F, G>): FunctionK<F, FreeApplicativePartialOf<G>> =
-                object : FunctionK<F, FreeApplicativePartialOf<G>> {
-                    override fun <A> invoke(fa: Kind<F, A>): FreeApplicative<G, A> =
-                            liftF(f(fa))
-
-                }
+            object : FunctionK<F, FreeApplicativePartialOf<G>> {
+                override fun <A> invoke(fa: Kind<F, A>): FreeApplicative<G, A> =
+                    liftF(f(fa))
+            }
 
         internal fun <F> applicativeF(): Applicative<FreeApplicativePartialOf<F>> = object : Applicative<FreeApplicativePartialOf<F>> {
             override fun <A> pure(a: A): FreeApplicative<F, A> =
-                    Companion.pure(a)
+                Companion.pure(a)
 
             override fun <A, B> ap(fa: Kind<FreeApplicativePartialOf<F>, A>, ff: Kind<FreeApplicativePartialOf<F>, (A) -> B>): FreeApplicative<F, B> =
-                    Companion.ap(fa.fix(), ff.fix())
+                Companion.ap(fa.fix(), ff.fix())
         }
     }
 
     fun <B> ap(ap: FreeApplicative<F, (A) -> B>): FreeApplicative<F, B> =
-            when (ap) {
-                is Pure -> map(ap.value)
-                else -> Ap(ap, this)
-            }
+        when (ap) {
+            is Pure -> map(ap.value)
+            else -> Ap(ap, this)
+        }
 
     fun <C> map(f: (A) -> C): FreeApplicative<F, C> =
-            when (this) {
-                is Pure -> Pure(f(value))
-                else -> Ap(Pure(f), this)
-            }
+        when (this) {
+            is Pure -> Pure(f(value))
+            else -> Ap(Pure(f), this)
+        }
 
     fun fold(FA: Applicative<F>): Kind<F, A> = foldMap(FunctionK.id(), FA)
 
     fun <G> compile(f: FunctionK<F, G>): FreeApplicative<G, A> = foldMap(functionKF(f), applicativeF()).fix()
 
     fun <G> flatCompile(f: FunctionK<F, FreeApplicativePartialOf<G>>, GFA: Applicative<FreeApplicativePartialOf<G>>): FreeApplicative<G, A> =
-            foldMap(f, GFA).fix()
+        foldMap(f, GFA).fix()
 
     inline fun <reified M> analyze(f: FunctionK<F, ConstPartialOf<M>>, MM: Monoid<M>): M =
-            foldMap(object : FunctionK<F, ConstPartialOf<M>> {
+        foldMap(
+            object : FunctionK<F, ConstPartialOf<M>> {
                 override fun <A> invoke(fa: Kind<F, A>): Const<M, A> = f(fa).fix()
-            }, Const.applicative(MM)).value()
+            },
+            Const.applicative(MM)
+        ).value()
 
     fun monad(): Free<F, A> = foldMap(Free.functionKF(), Free.applicativeF()).fix()
 
@@ -108,11 +110,10 @@ inline fun <reified F, A> FreeApplicativeOf<F, A>.foldK(FA: Applicative<F> = app
                         fns = listOf(CurriedFunction(res as Kind<G, (Any?) -> Any?>, fn.remaining - 1)) + fns
                         fnsLength += 1
                         loop()
-
                     } else {
                         if (fnsLength > 0) {
 
-                            tailrec fun innerLoop(): Unit {
+                            tailrec fun innerLoop() {
                                 fn = fns.first()
                                 fns = fns.drop(1)
                                 fnsLength -= 1
@@ -158,12 +159,12 @@ inline fun <reified F, A> FreeApplicativeOf<F, A>.foldK(FA: Applicative<F> = app
 }
 
 private fun <F, G, A> foldArg(node: FreeApplicative<F, A>, f: FunctionK<F, G>, GA: Applicative<G>): Kind<G, A> =
-        when (node) {
-            is FreeApplicative.Pure<F, A> -> GA.pure(node.value)
-            else -> {
-                val lift = node as FreeApplicative.Lift<F, A>
-                f(lift.fa)
-            }
+    when (node) {
+        is FreeApplicative.Pure<F, A> -> GA.pure(node.value)
+        else -> {
+            val lift = node as FreeApplicative.Lift<F, A>
+            f(lift.fa)
         }
+    }
 
 fun <S, A> A.freeAp(): FreeApplicative<S, A> = FreeApplicative.pure(this)

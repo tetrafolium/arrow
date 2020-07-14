@@ -28,16 +28,16 @@ data class SequenceK<out A> constructor(val sequence: Sequence<A>) : SequenceKOf
     }
 
     fun <G, B> traverse(f: (A) -> Kind<G, B>, GA: Applicative<G>): Kind<G, SequenceK<B>> =
-            foldRight(Eval.always { GA.pure(emptySequence<B>().k()) }) { a, eval ->
-                GA.map2Eval(f(a), eval) { (sequenceOf(it.a) + it.b).k() }
-            }.value()
+        foldRight(Eval.always { GA.pure(emptySequence<B>().k()) }) { a, eval ->
+            GA.map2Eval(f(a), eval) { (sequenceOf(it.a) + it.b).k() }
+        }.value()
 
     fun <B, Z> map2(fb: SequenceKOf<B>, f: (Tuple2<A, B>) -> Z): SequenceK<Z> =
-            this.fix().flatMap { a ->
-                fb.fix().map { b ->
-                    f(Tuple2(a, b))
-                }
-            }.fix()
+        this.fix().flatMap { a ->
+            fb.fix().map { b ->
+                f(Tuple2(a, b))
+            }
+        }.fix()
 
     companion object {
 
@@ -47,9 +47,10 @@ data class SequenceK<out A> constructor(val sequence: Sequence<A>) : SequenceKOf
 
         fun <A, B> tailRecM(a: A, f: (A) -> Kind<ForSequenceK, Either<A, B>>): SequenceK<B> {
             tailrec fun <A, B> go(
-                    buf: MutableList<B>,
-                    f: (A) -> Kind<ForSequenceK, Either<A, B>>,
-                    v: SequenceK<Either<A, B>>) {
+                buf: MutableList<B>,
+                f: (A) -> Kind<ForSequenceK, Either<A, B>>,
+                v: SequenceK<Either<A, B>>
+            ) {
                 if (!(v.toList().isEmpty())) {
                     val head: Either<A, B> = v.first()
                     when (head) {
@@ -71,7 +72,6 @@ data class SequenceK<out A> constructor(val sequence: Sequence<A>) : SequenceKOf
             go(buf, f, f(a).fix())
             return SequenceK(buf.asSequence())
         }
-
     }
 }
 

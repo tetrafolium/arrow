@@ -38,11 +38,16 @@ open class ComonadContinuation<F, A : Any>(val CM: Comonad<F>, override val cont
 
     suspend fun <B> extract(m: () -> Kind<F, B>): B = suspendCoroutineOrReturn { c ->
         val labelHere = c.stackLabels // save the whole coroutine stack labels
-        returnedMonad = CM.extract(CM.coflatMap(m(), { x: Kind<F, B> ->
-            c.stackLabels = labelHere
-            c.resume(CM.extract(x))
-            returnedMonad
-        }))
+        returnedMonad = CM.extract(
+            CM.coflatMap(
+                m(),
+                { x: Kind<F, B> ->
+                    c.stackLabels = labelHere
+                    c.resume(CM.extract(x))
+                    returnedMonad
+                }
+            )
+        )
         COROUTINE_SUSPENDED
     }
 }

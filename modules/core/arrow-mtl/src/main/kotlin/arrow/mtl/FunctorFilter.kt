@@ -16,7 +16,7 @@ interface FunctorFilter<F> : Functor<F>, TC {
      * Similar to mapFilter but uses a partial function instead of a function that returns an Option.
      */
     fun <A, B> collect(fa: Kind<F, A>, f: PartialFunction<A, B>): Kind<F, B> =
-            mapFilter(fa, f.lift())
+        mapFilter(fa, f.lift())
 
     /**
      * "Flatten" out a structure by collapsing Options.
@@ -28,5 +28,5 @@ interface FunctorFilter<F> : Functor<F>, TC {
      * that don't.
      */
     fun <A> filter(fa: Kind<F, A>, f: (A) -> Boolean): Kind<F, A> =
-            mapFilter(fa, { a -> if (f(a)) Some(a) else None })
+        mapFilter(fa, { a -> if (f(a)) Some(a) else None })
 }

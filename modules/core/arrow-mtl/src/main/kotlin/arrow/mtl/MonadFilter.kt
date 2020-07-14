@@ -13,7 +13,7 @@ interface MonadFilter<F> : Monad<F>, FunctorFilter<F>, TC {
     fun <A> empty(): Kind<F, A>
 
     override fun <A, B> mapFilter(fa: Kind<F, A>, f: (A) -> Option<B>): Kind<F, B> =
-            flatMap(fa, { a -> f(a).fold({ empty<B>() }, { pure(it) }) })
+        flatMap(fa, { a -> f(a).fold({ empty<B>() }, { pure(it) }) })
 }
 
 /**

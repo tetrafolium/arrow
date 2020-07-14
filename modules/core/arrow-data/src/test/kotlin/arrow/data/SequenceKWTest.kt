@@ -30,12 +30,12 @@ class SequenceKTest : UnitSpec() {
 
         val eq: Eq<Kind<ForSequenceK, Int>> = object : Eq<Kind<ForSequenceK, Int>> {
             override fun eqv(a: Kind<ForSequenceK, Int>, b: Kind<ForSequenceK, Int>): Boolean =
-                    a.toList() == b.toList()
+                a.toList() == b.toList()
         }
 
         val show: Show<Kind<ForSequenceK, Int>> = object : Show<Kind<ForSequenceK, Int>> {
             override fun show(a: Kind<ForSequenceK, Int>): String =
-                    a.toList().toString()
+                a.toList().toString()
         }
 
         testLaws(

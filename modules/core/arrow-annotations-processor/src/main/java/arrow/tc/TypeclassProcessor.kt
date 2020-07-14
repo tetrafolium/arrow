@@ -27,14 +27,14 @@ class TypeclassesProcessor : AbstractProcessor() {
      */
     override fun onProcess(annotations: Set<TypeElement>, roundEnv: RoundEnvironment) {
         annotatedList += roundEnv
-                .getElementsAnnotatedWith(typeClassAnnotationClass)
-                .map { element ->
-                    when (element.kind) {
-                        ElementKind.CLASS -> processClass(element as TypeElement)
-                        ElementKind.INTERFACE -> processClass(element as TypeElement)
-                        else -> knownError("${typeClassAnnotationName}AnnotationName can only be used on classes")
-                    }
+            .getElementsAnnotatedWith(typeClassAnnotationClass)
+            .map { element ->
+                when (element.kind) {
+                    ElementKind.CLASS -> processClass(element as TypeElement)
+                    ElementKind.INTERFACE -> processClass(element as TypeElement)
+                    else -> knownError("${typeClassAnnotationName}AnnotationName can only be used on classes")
                 }
+            }
 
         if (roundEnv.processingOver()) {
             val generatedDir = File(this.generatedDir!!, typeClassAnnotationClass.simpleName).also { it.mkdirs() }
@@ -46,7 +46,7 @@ class TypeclassesProcessor : AbstractProcessor() {
         val proto = getClassOrPackageDataWrapper(element) as ClassOrPackageDataWrapper.Class
         val typeTable = TypeTable(proto.classProto.typeTable)
         val superTypes: List<ClassOrPackageDataWrapper.Class> =
-                proto.declaredTypeClassInterfaces(typeTable).map { it as ClassOrPackageDataWrapper.Class }
+            proto.declaredTypeClassInterfaces(typeTable).map { it as ClassOrPackageDataWrapper.Class }
         val superTypesExtensions: List<ClassOrPackageDataWrapper.Class> = superTypes.flatMap { sp ->
             val superTypeTable = TypeTable(sp.classProto.typeTable)
             recurseTypeclassInterfaces(sp, superTypeTable, emptyList()).map { it as ClassOrPackageDataWrapper.Class }
@@ -59,5 +59,4 @@ class TypeclassesProcessor : AbstractProcessor() {
         }.firstOrNull() ?: true
         return AnnotatedTypeclass(element, proto, superTypes, diamondTypes, syntax)
     }
-
 }

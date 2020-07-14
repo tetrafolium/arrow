@@ -3,7 +3,6 @@ package arrow.data
 import arrow.Kind
 import arrow.core.*
 import arrow.core.Eval.Now
-import arrow.syntax.collections.prependTo
 import arrow.test.UnitSpec
 import arrow.test.concurrency.SideEffect
 import arrow.test.laws.*
@@ -29,7 +28,7 @@ class EvalTest : UnitSpec() {
         "should map wrapped value" {
             val sideEffect = SideEffect()
             val mapped = Eval.now(0)
-                    .map { sideEffect.increment(); it + 1 }
+                .map { sideEffect.increment(); it + 1 }
             sideEffect.counter shouldBe 0
             mapped.value() shouldBe 1
             sideEffect.counter shouldBe 1
@@ -153,10 +152,10 @@ class EvalTest : UnitSpec() {
 
             companion object {
                 val gen = Gen.oneOf(
-                        Gen.create { O.Map { it + 1 } },
-                        Gen.create { O.FlatMap { Eval.Now(it) } },
-                        Gen.create { O.Memoize() },
-                        Gen.create { O.Defer() }
+                    Gen.create { O.Map { it + 1 } },
+                    Gen.create { O.FlatMap { Eval.Now(it) } },
+                    Gen.create { O.Memoize() },
+                    Gen.create { O.Defer() }
                 )
             }
         }
@@ -166,17 +165,17 @@ class EvalTest : UnitSpec() {
 
             fun build(leaf: () -> Eval<Int>, os: List<O>) = run {
                 tailrec fun step(i: Int, leaf: () -> Eval<Int>, cbs: MutableList<(Eval<Int>) -> Eval<Int>>): Eval<Int> =
-                        if (i >= os.size) {
-                            cbs.fold(leaf()) { e, f -> f(e) }
-                        } else {
-                            val o = os[i]
-                            when (o) {
-                                is O.Defer -> Eval.defer { step(i + 1, leaf, cbs) }
-                                is O.Memoize -> step(i + 1, leaf, cbs.also { it.add(0) { e: Eval<Int> -> e.memoize() }})
-                                is O.Map -> step(i + 1, leaf, cbs.also { it.add(0) { e: Eval<Int> -> e.map(o.f) }})
-                                is O.FlatMap -> step(i + 1, leaf, cbs.also { it.add(0) { e: Eval<Int> -> e.flatMap(o.f) }})
-                            }
+                    if (i >= os.size) {
+                        cbs.fold(leaf()) { e, f -> f(e) }
+                    } else {
+                        val o = os[i]
+                        when (o) {
+                            is O.Defer -> Eval.defer { step(i + 1, leaf, cbs) }
+                            is O.Memoize -> step(i + 1, leaf, cbs.also { it.add(0) { e: Eval<Int> -> e.memoize() } })
+                            is O.Map -> step(i + 1, leaf, cbs.also { it.add(0) { e: Eval<Int> -> e.map(o.f) } })
+                            is O.FlatMap -> step(i + 1, leaf, cbs.also { it.add(0) { e: Eval<Int> -> e.flatMap(o.f) } })
                         }
+                    }
 
                 step(0, leaf, mutableListOf())
             }

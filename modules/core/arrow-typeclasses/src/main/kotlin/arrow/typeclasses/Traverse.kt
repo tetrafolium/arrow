@@ -18,11 +18,16 @@ interface Traverse<F> : Functor<F>, Foldable<F>, TC {
     fun <G, A> sequence(GA: Applicative<G>, fga: Kind<F, Kind<G, A>>): Kind<G, Kind<F, A>> = traverse(fga, { it }, GA)
 
     override fun <A, B> map(fa: Kind<F, A>, f: (A) -> B): Kind<F, B> =
-            traverse(fa, { Id(f(it)) }, applicative()).value()
+        traverse(fa, { Id(f(it)) }, applicative()).value()
 }
 
-inline fun <reified F, reified G, A, B> Traverse<F>.flatTraverse(fa: Kind<F, A>, noinline f: (A) -> Kind<G, Kind<F, B>>, GA: Applicative<G> =
-applicative(), FM: Monad<F> = monad()): Kind<G, Kind<F, B>> = GA.map(traverse(fa, f, GA), { FM.flatten(it) })
+inline fun <reified F, reified G, A, B> Traverse<F>.flatTraverse(
+    fa: Kind<F, A>,
+    noinline f: (A) -> Kind<G, Kind<F, B>>,
+    GA: Applicative<G> =    
+        applicative(),
+    FM: Monad<F> = monad()
+): Kind<G, Kind<F, B>> = GA.map(traverse(fa, f, GA), { FM.flatten(it) })
 
 /**
  * Thread all the G effects through the F structure to invert the structure from F<G<A>> to G<F<A>>.

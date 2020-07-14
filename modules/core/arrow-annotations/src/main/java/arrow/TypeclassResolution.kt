@@ -15,13 +15,13 @@ class InstanceParametrizedType(val raw: Type, val typeArgs: List<Type>) : Parame
     fun typeArgsAreParameterized(): Boolean = typeArgs.isNotEmpty() && typeArgs[0] is ParameterizedType
 
     fun typeArgsIsHKRepresented(): Boolean =
-            if (typeArgsAreParameterized()) {
-                val firstTypeArg = typeArgs[0]
-                when (firstTypeArg) {
-                    is ParameterizedType -> firstTypeArg.rawType == Kind::class.java
-                    else -> false
-                }
-            } else false
+        if (typeArgsAreParameterized()) {
+            val firstTypeArg = typeArgs[0]
+            when (firstTypeArg) {
+                is ParameterizedType -> firstTypeArg.rawType == Kind::class.java
+                else -> false
+            }
+        } else false
 
     override fun getRawType(): Type = raw
 
@@ -42,20 +42,21 @@ class InstanceParametrizedType(val raw: Type, val typeArgs: List<Type>) : Parame
             val thatRawType = other.rawType
 
             return ownerType == thatOwner &&
-                    rawType == thatRawType &&
-                    Arrays.equals(actualTypeArguments, // avoid clone
-                            other.actualTypeArguments)
+                rawType == thatRawType &&
+                Arrays.equals(
+                    actualTypeArguments, // avoid clone
+                    other.actualTypeArguments
+                )
         } else {
             return false
         }
     }
 
     override fun hashCode(): Int = Arrays.hashCode(actualTypeArguments) xor
-            hashCode(ownerType) xor
-            hashCode(rawType)
+        hashCode(ownerType) xor
+        hashCode(rawType)
 
     private fun hashCode(o: Any?): Int = o?.hashCode() ?: 0
-
 }
 
 /**
@@ -78,15 +79,16 @@ inline fun <reified T> typeLiteral(): Type {
  */
 object GlobalInstances : ConcurrentHashMap<Type, Any>()
 
-data class TypeClassInstanceNotFound(val type: Type)
-    : RuntimeException("Thread: ${Thread.currentThread().name} Time: ${System.nanoTime()} : \n$type not found in Global Typeclass Instances registry. " +
-        "\nPlease ensure your instances implement `GlobalInstance<$type>` for automatic registration." +
-        "\nAlternatively invoke `GlobalInstances.put(typeLiteral<$type>(), instance)` if you wish to register " +
-        "\nor override a typeclass manually" +
-        "\n Current global instances are : \n\n" +
-        GlobalInstances.map { "${it.key} -> ${it.value}" }.joinToString("\n") +
-        "\n"
-)
+data class TypeClassInstanceNotFound(val type: Type) :
+    RuntimeException(
+        "Thread: ${Thread.currentThread().name} Time: ${System.nanoTime()} : \n$type not found in Global Typeclass Instances registry. " +
+            "\nPlease ensure your instances implement `GlobalInstance<$type>` for automatic registration." +
+            "\nAlternatively invoke `GlobalInstances.put(typeLiteral<$type>(), instance)` if you wish to register " +
+            "\nor override a typeclass manually" +
+            "\n Current global instances are : \n\n" +
+            GlobalInstances.map { "${it.key} -> ${it.value}" }.joinToString("\n") +
+            "\n"
+    )
 
 /**
  * Allow users to register custom instances when they don't use auto derivation or they don't provide naming conventions
@@ -109,40 +111,40 @@ fun registerInstance(t: InstanceParametrizedType, value: Any): Any {
  */
 @Suppress("UNCHECKED_CAST")
 fun <T : TC> instance(t: InstanceParametrizedType): T =
-        if (GlobalInstances.containsKey(t)) {
-            GlobalInstances.getValue(t) as T
+    if (GlobalInstances.containsKey(t)) {
+        GlobalInstances.getValue(t) as T
+    } else {
+        val value = if (t.typeArgsAreParameterized() && t.typeArgsIsHKRepresented()) {
+            parametricInstanceFromImplicitObject(t)
         } else {
-            val value = if (t.typeArgsAreParameterized() && t.typeArgsIsHKRepresented()) {
-                parametricInstanceFromImplicitObject(t)
-            } else {
-                instanceFromImplicitObject(t)
-            }
-            if (value != null) {
-                GlobalInstances.putIfAbsent(t, value)
-                value as T
-            } else {
-                val e = TypeClassInstanceNotFound(t)
-                println(e.message)
-                throw e
-            }
+            instanceFromImplicitObject(t)
         }
+        if (value != null) {
+            GlobalInstances.putIfAbsent(t, value)
+            value as T
+        } else {
+            val e = TypeClassInstanceNotFound(t)
+            println(e.message)
+            throw e
+        }
+    }
 
 private fun resolveNestedTypes(l: List<Type>): List<Type> {
     tailrec fun loop(remaining: List<Type>, acc: List<Type>): List<Type> =
-            when {
-                remaining.isEmpty() -> acc
-                else -> {
-                    val head = remaining[0]
-                    val tail = remaining.drop(1)
-                    val (newTail, newAcc) = when (head) {
-                        is ParameterizedType -> Pair(head.actualTypeArguments.toList() + tail, acc)
-                        is WildcardType -> Pair(head.upperBounds.toList() + tail, acc)
-                        is Class<*> -> Pair(tail, acc + listOf(head))
-                        else -> Pair(tail, acc)
-                    }
-                    loop(newTail, newAcc)
+        when {
+            remaining.isEmpty() -> acc
+            else -> {
+                val head = remaining[0]
+                val tail = remaining.drop(1)
+                val (newTail, newAcc) = when (head) {
+                    is ParameterizedType -> Pair(head.actualTypeArguments.toList() + tail, acc)
+                    is WildcardType -> Pair(head.upperBounds.toList() + tail, acc)
+                    is Class<*> -> Pair(tail, acc + listOf(head))
+                    else -> Pair(tail, acc)
                 }
+                loop(newTail, newAcc)
             }
+        }
     return loop(l, emptyList())
 }
 
@@ -184,36 +186,35 @@ private fun instanceFromImplicitObject(t: InstanceParametrizedType): Any? {
         factoryFunction.isAccessible = true
 
         val instance =
-                // If the function has the modifier we don't need an instance to call it.
-                if (factoryFunction.isStatic()) null
-                // Otherwise we need to obtain the singleton object in order to call the
-                // 'instance' function on it
-                else globalInstanceProvider.fields.firstOrNull { it.name == "INSTANCE" }?.get(null)
+            // If the function has the modifier we don't need an instance to call it.
+            if (factoryFunction.isStatic()) null
+            // Otherwise we need to obtain the singleton object in order to call the
+            // 'instance' function on it
+            else globalInstanceProvider.fields.firstOrNull { it.name == "INSTANCE" }?.get(null)
 
         if (values.isEmpty()) {
             factoryFunction.invoke(instance)
         } else {
             factoryFunction.invoke(instance, *values)
         }
-
     } else null
 }
 
 private fun Method.isStatic() =
-        Modifier.isStatic(modifiers)
+    Modifier.isStatic(modifiers)
 
 private fun reifyRawParameterizedType(carrier: InstanceParametrizedType, classifier: ParameterizedType, index: Int, totalTypeSize: Int): InstanceParametrizedType =
-        if (classifier.actualTypeArguments.any { it is TypeVariable<*> } && carrier.actualTypeArguments.size > index + 1) {
-            InstanceParametrizedType(classifier.rawType, listOf(carrier.actualTypeArguments[index + 1]))
-        } else if (classifier.actualTypeArguments.any { it is TypeVariable<*> }) {
-            val nestedTypes = resolveNestedTypes(carrier.actualTypeArguments.toList())
-            if (totalTypeSize > nestedTypes.size)
-                InstanceParametrizedType(classifier.rawType, listOf(nestedTypes[index.div(nestedTypes.size)]))
-            else
-                InstanceParametrizedType(classifier.rawType, listOf(nestedTypes[index]))
-        } else {
-            InstanceParametrizedType(classifier, classifier.actualTypeArguments.filterNotNull())
-        }
+    if (classifier.actualTypeArguments.any { it is TypeVariable<*> } && carrier.actualTypeArguments.size > index + 1) {
+        InstanceParametrizedType(classifier.rawType, listOf(carrier.actualTypeArguments[index + 1]))
+    } else if (classifier.actualTypeArguments.any { it is TypeVariable<*> }) {
+        val nestedTypes = resolveNestedTypes(carrier.actualTypeArguments.toList())
+        if (totalTypeSize > nestedTypes.size)
+            InstanceParametrizedType(classifier.rawType, listOf(nestedTypes[index.div(nestedTypes.size)]))
+        else
+            InstanceParametrizedType(classifier.rawType, listOf(nestedTypes[index]))
+    } else {
+        InstanceParametrizedType(classifier, classifier.actualTypeArguments.filterNotNull())
+    }
 
 private fun Type.asKotlinClass(): KClass<*>? =
-        (this as? Class<*>)?.kotlin
+    (this as? Class<*>)?.kotlin

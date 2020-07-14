@@ -12,8 +12,8 @@ val KindedJPostFix = "KindedJ"
 val HKMarkerPreFix = "For"
 
 data class HigherKind(
-        val `package`: Package,
-        val target: AnnotatedHigherKind
+    val `package`: Package,
+    val target: AnnotatedHigherKind
 ) {
     val tparams: List<ProtoBuf.TypeParameter> = target.classOrPackageProto.typeParameters
     val kindName: Name = target.classElement.simpleName
@@ -21,16 +21,17 @@ data class HigherKind(
     val aliasJ: String = if (tparams.size == 1) "io.kindedj.Hk" else "io.kindedj.HkJ${tparams.size}"
     val typeArgs: List<String> = target.classOrPackageProto.typeParameters.map { target.classOrPackageProto.nameResolver.getString(it.name) }
     val expandedTypeArgs: String = target.classOrPackageProto.typeParameters.joinToString(
-            separator = ", ", transform = { target.classOrPackageProto.nameResolver.getString(it.name) })
+        separator = ", ", transform = { target.classOrPackageProto.nameResolver.getString(it.name) }
+    )
     val typeConstraints = target.classOrPackageProto.typeConstraints()
     val name: String = "${kindName}$KindPostFix"
     val nameJ: String = "${kindName}$KindedJPostFix"
-    val markerName = "$HKMarkerPreFix${kindName}"
+    val markerName = "$HKMarkerPreFix$kindName"
 }
 
 class HigherKindsFileGenerator(
-        private val generatedDir: File,
-        annotatedList: List<AnnotatedHigherKind>
+    private val generatedDir: File,
+    annotatedList: List<AnnotatedHigherKind>
 ) {
 
     private val higherKinds: List<HigherKind> = annotatedList.map { HigherKind(it.classOrPackageProto.`package`, it) }
@@ -65,23 +66,22 @@ class HigherKindsFileGenerator(
     }
 
     private fun genKindedJTypeAliases(hk: HigherKind): String =
-            if (hk.tparams.size <= 5 && allInvariantParams(hk.tparams)) {
-                "typealias ${hk.nameJ}<${hk.expandedTypeArgs}> = ${hk.aliasJ}<${hk.markerName}, ${hk.expandedTypeArgs}>"
-            } else {
-                ""
-            }
+        if (hk.tparams.size <= 5 && allInvariantParams(hk.tparams)) {
+            "typealias ${hk.nameJ}<${hk.expandedTypeArgs}> = ${hk.aliasJ}<${hk.markerName}, ${hk.expandedTypeArgs}>"
+        } else {
+            ""
+        }
 
     private fun allInvariantParams(tparams: List<ProtoBuf.TypeParameter>): Boolean =
-            tparams.all { it.variance == ProtoBuf.TypeParameter.Variance.INV }
+        tparams.all { it.variance == ProtoBuf.TypeParameter.Variance.INV }
 
     private fun genEv(hk: HigherKind): String =
-            """
+        """
             |@Suppress("UNCHECKED_CAST", "NOTHING_TO_INLINE")
             |inline fun <${hk.expandedTypeArgs}> ${hk.name}<${hk.expandedTypeArgs}>.fix(): ${hk.kindName}<${hk.expandedTypeArgs}>${hk.typeConstraints} =
             |  this as ${hk.kindName}<${hk.expandedTypeArgs}>
         """.trimMargin()
 
     private fun genKindMarker(hk: HigherKind): String =
-            "class ${hk.markerName} private constructor()"
-
+        "class ${hk.markerName} private constructor()"
 }

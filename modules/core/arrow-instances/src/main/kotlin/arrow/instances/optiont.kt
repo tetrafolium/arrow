@@ -11,7 +11,6 @@ interface OptionTFunctorInstance<F> : Functor<OptionTPartialOf<F>> {
     fun FF(): Functor<F>
 
     override fun <A, B> map(fa: OptionTOf<F, A>, f: (A) -> B): OptionT<F, B> = fa.fix().map(f, FF())
-
 }
 
 @instance(OptionT::class)
@@ -24,7 +23,7 @@ interface OptionTApplicativeInstance<F> : OptionTFunctorInstance<F>, Applicative
     override fun <A, B> map(fa: OptionTOf<F, A>, f: (A) -> B): OptionT<F, B> = fa.fix().map(f, FF())
 
     override fun <A, B> ap(fa: OptionTOf<F, A>, ff: OptionTOf<F, (A) -> B>): OptionT<F, B> =
-            fa.fix().ap(ff, FF())
+        fa.fix().ap(ff, FF())
 }
 
 @instance(OptionT::class)
@@ -35,11 +34,10 @@ interface OptionTMonadInstance<F> : OptionTApplicativeInstance<F>, Monad<OptionT
     override fun <A, B> flatMap(fa: OptionTOf<F, A>, f: (A) -> OptionTOf<F, B>): OptionT<F, B> = fa.fix().flatMap({ f(it).fix() }, FF())
 
     override fun <A, B> ap(fa: OptionTOf<F, A>, ff: OptionTOf<F, (A) -> B>): OptionT<F, B> =
-            fa.fix().ap(ff, FF())
+        fa.fix().ap(ff, FF())
 
     override fun <A, B> tailRecM(a: A, f: (A) -> OptionTOf<F, Either<A, B>>): OptionT<F, B> =
-            OptionT.tailRecM(a, f, FF())
-
+        OptionT.tailRecM(a, f, FF())
 }
 
 fun <F, A, B> OptionT<F, A>.foldLeft(b: B, f: (B, A) -> B, FF: Foldable<F>): B = FF.compose(Option.foldable()).foldLC(value, b, f)
@@ -59,7 +57,6 @@ interface OptionTFoldableInstance<F> : Foldable<OptionTPartialOf<F>> {
     override fun <A, B> foldLeft(fa: OptionTOf<F, A>, b: B, f: (B, A) -> B): B = fa.fix().foldLeft(b, f, FFF())
 
     override fun <A, B> foldRight(fa: OptionTOf<F, A>, lb: Eval<B>, f: (A, Eval<B>) -> Eval<B>): Eval<B> = fa.fix().foldRight(lb, f, FFF())
-
 }
 
 @instance(OptionT::class)
@@ -68,8 +65,7 @@ interface OptionTTraverseInstance<F> : OptionTFoldableInstance<F>, Traverse<Opti
     override fun FFF(): Traverse<F>
 
     override fun <G, A, B> traverse(fa: OptionTOf<F, A>, f: (A) -> Kind<G, B>, GA: Applicative<G>): Kind<G, OptionT<F, B>> =
-            fa.fix().traverse(f, GA, FFF())
-
+        fa.fix().traverse(f, GA, FFF())
 }
 
 @instance(OptionT::class)

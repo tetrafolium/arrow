@@ -44,24 +44,28 @@ class OptionTTest : UnitSpec() {
             SemigroupKLaws.laws(
                 OptionT.semigroupK(Id.monad()),
                 OptionT.applicative(Id.monad()),
-                EQ()),
+                EQ()
+            ),
 
             MonoidKLaws.laws(
                 OptionT.monoidK(Id.monad()),
                 OptionT.applicative(Id.monad()),
-                EQ()),
+                EQ()
+            ),
 
             FunctorFilterLaws.laws(
                 OptionT.functorFilter(),
                 { OptionT(Id(Some(it))) },
-                EQ()),
+                EQ()
+            ),
 
             TraverseFilterLaws.laws(
                 OptionT.traverseFilter(),
                 OptionT.applicative(Option.monad()),
                 { OptionT(Option(Some(it))) },
                 EQ(),
-                EQ_NESTED())
+                EQ_NESTED()
+            )
         )
 
         "toLeft for Some should build a correct EitherT" {
@@ -87,6 +91,5 @@ class OptionTTest : UnitSpec() {
                 OptionT.fromOption<ForNonEmptyList, String>(None).toRight({ a }, NELM) == EitherT.left<ForNonEmptyList, Int, String>(a, applicative())
             }
         }
-
     }
 }

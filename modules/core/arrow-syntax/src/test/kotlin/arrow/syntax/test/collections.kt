@@ -16,11 +16,11 @@
 
 package arrow.syntax.test
 
+import arrow.syntax.collections.*
+import arrow.test.UnitSpec
 import io.kotlintest.KTestJUnitRunner
 import io.kotlintest.matchers.shouldBe
-import arrow.test.UnitSpec
 import org.junit.runner.RunWith
-import arrow.syntax.collections.*
 
 @RunWith(KTestJUnitRunner::class)
 class CollectionsSyntaxTests : UnitSpec() {
@@ -40,6 +40,5 @@ class CollectionsSyntaxTests : UnitSpec() {
             head shouldBe 1
             tail shouldBe listOf(2, 3)
         }
-
     }
 }

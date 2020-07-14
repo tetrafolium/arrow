@@ -30,7 +30,6 @@ interface ConstFoldableInstance<A> : Foldable<ConstPartialOf<A>> {
     override fun <T, U> foldLeft(fa: ConstOf<A, T>, b: U, f: (U, T) -> U): U = b
 
     override fun <T, U> foldRight(fa: ConstOf<A, T>, lb: Eval<U>, f: (T, Eval<U>) -> Eval<U>): Eval<U> = lb
-
 }
 
 @instance(Const::class)
@@ -39,7 +38,7 @@ interface ConstTraverseInstance<X> : ConstFoldableInstance<X>, Traverse<ConstPar
     override fun <T, U> map(fa: ConstOf<X, T>, f: (T) -> U): Const<X, U> = fa.fix().retag()
 
     override fun <G, A, B> traverse(fa: ConstOf<X, A>, f: (A) -> Kind<G, B>, GA: Applicative<G>): Kind<G, ConstOf<X, B>> =
-            fa.fix().traverse(f, GA)
+        fa.fix().traverse(f, GA)
 }
 
 @instance(Const::class)
@@ -48,7 +47,6 @@ interface ConstSemigroupInstance<A, T> : Semigroup<ConstOf<A, T>> {
     fun SA(): Semigroup<A>
 
     override fun combine(a: ConstOf<A, T>, b: ConstOf<A, T>): Const<A, T> = a.combine(b, SA())
-
 }
 
 @instance(Const::class)
@@ -57,7 +55,6 @@ interface ConstMonoidInstance<A, T> : ConstSemigroupInstance<A, T>, Monoid<Const
     override fun SA(): Monoid<A>
 
     override fun empty(): Const<A, T> = Const(SA().empty())
-
 }
 
 @instance(Const::class)
@@ -66,11 +63,11 @@ interface ConstEqInstance<A, T> : Eq<Const<A, T>> {
     fun EQ(): Eq<A>
 
     override fun eqv(a: Const<A, T>, b: Const<A, T>): Boolean =
-            EQ().eqv(a.value, b.value)
+        EQ().eqv(a.value, b.value)
 }
 
 @instance(Const::class)
 interface ConstShowInstance<A, T> : Show<Const<A, T>> {
     override fun show(a: Const<A, T>): String =
-            a.toString()
+        a.toString()
 }

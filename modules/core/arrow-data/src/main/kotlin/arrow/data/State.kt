@@ -57,7 +57,7 @@ fun <S, A> StateFun<S, A>.toState(): State<S, A> = State(this)
 fun <S, A> StateFunOf<S, A>.toState(): State<S, A> = State(this)
 
 fun <S, T, P1, R> State<S, T>.map(sx: State<S, P1>, f: (T, P1) -> R): State<S, R> =
-        flatMap ({ t -> sx.map { x -> f(t, x) } }, monad()).fix()
+    flatMap({ t -> sx.map { x -> f(t, x) } }, monad()).fix()
 
 fun <S, T, R> State<S, T>.map(f: (T) -> R): State<S, R> = flatMap({ t -> StateApi.pure<S, R>(f(t)) }, monad()).fix()
 
@@ -117,5 +117,4 @@ object StateApi {
      * @param s value to set.
      */
     fun <S> set(s: S): State<S, Unit> = StateT.set(applicative(), s)
-
 }

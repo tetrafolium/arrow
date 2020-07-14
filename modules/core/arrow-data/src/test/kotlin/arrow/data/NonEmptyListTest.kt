@@ -35,10 +35,10 @@ class NonEmptyListTest : UnitSpec() {
             SemigroupKLaws.laws(
                 NonEmptyList.semigroupK(),
                 applicative,
-                Eq.any()),
+                Eq.any()
+            ),
             ComonadLaws.laws(NonEmptyList.comonad(), { NonEmptyList.of(it) }, Eq.any()),
             TraverseLaws.laws(NonEmptyList.traverse(), applicative, { n: Int -> NonEmptyList.of(n) }, Eq.any())
         )
-
     }
 }

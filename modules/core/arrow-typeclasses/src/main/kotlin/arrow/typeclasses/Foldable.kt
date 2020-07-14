@@ -39,22 +39,22 @@ interface Foldable<F> : TC {
     fun <A> fold(ma: Monoid<A>, fa: Kind<F, A>): A = foldLeft(fa, ma.empty(), { acc, a -> ma.combine(acc, a) })
 
     fun <A, B> reduceLeftToOption(fa: Kind<F, A>, f: (A) -> B, g: (B, A) -> B): Option<B> =
-            foldLeft(fa, Option.empty()) { option, a ->
-                when (option) {
-                    is Some<B> -> Some(g(option.t, a))
-                    is None -> Some(f(a))
-                }
+        foldLeft(fa, Option.empty()) { option, a ->
+            when (option) {
+                is Some<B> -> Some(g(option.t, a))
+                is None -> Some(f(a))
             }
+        }
 
     fun <A, B> reduceRightToOption(fa: Kind<F, A>, f: (A) -> B, g: (A, Eval<B>) -> Eval<B>): Eval<Option<B>> =
-            foldRight(fa, Eval.Now(Option.empty())) { a, lb ->
-                lb.flatMap { option ->
-                    when (option) {
-                        is Some<B> -> g(a, Eval.Now(option.t)).map({ Some(it) })
-                        is None -> Eval.Later({ Some(f(a)) })
-                    }
+        foldRight(fa, Eval.Now(Option.empty())) { a, lb ->
+            lb.flatMap { option ->
+                when (option) {
+                    is Some<B> -> g(a, Eval.Now(option.t)).map({ Some(it) })
+                    is None -> Eval.Later({ Some(f(a)) })
                 }
             }
+        }
 
     /**
      * Reduce the elements of this structure down to a single value by applying the provided aggregation function in
@@ -93,7 +93,7 @@ interface Foldable<F> : TC {
      * not otherwise needed.
      */
     fun <G, A, B> traverse_(ag: Applicative<G>, fa: Kind<F, A>, f: (A) -> Kind<G, B>): Kind<G, Unit> =
-            foldRight(fa, always { ag.pure(Unit) }, { a, acc -> ag.map2Eval(f(a), acc) { Unit } }).value()
+        foldRight(fa, always { ag.pure(Unit) }, { a, acc -> ag.map2Eval(f(a), acc) { Unit } }).value()
 
     /**
      * Sequence F<G<A>> using Applicative<G>.
@@ -106,9 +106,12 @@ interface Foldable<F> : TC {
      * Find the first element matching the predicate, if one exists.
      */
     fun <A> find(fa: Kind<F, A>, f: (A) -> Boolean): Option<A> =
-            foldRight(fa, Eval.now<Option<A>>(None), { a, lb ->
+        foldRight(
+            fa, Eval.now<Option<A>>(None),
+            { a, lb ->
                 if (f(a)) Eval.now(Some(a)) else lb
-            }).value()
+            }
+        ).value()
 
     /**
      * Check whether at least one element satisfies the predicate.
@@ -134,7 +137,7 @@ interface Foldable<F> : TC {
     companion object {
         fun <A, B> iterateRight(it: Iterator<A>, lb: Eval<B>): (f: (A, Eval<B>) -> Eval<B>) -> Eval<B> = { f: (A, Eval<B>) -> Eval<B> ->
             fun loop(): Eval<B> =
-                    Eval.defer { if (it.hasNext()) f(it.next(), loop()) else lb }
+                Eval.defer { if (it.hasNext()) f(it.next(), loop()) else lb }
             loop()
         }
     }
@@ -146,7 +149,7 @@ interface Foldable<F> : TC {
  * Similar to foldM, but using a Monoid<B>.
  */
 inline fun <F, reified G, A, reified B> Foldable<F>.foldMapM(fa: Kind<F, A>, noinline f: (A) -> Kind<G, B>, MG: Monad<G> = monad(), bb: Monoid<B> = monoid()):
-        Kind<G, B> = foldM(fa, bb.empty(), { b, a -> MG.map(f(a)) { bb.combine(b, it) } }, MG)
+    Kind<G, B> = foldM(fa, bb.empty(), { b, a -> MG.map(f(a)) { bb.combine(b, it) } }, MG)
 
 /**
  * Get the element at the index of the Foldable.
@@ -154,9 +157,12 @@ inline fun <F, reified G, A, reified B> Foldable<F>.foldMapM(fa: Kind<F, A>, noi
 fun <F, A> Foldable<F>.get(fa: Kind<F, A>, idx: Long): Option<A> {
     if (idx < 0L) return None
     else {
-        foldM(fa, 0L, { i, a ->
-            if (i == idx) Left(a) else Right(i + 1L)
-        }).let {
+        foldM(
+            fa, 0L,
+            { i, a ->
+                if (i == idx) Left(a) else Right(i + 1L)
+            }
+        ).let {
             return when (it) {
                 is Either.Left -> Some(it.a)
                 else -> None
@@ -183,4 +189,4 @@ inline fun <reified F, A> Foldable<F>.size(MB: Monoid<Long> = monoid(), fa: Kind
  * entirety of the structure), depending on the G result produced at a given step.
  */
 inline fun <F, reified G, A, B> Foldable<F>.foldM(fa: Kind<F, A>, z: B, crossinline f: (B, A) -> Kind<G, B>, MG: Monad<G> = monad()): Kind<G, B> =
-        foldLeft(fa, MG.pure(z), { gb, a -> MG.flatMap(gb) { f(it, a) } })
+    foldLeft(fa, MG.pure(z), { gb, a -> MG.flatMap(gb) { f(it, a) } })

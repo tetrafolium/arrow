@@ -12,8 +12,7 @@ object Platform {
         val map by lazy { ConcurrentHashMap<K, V>() }
         return object : ConcurrentMap<K, V>, MutableMap<K, V> by map {
             override fun putSafely(k: K, v: V): V =
-                    map.putIfAbsent(k, v) ?: v
+                map.putIfAbsent(k, v) ?: v
         }
     }
-
 }

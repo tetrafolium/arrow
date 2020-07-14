@@ -38,10 +38,10 @@ class TryTest : UnitSpec() {
         }
 
         testLaws(
-                EqLaws.laws { Try { it } },
-                ShowLaws.laws { Try { it } },
-                MonadErrorLaws.laws(Try.monadError(), Eq.any(), Eq.any()),
-                TraverseLaws.laws(Try.traverse(), Try.functor(), ::Success, Eq.any())
+            EqLaws.laws { Try { it } },
+            ShowLaws.laws { Try { it } },
+            MonadErrorLaws.laws(Try.monadError(), Eq.any(), Eq.any()),
+            TraverseLaws.laws(Try.traverse(), Try.functor(), ::Success, Eq.any())
         )
 
         "invoke of any should be success" {
@@ -121,28 +121,31 @@ class TryTest : UnitSpec() {
 
         "Cartesian builder should build products over homogeneous Try" {
             Try.applicative().map(
-                    Success("11th"),
-                    Success("Doctor"),
-                    Success("Who"),
-                    { (a, b, c) -> "$a $b $c" }) shouldBe Success("11th Doctor Who")
+                Success("11th"),
+                Success("Doctor"),
+                Success("Who"),
+                { (a, b, c) -> "$a $b $c" }
+            ) shouldBe Success("11th Doctor Who")
         }
 
         "Cartesian builder should build products over heterogeneous Try" {
             Try.applicative().map(
-                    Success(13),
-                    Success("Doctor"),
-                    Success(false),
-                    { (a, b, c) -> "${a}th $b is $c" }) shouldBe Success("13th Doctor is false")
+                Success(13),
+                Success("Doctor"),
+                Success(false),
+                { (a, b, c) -> "${a}th $b is $c" }
+            ) shouldBe Success("13th Doctor is false")
         }
 
         data class DoctorNotFoundException(val msg: String) : Exception()
 
         "Cartesian builder should build products over Failure Try" {
             Try.applicative().map(
-                    Success(13),
-                    Failure<Boolean>(DoctorNotFoundException("13th Doctor is coming!")),
-                    Success("Who"),
-                    { (a, b, c) -> "${a}th $b is $c" }) shouldBe Failure<String>(DoctorNotFoundException("13th Doctor is coming!"))
+                Success(13),
+                Failure<Boolean>(DoctorNotFoundException("13th Doctor is coming!")),
+                Success("Who"),
+                { (a, b, c) -> "${a}th $b is $c" }
+            ) shouldBe Failure<String>(DoctorNotFoundException("13th Doctor is coming!"))
         }
 
         "show" {
@@ -274,9 +277,9 @@ class TryTest : UnitSpec() {
 
         "onSuccessAndOnFailure" {
             success.onSuccess { it shouldBe 10 }
-                    .onFailure { fail("") }
+                .onFailure { fail("") }
             failure.onSuccess { fail("") }
-                    .onFailure { }
+                .onFailure { }
         }
 
         "toOption" {
@@ -304,6 +307,5 @@ class TryTest : UnitSpec() {
             (Try { failure }.flatten().isFailure()) shouldBe true
             (Try<Try<Int>> { throw RuntimeException("") }.flatten().isFailure()) shouldBe true
         }
-
     }
 }

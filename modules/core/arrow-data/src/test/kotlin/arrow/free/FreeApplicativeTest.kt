@@ -45,7 +45,7 @@ class FreeApplicativeTest : UnitSpec() {
 
         "instances can be resolved implicitly" {
             functor<FreeApplicativePartialOf<OpsAp.F>>() shouldNotBe null
-            applicative<FreeApplicativePartialOf<OpsAp.F>>()  shouldNotBe null
+            applicative<FreeApplicativePartialOf<OpsAp.F>>() shouldNotBe null
         }
 
         val EQ: FreeApplicativeEq<OpsAp.F, ForId, Int> = FreeApplicativeEq(idApInterpreter)

@@ -6,24 +6,24 @@ import arrow.data.*
 
 val cofreeOptionToNel: FunctionK<CofreePartialOf<ForOption>, ForNonEmptyList> = object : FunctionK<CofreePartialOf<ForOption>, ForNonEmptyList> {
     override fun <A> invoke(fa: Kind<CofreePartialOf<ForOption>, A>): Kind<ForNonEmptyList, A> =
-            fa.fix().let { c ->
-                NonEmptyList.fromListUnsafe(listOf(c.head) + c.tailForced().fix().fold({ listOf<A>() }, { invoke(it).fix().all }))
-            }
+        fa.fix().let { c ->
+            NonEmptyList.fromListUnsafe(listOf(c.head) + c.tailForced().fix().fold({ listOf<A>() }, { invoke(it).fix().all }))
+        }
 }
 
 val cofreeListToNel: FunctionK<CofreePartialOf<ForListK>, ForNonEmptyList> = object : FunctionK<CofreePartialOf<ForListK>, ForNonEmptyList> {
     override fun <A> invoke(fa: Kind<CofreePartialOf<ForListK>, A>): Kind<ForNonEmptyList, A> =
-            fa.fix().let { c: Cofree<ForListK, A> ->
-                val all: List<Cofree<ForListK, A>> = c.tailForced().fix()
-                val tail: List<A> = all.foldRight(listOf<A>(), { v, acc -> acc + invoke(v).fix().all })
-                val headL: List<A> = listOf(c.head)
-                NonEmptyList.fromListUnsafe(headL + tail)
-            }
+        fa.fix().let { c: Cofree<ForListK, A> ->
+            val all: List<Cofree<ForListK, A>> = c.tailForced().fix()
+            val tail: List<A> = all.foldRight(listOf<A>(), { v, acc -> acc + invoke(v).fix().all })
+            val headL: List<A> = listOf(c.head)
+            NonEmptyList.fromListUnsafe(headL + tail)
+        }
 }
 
 val optionToList: FunctionK<ForOption, ForListK> = object : FunctionK<ForOption, ForListK> {
     override fun <A> invoke(fa: Kind<ForOption, A>): Kind<ForListK, A> =
-            fa.fix().fold({ listOf<A>().k() }, { listOf(it).k() })
+        fa.fix().fold({ listOf<A>().k() }, { listOf(it).k() })
 }
 
 val optionInterpreter: FunctionK<Ops.F, ForOption> = object : FunctionK<Ops.F, ForOption> {

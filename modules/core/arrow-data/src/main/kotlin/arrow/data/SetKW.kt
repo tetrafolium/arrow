@@ -23,7 +23,6 @@ data class SetK<out A>(val set: Set<A>) : SetKOf<A>, Set<A> by set {
         fun empty(): SetK<Nothing> = empty
 
         private val empty = emptySet<Nothing>().k()
-
     }
 }
 

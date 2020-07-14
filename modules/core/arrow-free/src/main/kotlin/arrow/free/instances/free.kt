@@ -18,8 +18,7 @@ interface FreeApplicativeInstance<S> : FreeFunctorInstance<S>, Applicative<FreeP
     override fun <A, B> map(fa: FreeOf<S, A>, f: (A) -> B): Free<S, B> = fa.fix().map(f)
 
     override fun <A, B> ap(fa: FreeOf<S, A>, ff: FreeOf<S, (A) -> B>): Free<S, B> =
-            fa.fix().ap(ff.fix())
-
+        fa.fix().ap(ff.fix())
 }
 
 @instance(Free::class)
@@ -28,7 +27,7 @@ interface FreeMonadInstance<S> : FreeApplicativeInstance<S>, Monad<FreePartialOf
     override fun <A, B> map(fa: FreeOf<S, A>, f: (A) -> B): Free<S, B> = fa.fix().map(f)
 
     override fun <A, B> ap(fa: FreeOf<S, A>, ff: FreeOf<S, (A) -> B>): Free<S, B> =
-            fa.fix().ap(ff.fix())
+        fa.fix().ap(ff.fix())
 
     override fun <A, B> flatMap(fa: FreeOf<S, A>, f: (A) -> FreeOf<S, B>): Free<S, B> = fa.fix().flatMap { f(it).fix() }
 
@@ -38,7 +37,6 @@ interface FreeMonadInstance<S> : FreeApplicativeInstance<S>, Monad<FreePartialOf
             is Either.Right -> pure(it.b)
         }
     }
-
 }
 
 data class FreeEq<F, G, A>(private val interpreter: FunctionK<F, G>, private val MG: Monad<G>) : Eq<Kind<FreePartialOf<F>, A>> {
@@ -46,6 +44,6 @@ data class FreeEq<F, G, A>(private val interpreter: FunctionK<F, G>, private val
 
     companion object {
         inline operator fun <F, reified G, A> invoke(interpreter: FunctionK<F, G>, MG: Monad<G> = monad(), dummy: Unit = Unit): FreeEq<F, G, A> =
-                FreeEq(interpreter, MG)
+            FreeEq(interpreter, MG)
     }
 }

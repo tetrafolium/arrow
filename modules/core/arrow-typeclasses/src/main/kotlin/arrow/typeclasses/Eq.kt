@@ -38,7 +38,7 @@ interface Eq<in F> : TC {
          */
         inline operator fun <F> invoke(crossinline feqv: (F, F) -> Boolean): Eq<F> = object : Eq<F> {
             override fun eqv(a: F, b: F): Boolean =
-                    feqv(a, b)
+                feqv(a, b)
         }
 
         /**

@@ -50,7 +50,7 @@ fun <F, A, B, C> EitherT<F, A, B>.foldLeft(b: C, f: (C, B) -> C, FF: Foldable<F>
 
 fun <F, A, B, C> EitherT<F, A, B>.foldRight(lb: Eval<C>, f: (B, Eval<C>) -> Eval<C>, FF: Foldable<F>): Eval<C> = FF.compose(Either.foldable<A>()).foldRC(value, lb, f)
 
-fun <F, A, B, G, C> EitherT<F, A, B>. traverse(f: (B) -> Kind<G, C>, GA: Applicative<G>, FF: Traverse<F>): Kind<G, EitherT<F, A, C>> {
+fun <F, A, B, G, C> EitherT<F, A, B>.traverse(f: (B) -> Kind<G, C>, GA: Applicative<G>, FF: Traverse<F>): Kind<G, EitherT<F, A, C>> {
     val fa: Kind<G, Kind<Nested<F, EitherPartialOf<A>>, C>> = ComposedTraverse(FF, Either.traverse(), Either.monad<A>()).traverseC(value, f, GA)
     return GA.map(fa, { EitherT(FF.map(it.unnest(), { it.fix() })) })
 }
@@ -81,25 +81,25 @@ object EitherTSemigroupKInstanceImplicits {
 }
 
 inline fun <reified F, L> EitherT.Companion.functor(FF: Functor<F> = functor<F>()): Functor<EitherTPartialOf<F, L>> =
-        EitherTFunctorInstanceImplicits.instance(FF)
+    EitherTFunctorInstanceImplicits.instance(FF)
 
 inline fun <reified F, L> EitherT.Companion.applicative(MF: Monad<F> = monad<F>()): Applicative<EitherTPartialOf<F, L>> =
-        EitherTApplicativeInstanceImplicits.instance(MF)
+    EitherTApplicativeInstanceImplicits.instance(MF)
 
 inline fun <reified F, L> EitherT.Companion.monad(MF: Monad<F> = monad<F>()): Monad<EitherTPartialOf<F, L>> =
-        EitherTMonadInstanceImplicits.instance(MF)
+    EitherTMonadInstanceImplicits.instance(MF)
 
 inline fun <reified F, L> EitherT.Companion.applicativeError(MF: Monad<F> = monad<F>()): ApplicativeError<EitherTPartialOf<F, L>, L> =
-        EitherTApplicativeErrorInstanceImplicits.instance(MF)
+    EitherTApplicativeErrorInstanceImplicits.instance(MF)
 
 inline fun <reified F, L> EitherT.Companion.monadError(MF: Monad<F> = monad<F>()): MonadError<EitherTPartialOf<F, L>, L> =
-        EitherTMonadErrorInstanceImplicits.instance(MF)
+    EitherTMonadErrorInstanceImplicits.instance(MF)
 
 inline fun <reified F, A> EitherT.Companion.traverse(FF: Traverse<F> = traverse<F>()): Traverse<EitherTPartialOf<F, A>> =
-        EitherTTraverseInstanceImplicits.instance(FF)
+    EitherTTraverseInstanceImplicits.instance(FF)
 
 inline fun <reified F, A> EitherT.Companion.foldable(FF: Traverse<F> = traverse<F>()): Foldable<EitherTPartialOf<F, A>> =
-        EitherTFoldableInstanceImplicits.instance(FF)
+    EitherTFoldableInstanceImplicits.instance(FF)
 
 inline fun <reified F, L> EitherT.Companion.semigroupK(MF: Monad<F> = monad<F>()): SemigroupK<EitherTPartialOf<F, L>> =
-        EitherTSemigroupKInstanceImplicits.instance(MF)
+    EitherTSemigroupKInstanceImplicits.instance(MF)

@@ -32,18 +32,18 @@ class EitherTTest : UnitSpec() {
             SemigroupKLaws.laws<EitherTPartialOf<ForId, Int>>(
                 EitherT.semigroupK(Id.monad()),
                 EitherT.applicative(Id.monad()),
-                Eq.any())
+                Eq.any()
+            )
         )
 
         "mapLeft should alter left instance only" {
             forAll { i: Int, j: Int ->
                 val left: Either<Int, Int> = Left(i)
                 val right: Either<Int, Int> = Right(j)
-                EitherT(Option(left)).mapLeft({it + 1}, Option.functor()) == EitherT(Option(Left(i+1))) &&
-                        EitherT(Option(right)).mapLeft({it + 1}, Option.functor()) ==  EitherT(Option(right)) &&
-                        EitherT(Option.empty<Either<Int, Int>>()).mapLeft({it +1}, Option.functor()) == EitherT(Option.empty<Either<Int, Int>>())
+                EitherT(Option(left)).mapLeft({ it + 1 }, Option.functor()) == EitherT(Option(Left(i + 1))) &&
+                    EitherT(Option(right)).mapLeft({ it + 1 }, Option.functor()) == EitherT(Option(right)) &&
+                    EitherT(Option.empty<Either<Int, Int>>()).mapLeft({ it + 1 }, Option.functor()) == EitherT(Option.empty<Either<Int, Int>>())
             }
         }
-
     }
 }

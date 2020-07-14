@@ -29,7 +29,7 @@ class Kleisli<F, D, A> private constructor(val run: KleisliFun<F, D, A>, dummy: 
      * @param AF [Applicative] for the context [F].
      */
     fun <B> ap(ff: KleisliOf<F, D, (A) -> B>, AF: Applicative<F>): Kleisli<F, D, B> =
-            Kleisli { AF.ap(run(it), ff.fix().run(it)) }
+        Kleisli { AF.ap(run(it), ff.fix().run(it)) }
 
     /**
      * Map the end of the arrow [A] to [B] given a function [f].
@@ -46,9 +46,9 @@ class Kleisli<F, D, A> private constructor(val run: KleisliFun<F, D, A>, dummy: 
      * @param MF [Monad] for the context [F].
      */
     fun <B> flatMap(f: (A) -> Kleisli<F, D, B>, MF: Monad<F>): Kleisli<F, D, B> =
-            Kleisli { d ->
-                MF.flatMap(run(d)) { a -> f(a).run(d) }
-            }
+        Kleisli { d ->
+            MF.flatMap(run(d)) { a -> f(a).run(d) }
+        }
 
     /**
      * Zip with another [Kleisli] arrow.
@@ -57,9 +57,12 @@ class Kleisli<F, D, A> private constructor(val run: KleisliFun<F, D, A>, dummy: 
      * @param MF [Monad] for the context [F].
      */
     fun <B> zip(o: Kleisli<F, D, B>, MF: Monad<F>): Kleisli<F, D, Tuple2<A, B>> =
-            flatMap({ a ->
+        flatMap(
+            { a ->
                 o.map({ b -> Tuple2(a, b) }, MF)
-            }, MF)
+            },
+            MF
+        )
 
     /**
      * Compose this arrow with another function to transform the input of the arrow.
@@ -119,7 +122,7 @@ class Kleisli<F, D, A> private constructor(val run: KleisliFun<F, D, A>, dummy: 
          * @param MF [Monad] for the context [F].
          */
         fun <F, D, A, B> tailRecM(a: A, f: (A) -> KleisliOf<F, D, Either<A, B>>, MF: Monad<F>): Kleisli<F, D, B> =
-                Kleisli { b -> MF.tailRecM(a, { f(it).fix().run(b) }) }
+            Kleisli { b -> MF.tailRecM(a, { f(it).fix().run(b) }) }
 
         /**
          * Create an arrow for a value of [A].
@@ -141,9 +144,7 @@ class Kleisli<F, D, A> private constructor(val run: KleisliFun<F, D, A>, dummy: 
          * @param ME [MonadError] for context [F].
          */
         fun <F, D, E, A> raiseError(e: E, ME: MonadError<F, E>): Kleisli<F, D, A> = Kleisli { ME.raiseError(e) }
-
     }
-
 }
 
 /**

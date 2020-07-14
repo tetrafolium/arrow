@@ -133,5 +133,4 @@ object ReaderApi {
     fun <D, A> pure(x: A): Reader<D, A> = ReaderT.pure(x, arrow.typeclasses.monad())
 
     fun <D> ask(): Reader<D, D> = ReaderT.ask(arrow.typeclasses.monad())
-
 }

@@ -29,8 +29,8 @@ class CoyonedaTest : UnitSpec() {
             val loops = 10000
 
             tailrec fun loop(n: Int, acc: Coyoneda<ForOption, Int, Int>): Coyoneda<ForOption, Int, Int> =
-                    if (n <= 0) acc
-                    else loop(n - 1, acc.map { it + 1 })
+                if (n <= 0) acc
+                else loop(n - 1, acc.map { it + 1 })
 
             val result = loop(loops, Coyoneda(Some(0), { it })).lower(Option.functor())
             val expected = Some(loops)

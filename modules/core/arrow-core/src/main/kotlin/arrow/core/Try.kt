@@ -31,18 +31,16 @@ sealed class Try<out A> : TryOf<A> {
                     }
                 }
             }
-
         }
 
         inline operator fun <A> invoke(f: () -> A): Try<A> =
-                try {
-                    Success(f())
-                } catch (e: Throwable) {
-                    Failure(e)
-                }
+            try {
+                Success(f())
+            } catch (e: Throwable) {
+                Failure(e)
+            }
 
         fun <A> raise(e: Throwable): Try<A> = Failure(e)
-
     }
 
     @Deprecated(DeprecatedUnsafeAccess, ReplaceWith("getOrElse { ifEmpty }"))
@@ -64,29 +62,29 @@ sealed class Try<out A> : TryOf<A> {
      * Converts this to a `Failure` if the predicate is not satisfied.
      */
     inline fun filter(crossinline p: Predicate<A>): Try<A> =
-            fold(
-                    { Failure(it) },
-                    { if (p(it)) Success(it) else Failure(TryException.PredicateException("Predicate does not hold for $it")) }
-            )
+        fold(
+            { Failure(it) },
+            { if (p(it)) Success(it) else Failure(TryException.PredicateException("Predicate does not hold for $it")) }
+        )
 
     /**
      * Inverts this `Try`. If this is a `Failure`, returns its exception wrapped in a `Success`.
      * If this is a `Success`, returns a `Failure` containing an `UnsupportedOperationException`.
      */
     fun failed(): Try<Throwable> =
-            fold(
-                    { Success(it) },
-                    { Failure(TryException.UnsupportedOperationException("Success")) }
-            )
+        fold(
+            { Success(it) },
+            { Failure(TryException.UnsupportedOperationException("Success")) }
+        )
 
     /**
      * Applies `fa` if this is a `Failure` or `fb` if this is a `Success`.
      */
     inline fun <B> fold(fa: (Throwable) -> B, fb: (A) -> B): B =
-            when (this) {
-                is Failure -> fa(exception)
-                is Success -> fb(value)
-            }
+        when (this) {
+            is Failure -> fa(exception)
+            is Success -> fb(value)
+        }
 
     abstract fun isFailure(): Boolean
 
@@ -178,7 +176,7 @@ fun <B> Try<B>.getOrDefault(default: () -> B): B = fold({ default() }, { it })
  */
 fun <B> Try<B>.getOrElse(default: (Throwable) -> B): B = fold(default, { it })
 
-fun <B, A: B> Try<A>.orElse(f: () -> Try<B>): Try<B> = when (this) {
+fun <B, A : B> Try<A>.orElse(f: () -> Try<B>): Try<B> = when (this) {
     is Try.Success -> this
     is Try.Failure -> f()
 }

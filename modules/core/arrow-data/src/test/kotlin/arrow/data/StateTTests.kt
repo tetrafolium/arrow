@@ -48,12 +48,14 @@ class StateTTests : UnitSpec() {
             SemigroupKLaws.laws(
                 StateT.semigroupK<ForListK, Int>(ListK.monad(), ListK.semigroupK()),
                 StateT.applicative<ForListK, Int>(ListK.monad()),
-                EQ_LIST),
-            MonadCombineLaws.laws(StateT.monadCombine<ForListK, Int>(ListK.monadCombine()),
+                EQ_LIST
+            ),
+            MonadCombineLaws.laws(
+                StateT.monadCombine<ForListK, Int>(ListK.monadCombine()),
                 { StateT.lift(ListK.pure(it), ListK.monad()) },
                 { StateT.lift(ListK.pure({ s: Int -> s * 2 }), ListK.monad()) },
-                EQ_LIST)
+                EQ_LIST
+            )
         )
-
     }
 }

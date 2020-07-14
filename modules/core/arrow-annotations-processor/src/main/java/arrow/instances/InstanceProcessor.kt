@@ -26,13 +26,13 @@ class InstanceProcessor : AbstractProcessor() {
      */
     override fun onProcess(annotations: Set<TypeElement>, roundEnv: RoundEnvironment) {
         annotatedList += roundEnv
-                .getElementsAnnotatedWith(instanceAnnotationClass)
-                .map { element ->
-                    when (element.kind) {
-                        ElementKind.INTERFACE -> processClass(element as TypeElement)
-                        else -> knownError("$instanceAnnotationName can only be used on interfaces")
-                    }
+            .getElementsAnnotatedWith(instanceAnnotationClass)
+            .map { element ->
+                when (element.kind) {
+                    ElementKind.INTERFACE -> processClass(element as TypeElement)
+                    else -> knownError("$instanceAnnotationName can only be used on interfaces")
                 }
+            }
 
         if (roundEnv.processingOver()) {
             val generatedDir = File(this.generatedDir!!, instanceAnnotationClass.simpleName).also { it.mkdirs() }
@@ -53,8 +53,7 @@ class InstanceProcessor : AbstractProcessor() {
         }
         val typeTable = TypeTable(proto.classProto.typeTable)
         val superTypes: List<ClassOrPackageDataWrapper.Class> =
-                recurseTypeclassInterfaces(proto, typeTable, emptyList()).map { it as ClassOrPackageDataWrapper.Class }
+            recurseTypeclassInterfaces(proto, typeTable, emptyList()).map { it as ClassOrPackageDataWrapper.Class }
         return AnnotatedInstance(element, proto, superTypes, this, dataType[0])
     }
-
 }

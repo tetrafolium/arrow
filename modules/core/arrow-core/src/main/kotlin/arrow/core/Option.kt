@@ -31,7 +31,6 @@ sealed class Option<out A> : OptionOf<A> {
         operator fun <A> invoke(a: A): Option<A> = Some(a)
 
         fun <A> empty(): Option<A> = None
-
     }
 
     /**
@@ -100,7 +99,7 @@ sealed class Option<out A> : OptionOf<A> {
      *  @param predicate the predicate used for testing.
      */
     inline fun filter(crossinline predicate: Predicate<A>): Option<A> =
-            fold({ None }, { a -> if (predicate(a)) Some(a) else None })
+        fold({ None }, { a -> if (predicate(a)) Some(a) else None })
 
     /**
      * Returns this $option if it is nonempty '''and''' applying the predicate $p to
@@ -133,20 +132,20 @@ sealed class Option<out A> : OptionOf<A> {
     }
 
     fun <B> foldLeft(b: B, f: (B, A) -> B): B =
-            this.fix().let { option ->
-                when (option) {
-                    is Some -> f(b, option.t)
-                    is None -> b
-                }
+        this.fix().let { option ->
+            when (option) {
+                is Some -> f(b, option.t)
+                is None -> b
             }
+        }
 
     fun <B> foldRight(lb: Eval<B>, f: (A, Eval<B>) -> Eval<B>): Eval<B> =
-            this.fix().let { option ->
-                when (option) {
-                    is Some -> f(option.t, lb)
-                    is None -> lb
-                }
+        this.fix().let { option ->
+            when (option) {
+                is Some -> f(option.t, lb)
+                is None -> lb
             }
+        }
 
     fun toList(): List<A> = fold(::emptyList, { listOf(it) })
 

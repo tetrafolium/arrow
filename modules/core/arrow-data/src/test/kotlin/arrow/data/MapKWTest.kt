@@ -13,7 +13,7 @@ class MapKTest : UnitSpec() {
 
     val EQ: Eq<Kind2<ForMapK, String, Int>> = object : Eq<Kind2<ForMapK, String, Int>> {
         override fun eqv(a: Kind2<ForMapK, String, Int>, b: Kind2<ForMapK, String, Int>): Boolean =
-                a.fix()["key"] == b.fix()["key"]
+            a.fix()["key"] == b.fix()["key"]
     }
 
     init {
@@ -29,15 +29,17 @@ class MapKTest : UnitSpec() {
         }
 
         testLaws(
-                EqLaws.laws { mapOf(it.toString() to it).k() },
-                ShowLaws.laws { mapOf(it.toString() to it).k() },
-                TraverseLaws.laws(MapK.traverse(), MapK.traverse(), { a: Int -> mapOf("key" to a).k() }),
-                MonoidLaws.laws(MapK.monoid(), mapOf("key" to 1).k(), EQ),
-                SemigroupLaws.laws(MapK.monoid(),
-                        mapOf("key" to 1).k(),
-                        mapOf("key" to 2).k(),
-                        mapOf("key" to 3).k(),
-                        EQ)
+            EqLaws.laws { mapOf(it.toString() to it).k() },
+            ShowLaws.laws { mapOf(it.toString() to it).k() },
+            TraverseLaws.laws(MapK.traverse(), MapK.traverse(), { a: Int -> mapOf("key" to a).k() }),
+            MonoidLaws.laws(MapK.monoid(), mapOf("key" to 1).k(), EQ),
+            SemigroupLaws.laws(
+                MapK.monoid(),
+                mapOf("key" to 1).k(),
+                mapOf("key" to 2).k(),
+                mapOf("key" to 3).k(),
+                EQ
+            )
         )
     }
 }

@@ -1,7 +1,7 @@
 package arrow.derive
 
-import com.google.auto.service.AutoService
 import arrow.common.utils.*
+import com.google.auto.service.AutoService
 import org.jetbrains.kotlin.serialization.deserialization.TypeTable
 import java.io.File
 import javax.annotation.processing.Processor
@@ -24,13 +24,13 @@ class DerivingProcessor : AbstractProcessor() {
      */
     override fun onProcess(annotations: Set<TypeElement>, roundEnv: RoundEnvironment) {
         annotatedList += roundEnv
-                .getElementsAnnotatedWith(derivingAnnotationClass)
-                .map { element ->
-                    when (element.kind) {
-                        ElementKind.CLASS -> processClass(element as TypeElement)
-                        else -> knownError("${derivingAnnotationName} can only be used on classes")
-                    }
+            .getElementsAnnotatedWith(derivingAnnotationClass)
+            .map { element ->
+                when (element.kind) {
+                    ElementKind.CLASS -> processClass(element as TypeElement)
+                    else -> knownError("$derivingAnnotationName can only be used on classes")
                 }
+            }
 
         if (roundEnv.processingOver()) {
             val generatedDir = File(this.generatedDir!!, derivingAnnotationClass.simpleName).also { it.mkdirs() }
@@ -59,12 +59,11 @@ class DerivingProcessor : AbstractProcessor() {
             typeClassWrapper to superTypes
         }.toMap()
         val companionName = proto.nameResolver
-                .getString(proto.classProto.fqName)
-                .replace("/", ".") + "." +
-                proto.nameResolver.getString(proto.classProto.companionObjectName)
+            .getString(proto.classProto.fqName)
+            .replace("/", ".") + "." +
+            proto.nameResolver.getString(proto.classProto.companionObjectName)
         val typeClassElement = elementUtils.getTypeElement(companionName)
         val companionProto = getClassOrPackageDataWrapper(typeClassElement)
         return AnnotatedDeriving(element, proto, companionProto, typeClasses, typeclassSuperTypes)
     }
-
 }

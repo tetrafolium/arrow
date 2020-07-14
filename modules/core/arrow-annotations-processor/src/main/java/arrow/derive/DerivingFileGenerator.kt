@@ -10,14 +10,14 @@ import org.jetbrains.kotlin.serialization.ProtoBuf
 import java.io.File
 
 fun argAsSeenFromReceiver(typeClassFirstTypeArg: String, abstractType: String, receiverType: String): String =
-        abstractType.replace("`arrow`.`Kind`<`$typeClassFirstTypeArg`,\\s".toRegex(), "`$receiverType$KindPostFix`<")
+    abstractType.replace("`arrow`.`Kind`<`$typeClassFirstTypeArg`,\\s".toRegex(), "`$receiverType$KindPostFix`<")
 
 fun retTypeAsSeenFromReceiver(typeClassFirstTypeArg: String, abstractType: String, receiverType: String): String =
-        if (abstractType.startsWith("`arrow`.`Kind`")) {
-            abstractType.replace("`arrow`.`Kind`<`$typeClassFirstTypeArg`,\\s".toRegex(), "`$receiverType`<")
-        } else {
-            abstractType.replace("`arrow`.`Kind`<`$typeClassFirstTypeArg`,\\s".toRegex(), "`$receiverType$KindPostFix`<")
-        }
+    if (abstractType.startsWith("`arrow`.`Kind`")) {
+        abstractType.replace("`arrow`.`Kind`<`$typeClassFirstTypeArg`,\\s".toRegex(), "`$receiverType`<")
+    } else {
+        abstractType.replace("`arrow`.`Kind`<`$typeClassFirstTypeArg`,\\s".toRegex(), "`$receiverType$KindPostFix`<")
+    }
 
 sealed class HKArgs {
     object None : HKArgs()
@@ -26,13 +26,13 @@ sealed class HKArgs {
 }
 
 data class FunctionSignature(
-        val tparams: List<String>,
-        val name: String,
-        val args: List<Pair<String, String>>,
-        val retType: String,
-        val hkArgs: HKArgs,
-        val receiverType: String,
-        val isAbstract: Boolean
+    val tparams: List<String>,
+    val name: String,
+    val args: List<Pair<String, String>>,
+    val retType: String,
+    val hkArgs: HKArgs,
+    val receiverType: String,
+    val isAbstract: Boolean
 
 ) {
 
@@ -44,11 +44,11 @@ data class FunctionSignature(
     }
 
     fun implBody(): String =
-            when (hkArgs) {
-                HKArgs.None -> "${receiverType}.${name}()"
-                HKArgs.First -> "${args[0].first}.fix().${name}(${args.drop(1).joinToString(", ") { it.first }})"
-                HKArgs.Unknown -> "${receiverType}.${name}(${args.joinToString(", ") { it.first }})"
-            }
+        when (hkArgs) {
+            HKArgs.None -> "$receiverType.$name()"
+            HKArgs.First -> "${args[0].first}.fix().$name(${args.drop(1).joinToString(", ") { it.first }})"
+            HKArgs.Unknown -> "$receiverType.$name(${args.joinToString(", ") { it.first }})"
+        }
 
     companion object {
 
@@ -64,25 +64,26 @@ data class FunctionSignature(
             val concreteType = retTypeAsSeenFromReceiver(typeClassAbstractKind, abstractReturnType, receiverType)
             val isAbstract = f.modality == ProtoBuf.Modality.ABSTRACT
             return FunctionSignature(
-                    tparams = typeParams,
-                    name = typeClass.nameResolver.getString(f.name),
-                    args = args,
-                    retType = concreteType,
-                    hkArgs = when {
-                        f.valueParameterList.isEmpty() -> HKArgs.None
-                        typeClass.nameResolver.getString(f.getValueParameter(0).type.className).startsWith("arrow/Kind") -> HKArgs.First
-                        else -> HKArgs.Unknown
-                    },
-                    receiverType = receiverType,
-                    isAbstract = isAbstract
+                tparams = typeParams,
+                name = typeClass.nameResolver.getString(f.name),
+                args = args,
+                retType = concreteType,
+                hkArgs = when {
+                    f.valueParameterList.isEmpty() -> HKArgs.None
+                    typeClass.nameResolver.getString(f.getValueParameter(0).type.className).startsWith("arrow/Kind") -> HKArgs.First
+                    else -> HKArgs.Unknown
+                },
+                receiverType = receiverType,
+                isAbstract = isAbstract
             )
         }
     }
 }
 
 class TypeclassInstanceGenerator(
-        val targetType: AnnotatedDeriving,
-        val typeClass: ClassOrPackageDataWrapper.Class) {
+    val targetType: AnnotatedDeriving,
+    val typeClass: ClassOrPackageDataWrapper.Class
+) {
 
     val target: ClassOrPackageDataWrapper.Class = targetType.classOrPackageProto as ClassOrPackageDataWrapper.Class
 
@@ -93,7 +94,7 @@ class TypeclassInstanceGenerator(
     val receiverName: String = "$HKMarkerPreFix$receiverSimpleName"
 
     val typeClassFQName: String =
-            typeClass.nameResolver.getString(typeClass.classProto.fqName).replace("/", ".")
+        typeClass.nameResolver.getString(typeClass.classProto.fqName).replace("/", ".")
 
     val typeClassName: String = typeClassFQName.substringAfterLast(".")
 
@@ -115,40 +116,40 @@ class TypeclassInstanceGenerator(
     val instanceName: String = "$receiverSimpleName${typeClassName}Instance"
 
     fun targetHasFunction(f: FunctionSignature, c: ClassOrPackageDataWrapper): Boolean =
-            c.functionList.any {
-                val typeClassFunctionName = c.nameResolver.getString(it.name)
-                typeClassFunctionName == f.name
-            }
+        c.functionList.any {
+            val typeClassFunctionName = c.nameResolver.getString(it.name)
+            typeClassFunctionName == f.name
+        }
 
     fun targetRequestsDelegation(f: FunctionSignature): Boolean = when (f.hkArgs) {
-            HKArgs.None -> f.isAbstract || targetHasFunction(f, targetType.companionClassProto)
-            HKArgs.First -> f.isAbstract || targetHasFunction(f, target)
-            HKArgs.Unknown -> f.isAbstract || targetHasFunction(f, targetType.companionClassProto)
-        }
+        HKArgs.None -> f.isAbstract || targetHasFunction(f, targetType.companionClassProto)
+        HKArgs.First -> f.isAbstract || targetHasFunction(f, target)
+        HKArgs.Unknown -> f.isAbstract || targetHasFunction(f, targetType.companionClassProto)
+    }
 
     val delegatedFunctions: List<String> = functionSignatures().filter(this::targetRequestsDelegation).map { it.generate() }
 
     fun generate(): String {
         val tArgs = tparamsAsSeenFromReceiver.joinToString(", ")
         return """
-            |interface $instanceName : ${typeClassFQName}<$tArgs> {
+            |interface $instanceName : $typeClassFQName<$tArgs> {
             |  ${delegatedFunctions.joinToString("\n\n  ")}
             |}
             |
             |object ${instanceName}Implicits {
-            |  fun instance(): $instanceName = ${receiverType}.Companion.${companionFactoryName}()
+            |  fun instance(): $instanceName = $receiverType.Companion.$companionFactoryName()
             |}
             |
-            |fun ${receiverType}.Companion.${companionFactoryName}(): $instanceName =
-            |  object : $instanceName, ${typeClassFQName}<$tArgs> {}
+            |fun $receiverType.Companion.$companionFactoryName(): $instanceName =
+            |  object : $instanceName, $typeClassFQName<$tArgs> {}
             |
         """.removeBackticks().trimMargin()
     }
 }
 
 class DerivingFileGenerator(
-        private val generatedDir: File,
-        private val annotatedList: List<AnnotatedDeriving>
+    private val generatedDir: File,
+    private val annotatedList: List<AnnotatedDeriving>
 ) {
 
     /**
@@ -164,8 +165,7 @@ class DerivingFileGenerator(
     }
 
     private fun genImpl(c: AnnotatedDeriving): String =
-            c.derivingTypeclasses.filter { it is ClassOrPackageDataWrapper.Class }.joinToString("\n\n") {
-                TypeclassInstanceGenerator(c, it as ClassOrPackageDataWrapper.Class).generate()
-            }
-
+        c.derivingTypeclasses.filter { it is ClassOrPackageDataWrapper.Class }.joinToString("\n\n") {
+            TypeclassInstanceGenerator(c, it as ClassOrPackageDataWrapper.Class).generate()
+        }
 }

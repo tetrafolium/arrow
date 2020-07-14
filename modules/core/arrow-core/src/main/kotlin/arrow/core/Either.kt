@@ -55,20 +55,20 @@ import arrow.legacy.*
     }
 
     fun <C> foldLeft(b: C, f: (C, B) -> C): C =
-            this.fix().let { either ->
-                when (either) {
-                    is Right -> f(b, either.b)
-                    is Left -> b
-                }
+        this.fix().let { either ->
+            when (either) {
+                is Right -> f(b, either.b)
+                is Left -> b
             }
+        }
 
     fun <C> foldRight(lb: Eval<C>, f: (B, Eval<C>) -> Eval<C>): Eval<C> =
-            this.fix().let { either ->
-                when (either) {
-                    is Right -> f(either.b, lb)
-                    is Left -> lb
-                }
+        this.fix().let { either ->
+            when (either) {
+                is Right -> f(either.b, lb)
+                is Left -> lb
             }
+        }
 
     @Deprecated("arrow.data.Either is right biased. This method will be removed in future releases")
     fun toDisjunction(): Disjunction<A, B> = when (this) {
@@ -194,7 +194,6 @@ import arrow.legacy.*
         }
 
         fun <L, R> cond(test: Boolean, r: () -> R, l: () -> L): Either<L, R> = if (test) right(r()) else left(l())
-
     }
 }
 
@@ -249,7 +248,7 @@ inline fun <A, B> Either<A, B>.getOrHandle(crossinline default: (A) -> B): B = f
  * ```
  */
 inline fun <A, B> Either<A, B>.filterOrElse(crossinline predicate: (B) -> Boolean, crossinline default: () -> A): Either<A, B> =
-        fold({ Left(it) }, { if (predicate(it)) Right(it) else Left(default()) })
+    fold({ Left(it) }, { if (predicate(it)) Right(it) else Left(default()) })
 
 /**
  * Returns `true` if this is a [Either.Right] and its value is equal to `elem` (as determined by `==`),
@@ -270,10 +269,10 @@ fun <A, B> Either<A, B>.contains(elem: B): Boolean = fold({ false }, { it == ele
 fun <A, B, C> Either<A, B>.ap(ff: EitherOf<A, (B) -> C>): Either<A, C> = ff.fix().flatMap { f -> map(f) }.fix()
 
 fun <A, B> Either<A, B>.combineK(y: EitherOf<A, B>): Either<A, B> =
-        when (this) {
-            is Either.Left -> y.fix()
-            else -> this.fix()
-        }
+    when (this) {
+        is Either.Left -> y.fix()
+        else -> this.fix()
+    }
 
 @Deprecated(DeprecatedAmbiguity, ReplaceWith("Try { body }.toEither()"))
 inline fun <T> eitherTry(body: () -> T): Either<Throwable, T> = try {

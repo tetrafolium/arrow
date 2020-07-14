@@ -11,7 +11,7 @@ import arrow.typeclasses.*
 interface MonadCombine<F> : MonadFilter<F>, Alternative<F>, TC {
 
     fun <G, A> unite(fga: Kind<F, Kind<G, A>>, FG: Foldable<G>): Kind<F, A> =
-            flatMap(fga, { ga -> FG.foldLeft(ga, empty<A>(), { acc, a -> combineK(acc, pure(a)) }) })
+        flatMap(fga, { ga -> FG.foldLeft(ga, empty<A>(), { acc, a -> combineK(acc, pure(a)) }) })
 
     fun <G, A, B> separate(fgab: Kind<F, Kind2<G, A, B>>, BFG: Bifoldable<G>): Tuple2<Kind<F, A>, Kind<F, B>> {
         val asep = flatMap(fgab, { gab -> BFG.bifoldMap(gab, { pure(it) }, { _ -> empty<A>() }, algebra<A>()) })
@@ -45,11 +45,11 @@ interface MonadCombineSyntax<F> : MonadFilterSyntax<F>, AlternativeSyntax<F> {
     override fun semigroupK(): SemigroupK<F> = monadCombine()
 
     fun <G, A, B> Kind<F, Kind2<G, A, B>>.`separate`(dummy: Unit = Unit, BFG: Bifoldable<G>): Tuple2<Kind<F, A>, Kind<F, B>> =
-            this@MonadCombineSyntax.monadCombine().`separate`(this, BFG)
+        this@MonadCombineSyntax.monadCombine().`separate`(this, BFG)
 
     fun <G, A> Kind<F, Kind<G, A>>.`unite`(dummy: Unit = Unit, FG: Foldable<G>): Kind<F, A> =
-            this@MonadCombineSyntax.monadCombine().`unite`(this, FG)
+        this@MonadCombineSyntax.monadCombine().`unite`(this, FG)
 
     override fun <A> empty(dummy: Unit): Kind<F, A> =
-            this@MonadCombineSyntax.monadCombine().`empty`()
+        this@MonadCombineSyntax.monadCombine().`empty`()
 }

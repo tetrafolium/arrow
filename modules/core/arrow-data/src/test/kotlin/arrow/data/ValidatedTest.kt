@@ -1,17 +1,17 @@
 package arrow.data
 
 import arrow.core.*
+import arrow.instances.*
+import arrow.syntax.applicative.map
+import arrow.syntax.validated.valid
+import arrow.test.UnitSpec
+import arrow.test.laws.*
+import arrow.typeclasses.*
 import io.kotlintest.KTestJUnitRunner
 import io.kotlintest.matchers.fail
 import io.kotlintest.matchers.shouldBe
 import io.kotlintest.matchers.shouldNotBe
-import arrow.instances.*
-import arrow.syntax.applicative.map
-import arrow.syntax.validated.valid
 import org.junit.runner.RunWith
-import arrow.test.UnitSpec
-import arrow.test.laws.*
-import arrow.typeclasses.*
 
 @RunWith(KTestJUnitRunner::class)
 class ValidatedTest : UnitSpec() {
@@ -36,16 +36,16 @@ class ValidatedTest : UnitSpec() {
             SemigroupKLaws.laws(
                 Validated.semigroupK(IntMonoid),
                 Validated.applicative(IntMonoid),
-                Eq.any())
+                Eq.any()
+            )
         )
-
 
         "fold should call function on Invalid" {
             val exception = Exception("My Exception")
             val result: Validated<Throwable, String> = Invalid(exception)
             result.fold(
-                    { e -> e.message + " Checked" },
-                    { fail("Some should not be called") }
+                { e -> e.message + " Checked" },
+                { fail("Some should not be called") }
             ) shouldBe "My Exception Checked"
         }
 
@@ -53,8 +53,8 @@ class ValidatedTest : UnitSpec() {
             val value = "Some value"
             val result: Validated<Throwable, String> = Valid(value)
             result.fold(
-                    { fail("None should not be called") },
-                    { a -> a + " processed"}
+                { fail("None should not be called") },
+                { a -> a + " processed" }
             ) shouldBe value + " processed"
         }
 
@@ -84,7 +84,7 @@ class ValidatedTest : UnitSpec() {
 
         "valueOr should return value if is Valid or the the result of f in otherwise" {
             Valid(13).valueOr { fail("None should not be called") } shouldBe 13
-            Invalid(13).valueOr { e ->  e.toString() + " is the defaultValue" } shouldBe "13 is the defaultValue"
+            Invalid(13).valueOr { e -> e.toString() + " is the defaultValue" } shouldBe "13 is the defaultValue"
         }
 
         "orElse should return Valid(value) if is Valid or the result of default in otherwise" {
@@ -179,26 +179,29 @@ class ValidatedTest : UnitSpec() {
 
         "Cartesian builder should build products over homogeneous Validated" {
             Validated.applicative<String>().map(
-                    Valid("11th"),
-                    Valid("Doctor"),
-                    Valid("Who"),
-                    { (a, b, c) -> "$a $b $c" }) shouldBe Valid("11th Doctor Who")
+                Valid("11th"),
+                Valid("Doctor"),
+                Valid("Who"),
+                { (a, b, c) -> "$a $b $c" }
+            ) shouldBe Valid("11th Doctor Who")
         }
 
         "Cartesian builder should build products over heterogeneous Validated" {
             Validated.applicative<String>().map(
-                    Valid(13),
-                    Valid("Doctor"),
-                    Valid(false),
-                    { (a, b, c) -> "${a}th $b is $c" }) shouldBe Valid("13th Doctor is false")
+                Valid(13),
+                Valid("Doctor"),
+                Valid(false),
+                { (a, b, c) -> "${a}th $b is $c" }
+            ) shouldBe Valid("13th Doctor is false")
         }
 
         "Cartesian builder should build products over Invalid Validated" {
             Validated.applicative<String>().map(
-                    Invalid("fail1"),
-                    Invalid("fail2"),
-                    Valid("Who"),
-                    { "success!" }) shouldBe Invalid("fail1fail2")
+                Invalid("fail1"),
+                Invalid("fail2"),
+                Valid("Who"),
+                { "success!" }
+            ) shouldBe Invalid("fail1fail2")
         }
 
         "CombineK should combine Valid Validated" {

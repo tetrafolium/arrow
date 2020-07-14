@@ -37,11 +37,10 @@ typealias Invalid<E> = Validated.Invalid<E>
          * the invalid of the `Validated` when the specified `Option` is `None`.
          */
         fun <E, A> fromOption(o: Option<A>, ifNone: () -> E): Validated<E, A> =
-                o.fold(
-                        { Invalid(ifNone()) },
-                        { Valid(it) }
-                )
-
+            o.fold(
+                { Invalid(ifNone()) },
+                { Valid(it) }
+            )
     }
 
     data class Valid<out A>(val a: A) : Validated<Nothing, A>()
@@ -49,15 +48,15 @@ typealias Invalid<E> = Validated.Invalid<E>
     data class Invalid<out E>(val e: E) : Validated<E, Nothing>()
 
     inline fun <B> fold(fe: (E) -> B, fa: (A) -> B): B =
-            when (this) {
-                is Valid -> fa(a)
-                is Invalid -> (fe(e))
-            }
+        when (this) {
+            is Valid -> fa(a)
+            is Invalid -> (fe(e))
+        }
 
     val isValid =
-            fold({ false }, { true })
+        fold({ false }, { true })
     val isInvalid =
-            fold({ true }, { false })
+        fold({ true }, { false })
 
     /**
      * Is this Valid and matching the given predicate
@@ -87,10 +86,10 @@ typealias Invalid<E> = Validated.Invalid<E>
 
     /** Lift the Invalid value into a NonEmptyList. */
     fun toValidatedNel(): ValidatedNel<E, A> =
-            fold(
-                    { invalidNel(it) },
-                    { Valid(it) }
-            )
+        fold(
+            { invalidNel(it) },
+            { Valid(it) }
+        )
 
     /**
      * Convert to an Either, apply a function, convert back. This is handy
@@ -139,16 +138,16 @@ fun <E, B> Validated<E, B>.valueOr(f: (E) -> B): B = fold({ f(it) }, { it })
  * This is similar to [[orElse]] except that here failures are accumulated.
  */
 fun <E, A> Validated<E, A>.findValid(SE: Semigroup<E>, that: () -> Validated<E, A>): Validated<E, A> =
-        fold(
+    fold(
 
-                { e ->
-                    that().fold(
-                            { ee -> Invalid(SE.combine(e, ee)) },
-                            { Valid(it) }
-                    )
-                },
+        { e ->
+            that().fold(
+                { ee -> Invalid(SE.combine(e, ee)) },
                 { Valid(it) }
-        )
+            )
+        },
+        { Valid(it) }
+    )
 
 /**
  * Return this if it is Valid, or else fall back to the given default.
@@ -156,47 +155,49 @@ fun <E, A> Validated<E, A>.findValid(SE: Semigroup<E>, that: () -> Validated<E, 
  * where here only the error on the right is preserved and the error on the left is ignored.
  */
 fun <E, A> Validated<E, A>.orElse(default: () -> Validated<E, A>): Validated<E, A> =
-        fold(
-                { default() },
-                { Valid(it) }
-        )
+    fold(
+        { default() },
+        { Valid(it) }
+    )
 
 /**
  * From Apply:
  * if both the function and this value are Valid, apply the function
  */
 fun <E, A, B> Validated<E, A>.ap(f: Validated<E, (A) -> B>, SE: Semigroup<E>): Validated<E, B> =
-        when (this) {
-            is Valid -> f.fold({ Invalid(it) }, { Valid(it(a)) })
-            is Invalid -> f.fold({ Invalid(SE.combine(it, e)) }, { Invalid(e) })
-        }
+    when (this) {
+        is Valid -> f.fold({ Invalid(it) }, { Valid(it(a)) })
+        is Invalid -> f.fold({ Invalid(SE.combine(it, e)) }, { Invalid(e) })
+    }
 
 fun <E, A> Validated<E, A>.handleLeftWith(f: (E) -> ValidatedOf<E, A>): Validated<E, A> =
-        fold({ f(it).fix() }, { Valid(it) })
+    fold({ f(it).fix() }, { Valid(it) })
 
 fun <E, A, B> Validated<E, A>.foldRight(lb: Eval<B>, f: (A, Eval<B>) -> Eval<B>): Eval<B> =
-        when (this) {
-            is Valid -> f(this.a, lb)
-            is Invalid -> lb
-        }
+    when (this) {
+        is Valid -> f(this.a, lb)
+        is Invalid -> lb
+    }
 
 fun <G, E, A, B> Validated<E, A>.traverse(f: (A) -> Kind<G, B>, GA: Applicative<G>): Kind<G, Validated<E, B>> =
-        when (this) {
-            is Valid -> GA.map(f(this.a), { Valid(it) })
-            is Invalid -> GA.pure(this)
-        }
+    when (this) {
+        is Valid -> GA.map(f(this.a), { Valid(it) })
+        is Invalid -> GA.pure(this)
+    }
 
-inline fun <reified E, reified A> Validated<E, A>.combine(y: ValidatedOf<E, A>,
-                                                          SE: Semigroup<E> = semigroup(),
-                                                          SA: Semigroup<A> = semigroup()): Validated<E, A> =
-        y.fix().let { that ->
-            when {
-                this is Valid && that is Valid -> Valid(SA.combine(this.a, that.a))
-                this is Invalid && that is Invalid -> Invalid(SE.combine(this.e, that.e))
-                this is Invalid -> this
-                else -> that
-            }
+inline fun <reified E, reified A> Validated<E, A>.combine(
+    y: ValidatedOf<E, A>,
+    SE: Semigroup<E> = semigroup(),
+    SA: Semigroup<A> = semigroup()
+): Validated<E, A> =
+    y.fix().let { that ->
+        when {
+            this is Valid && that is Valid -> Valid(SA.combine(this.a, that.a))
+            this is Invalid && that is Invalid -> Invalid(SE.combine(this.e, that.e))
+            this is Invalid -> this
+            else -> that
         }
+    }
 
 fun <E, A> Validated<E, A>.combineK(y: ValidatedOf<E, A>, SE: Semigroup<E>): Validated<E, A> {
     val xev = this

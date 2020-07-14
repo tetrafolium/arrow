@@ -139,10 +139,10 @@ typealias IorNel<A, B> = Ior<Nel<A>, B>
     fun <C> foldLeft(c: C, f: (C, B) -> C): C = fold({ c }, { f(c, it) }, { _, b -> f(c, b) })
 
     fun <C> foldRight(lc: Eval<C>, f: (B, Eval<C>) -> Eval<C>): Eval<C> =
-            fold({ lc }, { f(it, lc) }, { _, b -> f(b, lc) })
+        fold({ lc }, { f(it, lc) }, { _, b -> f(b, lc) })
 
     fun <G, C> traverse(f: (B) -> Kind<G, C>, GA: Applicative<G>): Kind<G, Ior<A, C>> =
-            fold({ GA.pure(Left(it)) }, { GA.map(f(it), { Right(it) }) }, { _, b -> GA.map(f(b), { Right(it) }) })
+        fold({ GA.pure(Left(it)) }, { GA.map(f(it), { Right(it) }) }, { _, b -> GA.map(f(b), { Right(it) }) })
 
     /**
      * The given function is applied if this is a [Right] or [Both] to `B`.
@@ -155,9 +155,9 @@ typealias IorNel<A, B> = Ior<Nel<A>, B>
      * ```
      */
     inline fun <D> map(f: (B) -> D): Ior<A, D> = fold(
-            { Left(it) },
-            { Right(f(it)) },
-            { a, b -> Both(a, f(b)) }
+        { Left(it) },
+        { Right(f(it)) },
+        { a, b -> Both(a, f(b)) }
     )
 
     /**
@@ -172,9 +172,9 @@ typealias IorNel<A, B> = Ior<Nel<A>, B>
      * ```
      */
     inline fun <C, D> bimap(fa: (A) -> C, fb: (B) -> D) = fold(
-            { Left(fa(it)) },
-            { Right(fb(it)) },
-            { a, b -> Both(fa(a), fb(b)) }
+        { Left(fa(it)) },
+        { Right(fb(it)) },
+        { a, b -> Both(fa(a), fb(b)) }
     )
 
     /**
@@ -188,9 +188,9 @@ typealias IorNel<A, B> = Ior<Nel<A>, B>
      * ```
      */
     inline fun <C> mapLeft(fa: (A) -> C): Ior<C, B> = fold(
-            { Left(fa(it)) },
-            { Right((it)) },
-            { a, b -> Both(fa(a), b) }
+        { Left(fa(it)) },
+        { Right((it)) },
+        { a, b -> Both(fa(a), b) }
     )
 
     /**
@@ -205,18 +205,18 @@ typealias IorNel<A, B> = Ior<Nel<A>, B>
      * ```
      */
     fun swap(): Ior<B, A> = fold(
-            { Right(it) },
-            { Left(it) },
-            { a, b -> Both(b, a) }
+        { Right(it) },
+        { Left(it) },
+        { a, b -> Both(b, a) }
     )
 
     /**
      * Return the isomorphic [Either] of this [Ior]
      */
     fun unwrap(): Either<Either<A, B>, Pair<A, B>> = fold(
-            { Either.Left(Either.Left(it)) },
-            { Either.Left(Either.Right(it)) },
-            { a, b -> Either.Right(Pair(a, b)) }
+        { Either.Left(Either.Left(it)) },
+        { Either.Left(Either.Right(it)) },
+        { a, b -> Either.Right(Pair(a, b)) }
     )
 
     /**
@@ -230,9 +230,9 @@ typealias IorNel<A, B> = Ior<Nel<A>, B>
      * ```
      */
     fun pad(): Pair<Option<A>, Option<B>> = fold(
-            { Pair(Some(it), None) },
-            { Pair(None, Some(it)) },
-            { a, b -> Pair(Some(a), Some(b)) }
+        { Pair(Some(it), None) },
+        { Pair(None, Some(it)) },
+        { a, b -> Pair(Some(a), Some(b)) }
     )
 
     /**

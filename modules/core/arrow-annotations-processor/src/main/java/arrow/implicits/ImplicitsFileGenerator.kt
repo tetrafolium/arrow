@@ -1,15 +1,15 @@
 package arrow.implicits
 
-import arrow.common.Type
 import arrow.common.Package
+import arrow.common.Type
+import arrow.common.utils.ClassOrPackageDataWrapper
+import arrow.common.utils.extractFullName
+import arrow.common.utils.knownError
 import arrow.implicits.AnnotatedImplicits.Consumer
 import arrow.implicits.AnnotatedImplicits.Consumer.ValueParameter
 import arrow.implicits.AnnotatedImplicits.Provider
 import arrow.implicits.AnnotatedImplicits.Provider.Function
 import arrow.implicits.AnnotatedImplicits.Provider.Property
-import arrow.common.utils.ClassOrPackageDataWrapper
-import arrow.common.utils.extractFullName
-import arrow.common.utils.knownError
 import me.eugeniomarletti.kotlin.metadata.escapedClassName
 import me.eugeniomarletti.kotlin.metadata.jvm.getJvmMethodSignature
 import me.eugeniomarletti.kotlin.metadata.plusIfNotBlank
@@ -21,9 +21,9 @@ typealias ProviderInvocation = String
 typealias FunctionToGenerate = String
 
 class ImplicitsFileGenerator(
-        private val generatedDir: File,
-        private val annotatedList: List<AnnotatedImplicits>,
-        private val useTypeAlias: Boolean
+    private val generatedDir: File,
+    private val annotatedList: List<AnnotatedImplicits>,
+    private val useTypeAlias: Boolean
 ) {
 
     /**
@@ -39,9 +39,9 @@ class ImplicitsFileGenerator(
 
         val providerInvocationsByType: Map<Type, ProviderInvocation> = getProviderInvocationsByType(providersByType)
         val consumerFunctionGroupsByPackage: Map<Package, List<List<Consumer>>> =
-                getConsumerFunctionGroupsByPackage(consumers)
+            getConsumerFunctionGroupsByPackage(consumers)
         val functionsToGenerateByPackage: Map<Package, List<FunctionToGenerate>> =
-                getFunctionsToGenerateByPackage(consumerFunctionGroupsByPackage, providerInvocationsByType)
+            getFunctionsToGenerateByPackage(consumerFunctionGroupsByPackage, providerInvocationsByType)
 
         val sources: List<Pair<Package, String>> = functionsToGenerateByPackage.entries.mapIndexed { _, (`package`, functionsToGenerate) ->
             val source: String = functionsToGenerate.joinToString(prefix = "package $`package`\n\n", separator = "\n")
@@ -143,8 +143,8 @@ class ImplicitsFileGenerator(
             .groupBy { consumersInFunction -> consumersInFunction[0].classOrPackageProto.`package` }
 
     private fun getFunctionsToGenerateByPackage(
-            consumerFunctionGroupsByPackage: Map<Package, List<List<Consumer>>>,
-            providerInvocationsByType: Map<Type, ProviderInvocation>
+        consumerFunctionGroupsByPackage: Map<Package, List<List<Consumer>>>,
+        providerInvocationsByType: Map<Type, ProviderInvocation>
     ): Map<Package, List<FunctionToGenerate>> =
         consumerFunctionGroupsByPackage.mapValues { (`package`, consumerFunctionGroup) ->
             consumerFunctionGroup.map { consumersInFunction ->

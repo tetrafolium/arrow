@@ -48,24 +48,27 @@ class OptionTest : UnitSpec() {
 
         val EQ_EITHER: Eq<Kind<ForOption, Either<Unit, Int>>> = Eq { a, b ->
             a.fix().fold(
-                    { b.fix().fold({ true }, { false }) },
-                    { eitherA: Either<Unit, Int> ->
-                        b.fix().fold(
-                                { false },
-                                { eitherB: Either<Unit, Int> ->
-                                    eitherA.fold(
-                                            { eitherB.fold({ true /* Ignore the error kind */ }, { false }) },
-                                            { ia -> eitherB.fold({ false }, { ia == it }) })
-                                })
-                    })
+                { b.fix().fold({ true }, { false }) },
+                { eitherA: Either<Unit, Int> ->
+                    b.fix().fold(
+                        { false },
+                        { eitherB: Either<Unit, Int> ->
+                            eitherA.fold(
+                                { eitherB.fold({ true /* Ignore the error kind */ }, { false }) },
+                                { ia -> eitherB.fold({ false }, { ia == it }) }
+                            )
+                        }
+                    )
+                }
+            )
         }
 
         testLaws(
-                EqLaws.laws(eq(), { genOption(Gen.int()).generate() }),
-                ShowLaws.laws(show(), eq(), { it.some() }),
-                //testLaws(MonadErrorLaws.laws(monadError<ForOption, Unit>(), Eq.any(), EQ_EITHER)) TODO reenable once the MonadErrorLaws are parametric to `E`
-                TraverseFilterLaws.laws(Option.traverseFilter(), Option.monad(), ::Some, Eq.any()),
-                MonadFilterLaws.laws(Option.monadFilter(), ::Some, Eq.any())
+            EqLaws.laws(eq(), { genOption(Gen.int()).generate() }),
+            ShowLaws.laws(show(), eq(), { it.some() }),
+            // testLaws(MonadErrorLaws.laws(monadError<ForOption, Unit>(), Eq.any(), EQ_EITHER)) TODO reenable once the MonadErrorLaws are parametric to `E`
+            TraverseFilterLaws.laws(Option.traverseFilter(), Option.monad(), ::Some, Eq.any()),
+            MonadFilterLaws.laws(Option.monadFilter(), ::Some, Eq.any())
         )
 
         "fromNullable should work for both null and non-null values of nullable types" {
@@ -97,7 +100,6 @@ class OptionTest : UnitSpec() {
                 is Some<String> -> fail("")
                 is None -> otherOption shouldBe None
             }
-
         }
 
         "getOrElse" {
@@ -160,7 +162,6 @@ class OptionTest : UnitSpec() {
             none.forEach {
                 fail("")
             }
-
         }
 
         "orElse" {
@@ -207,7 +208,6 @@ class OptionTest : UnitSpec() {
             x and None shouldBe None
             None and x shouldBe None
             None and None shouldBe None
-
         }
 
         "or" {
@@ -217,8 +217,6 @@ class OptionTest : UnitSpec() {
             x or None shouldBe Some(2)
             None or x shouldBe Some(2)
             None or None shouldBe None
-
         }
     }
-
 }

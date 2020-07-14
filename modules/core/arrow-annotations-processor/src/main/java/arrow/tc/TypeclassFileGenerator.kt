@@ -11,42 +11,42 @@ import org.jetbrains.kotlin.serialization.ProtoBuf
 import java.io.File
 
 fun ClassOrPackageDataWrapper.expandedTypeArgs(reified: Boolean = false): String =
-        if (typeParameters.isNotEmpty()) {
-            typeParameters.joinToString(
-                    prefix = "<",
-                    separator = ", ",
-                    transform = {
-                        val name = nameResolver.getString(it.name)
-                        if (reified) "reified $name" else name
-                    },
-                    postfix = ">"
-            )
-        } else {
-            ""
-        }
+    if (typeParameters.isNotEmpty()) {
+        typeParameters.joinToString(
+            prefix = "<",
+            separator = ", ",
+            transform = {
+                val name = nameResolver.getString(it.name)
+                if (reified) "reified $name" else name
+            },
+            postfix = ">"
+        )
+    } else {
+        ""
+    }
 
 data class Typeclass(
-        val `package`: Package,
-        val target: AnnotatedTypeclass
+    val `package`: Package,
+    val target: AnnotatedTypeclass
 ) {
     val clazz = target.classOrPackageProto as ClassOrPackageDataWrapper.Class
     val typeArgs: List<String> = target.classOrPackageProto.typeParameters.map { target.classOrPackageProto.nameResolver.getString(it.name) }
     fun expandedTypeArgs(reified: Boolean = false): String =
-            target.classOrPackageProto.expandedTypeArgs(reified)
+        target.classOrPackageProto.expandedTypeArgs(reified)
 
     val name: String = clazz.nameResolver.getString(clazz.classProto.fqName).replace("/", ".")
     val simpleName = name.substringAfterLast(".")
 }
 
 data class SyntaxFunctionSignature(
-        val typeClass: Typeclass,
-        val tparams: List<String>,
-        val name: String,
-        val args: List<Pair<String, String>>,
-        val retType: String,
-        val hkArgs: HKArgs,
-        val receiverType: String,
-        val isAbstract: Boolean
+    val typeClass: Typeclass,
+    val tparams: List<String>,
+    val name: String,
+    val args: List<Pair<String, String>>,
+    val retType: String,
+    val hkArgs: HKArgs,
+    val receiverType: String,
+    val isAbstract: Boolean
 
 ) {
 
@@ -63,24 +63,24 @@ data class SyntaxFunctionSignature(
     }
 
     fun receiver(): String =
-            when (hkArgs) {
-                is HKArgs.None -> ""
-                is HKArgs.First -> "${args[0].second}."
-                is HKArgs.Unknown -> "${args[0].second}."
-            }
+        when (hkArgs) {
+            is HKArgs.None -> ""
+            is HKArgs.First -> "${args[0].second}."
+            is HKArgs.Unknown -> "${args[0].second}."
+        }
 
     fun implBody(): String =
-            when (hkArgs) {
-                is HKArgs.None -> "this@${typeClass.simpleName}Syntax.${typeClass.simpleName.decapitalize()}().__name__(${args.drop(2).joinToString(", ")})"
-                is HKArgs.First -> {
-                    val thisArgs = listOf("this" to "") + args.drop(2)
-                    "this@${typeClass.simpleName}Syntax.${typeClass.simpleName.decapitalize()}().__name__(${thisArgs.joinToString(", ") { it.first }})"
-                }
-                is HKArgs.Unknown -> {
-                    val thisArgs = listOf("this" to "") + args.drop(2)
-                    "this@${typeClass.simpleName}Syntax.${typeClass.simpleName.decapitalize()}().__name__(${thisArgs.joinToString(", ") { it.first }})"
-                }
+        when (hkArgs) {
+            is HKArgs.None -> "this@${typeClass.simpleName}Syntax.${typeClass.simpleName.decapitalize()}().__name__(${args.drop(2).joinToString(", ")})"
+            is HKArgs.First -> {
+                val thisArgs = listOf("this" to "") + args.drop(2)
+                "this@${typeClass.simpleName}Syntax.${typeClass.simpleName.decapitalize()}().__name__(${thisArgs.joinToString(", ") { it.first }})"
             }
+            is HKArgs.Unknown -> {
+                val thisArgs = listOf("this" to "") + args.drop(2)
+                "this@${typeClass.simpleName}Syntax.${typeClass.simpleName.decapitalize()}().__name__(${thisArgs.joinToString(", ") { it.first }})"
+            }
+        }
 
     companion object {
 
@@ -106,22 +106,22 @@ data class SyntaxFunctionSignature(
             val abstractReturnType = f.returnType.extractFullName(typeClass.clazz, failOnGeneric = false)
             val isAbstract = f.modality == ProtoBuf.Modality.ABSTRACT
             return SyntaxFunctionSignature(
-                    typeClass = typeClass,
-                    tparams = typeParams,
-                    name = nameResolver.getString(f.name),
-                    args = args,
-                    retType = abstractReturnType,
-                    hkArgs = hkArgs,
-                    receiverType = receiverType,
-                    isAbstract = isAbstract
+                typeClass = typeClass,
+                tparams = typeParams,
+                name = nameResolver.getString(f.name),
+                args = args,
+                retType = abstractReturnType,
+                hkArgs = hkArgs,
+                receiverType = receiverType,
+                isAbstract = isAbstract
             )
         }
     }
 }
 
 class TypeclassFileGenerator(
-        private val generatedDir: File,
-        annotatedList: List<AnnotatedTypeclass>
+    private val generatedDir: File,
+    annotatedList: List<AnnotatedTypeclass>
 ) {
 
     private val typeclasses: List<Typeclass> = annotatedList.map {
@@ -169,10 +169,10 @@ class TypeclassFileGenerator(
     }
 
     fun List<String>.renderExtendsClause(): String =
-            if (isEmpty()) "" else ": " + joinToString(separator = ", ")
+        if (isEmpty()) "" else ": " + joinToString(separator = ", ")
 
     fun List<String>.renderOverrides(): String =
-            if (isEmpty()) "" else joinToString(separator = "\n\n  ")
+        if (isEmpty()) "" else joinToString(separator = "\n\n  ")
 
     private fun genSyntax(tc: Typeclass): String {
         val delegatedFunctions: List<String> = removeOverrides(tc, functionSignatures(tc)).map { it.generate() }
@@ -203,5 +203,4 @@ class TypeclassFileGenerator(
             |}
             |""".trimMargin()
     }
-
 }

@@ -63,6 +63,8 @@ fun <F : Comparable<F>> toOrder(): Order<F> = object : Order<F> {
  * @param O [Order] for the type [F] you want to compare by default the global instance will be used for type [F].
  * @returns sorted list by [O].
  */
-inline fun <reified F> Iterable<F>.sorted(O: Order<F> = order()): List<F> = sortedWith(Comparator { o1, o2 ->
-    O.compare(o1, o2)
-})
+inline fun <reified F> Iterable<F>.sorted(O: Order<F> = order()): List<F> = sortedWith(
+    Comparator { o1, o2 ->
+        O.compare(o1, o2)
+    }
+)

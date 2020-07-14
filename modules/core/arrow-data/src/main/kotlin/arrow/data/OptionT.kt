@@ -24,19 +24,29 @@ import arrow.typeclasses.applicative
         inline fun <reified F> none(AF: Applicative<F> = applicative<F>()): OptionT<F, Nothing> = OptionT(AF.pure(None))
 
         inline fun <reified F, A> fromOption(value: Option<A>, AF: Applicative<F> = applicative<F>()): OptionT<F, A> =
-                OptionT(AF.pure(value))
+            OptionT(AF.pure(value))
 
         fun <F, A, B> tailRecM(a: A, f: (A) -> OptionTOf<F, Either<A, B>>, MF: Monad<F>): OptionT<F, B> =
-                OptionT(MF.tailRecM(a, {
-                    MF.map(f(it).fix().value, {
-                        it.fold({
-                            Right<Option<B>>(None)
-                        }, {
-                            it.map { Some(it) }
-                        })
-                    })
-                }))
-
+            OptionT(
+                MF.tailRecM(
+                    a,
+                    {
+                        MF.map(
+                            f(it).fix().value,
+                            {
+                                it.fold(
+                                    {
+                                        Right<Option<B>>(None)
+                                    },
+                                    {
+                                        it.map { Some(it) }
+                                    }
+                                )
+                            }
+                        )
+                    }
+                )
+            )
     }
 
     inline fun <B> fold(crossinline default: () -> B, crossinline f: (A) -> B, FF: Functor<F>): Kind<F, B> = FF.map(value, { option -> option.fold(default, f) })
@@ -48,7 +58,7 @@ import arrow.typeclasses.applicative
     inline fun <B> flatMap(crossinline f: (A) -> OptionT<F, B>, MF: Monad<F>): OptionT<F, B> = flatMapF({ it -> f(it).value }, MF)
 
     inline fun <B> flatMapF(crossinline f: (A) -> Kind<F, Option<B>>, MF: Monad<F>): OptionT<F, B> =
-            OptionT(MF.flatMap(value, { option -> option.fold({ MF.pure(None) }, f) }))
+        OptionT(MF.flatMap(value, { option -> option.fold({ MF.pure(None) }, f) }))
 
     fun <B> liftF(fa: Kind<F, B>, FF: Functor<F>): OptionT<F, B> = OptionT(FF.map(fa, { Some(it) }))
 
@@ -71,25 +81,27 @@ import arrow.typeclasses.applicative
     inline fun orElse(crossinline default: () -> OptionT<F, A>, MF: Monad<F>): OptionT<F, A> = orElseF({ default().value }, MF)
 
     inline fun orElseF(crossinline default: () -> Kind<F, Option<A>>, MF: Monad<F>): OptionT<F, A> =
-            OptionT(MF.flatMap(value) {
+        OptionT(
+            MF.flatMap(value) {
                 when (it) {
                     is Some<A> -> MF.pure(it)
                     is None -> default()
                 }
-            })
+            }
+        )
 
     inline fun <B> transform(crossinline f: (Option<A>) -> Option<B>, FF: Functor<F>): OptionT<F, B> = OptionT(FF.map(value, { f(it) }))
 
     inline fun <B> subflatMap(crossinline f: (A) -> Option<B>, FF: Functor<F>): OptionT<F, B> = transform({ it.flatMap(f) }, FF)
 
     fun <R> toLeft(default: () -> R, FF: Functor<F>): EitherT<F, A, R> =
-            EitherT(cata({ Right(default()) }, { Left(it) }, FF))
+        EitherT(cata({ Right(default()) }, { Left(it) }, FF))
 
     fun <L> toRight(default: () -> L, FF: Functor<F>): EitherT<F, L, A> =
-            EitherT(cata({ Left(default()) }, { Right(it) }, FF))
+        EitherT(cata({ Left(default()) }, { Right(it) }, FF))
 }
 
 inline fun <F, A, B> OptionT<F, A>.mapFilter(crossinline f: (A) -> Option<B>, FF: Functor<F>): OptionT<F, B> =
-        OptionT(FF.map(value, { it.flatMap(f) }))
+    OptionT(FF.map(value, { it.flatMap(f) }))
 
 fun <F, A> OptionTOf<F, A>.value(): Kind<F, Option<A>> = this.fix().value

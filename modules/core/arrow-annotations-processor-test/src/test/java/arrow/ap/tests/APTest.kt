@@ -1,20 +1,17 @@
 package arrow.ap.tests
 
-import io.kotlintest.specs.StringSpec
-
-import arrow.optics.OptikalProcessor
 import com.google.common.collect.ImmutableList
 import com.google.common.io.Files
-import com.google.testing.compile.Compilation
 import com.google.testing.compile.Compilation.Status.*
 import com.google.testing.compile.CompilationSubject.assertThat
 import com.google.testing.compile.Compiler.javac
 import com.google.testing.compile.JavaFileObjects
 import io.kotlintest.matchers.shouldBe
+import io.kotlintest.specs.StringSpec
 import java.io.File
 import java.nio.file.Paths
 
-open class APTest: StringSpec() {
+open class APTest : StringSpec() {
 
     fun testProcessor(
         vararg processor: AnnotationProcessor
@@ -40,22 +37,22 @@ open class APTest: StringSpec() {
                 val stub = File(stubs, source).toURI().toURL()
 
                 val compilation = javac()
-                        .withProcessors(proc)
-                        .withOptions(ImmutableList.of("-Akapt.kotlin.generated=$temp"))
-                        .compile(JavaFileObjects.forResource(stub))
+                    .withProcessors(proc)
+                    .withOptions(ImmutableList.of("-Akapt.kotlin.generated=$temp"))
+                    .compile(JavaFileObjects.forResource(stub))
 
                 if (error != null) {
 
                     assertThat(compilation)
-                            .failed()
+                        .failed()
                     assertThat(compilation)
-                            .hadErrorContaining(error)
+                        .hadErrorContaining(error)
 
                     return@name
                 }
 
                 assertThat(compilation)
-                        .succeeded()
+                    .succeeded()
 
                 temp.listFiles().size shouldBe 1
 
@@ -63,13 +60,7 @@ open class APTest: StringSpec() {
                 val actual = temp.listFiles()[0].readText()
 
                 expected shouldBe actual
-
             }
-
         }
-
-
-
     }
-
 }

@@ -9,9 +9,9 @@ interface Functor<F> : TC {
     fun <A, B> map(fa: Kind<F, A>, f: (A) -> B): Kind<F, B>
 
     fun <A, B> lift(f: (A) -> B): (Kind<F, A>) -> Kind<F, B> =
-            { fa: Kind<F, A> ->
-                map(fa, f)
-            }
+        { fa: Kind<F, A> ->
+            map(fa, f)
+        }
 
     fun <A> void(fa: Kind<F, A>): Kind<F, Unit> = map(fa, { _ -> Unit })
 
@@ -22,7 +22,6 @@ interface Functor<F> : TC {
     fun <A, B> tupleLeft(fa: Kind<F, A>, b: B): Kind<F, Tuple2<B, A>> = map(fa, { a -> Tuple2(b, a) })
 
     fun <A, B> tupleRight(fa: Kind<F, A>, b: B): Kind<F, Tuple2<A, B>> = map(fa, { a -> Tuple2(a, b) })
-
 }
 
 fun <F, B, A : B> Functor<F>.widen(fa: Kind<F, A>): Kind<F, B> = fa

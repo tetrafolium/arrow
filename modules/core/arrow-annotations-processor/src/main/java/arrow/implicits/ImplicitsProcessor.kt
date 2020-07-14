@@ -1,12 +1,12 @@
 package arrow.implicits
 
-import com.google.auto.service.AutoService
 import arrow.common.utils.AbstractProcessor
 import arrow.common.utils.ClassOrPackageDataWrapper
 import arrow.common.utils.getParameter
 import arrow.common.utils.getPropertyOrNull
 import arrow.common.utils.isCompanionOrObject
 import arrow.common.utils.knownError
+import com.google.auto.service.AutoService
 import me.eugeniomarletti.kotlin.metadata.classKind
 import me.eugeniomarletti.kotlin.metadata.declaresDefaultValue
 import java.io.File
@@ -19,19 +19,19 @@ import javax.lang.model.element.ExecutableElement
 import javax.lang.model.element.TypeElement
 import javax.lang.model.element.VariableElement
 
-//TODO support constructors
-//TODO check that providers are accessible (public file/object)
-//TODO check that consumers are accessible
-//TODO better errors, plus log the fully qualified name/signature of the kotlin element
-//TODO support non-object classes with empty constructors
-//TODO maybe support enums?
-//TODO generate overloads when consumer have parameters with default values
-//TODO support implicit parameters in provider
-//TODO check that generated functions don't conflict with existing functions
+// TODO support constructors
+// TODO check that providers are accessible (public file/object)
+// TODO check that consumers are accessible
+// TODO better errors, plus log the fully qualified name/signature of the kotlin element
+// TODO support non-object classes with empty constructors
+// TODO maybe support enums?
+// TODO generate overloads when consumer have parameters with default values
+// TODO support implicit parameters in provider
+// TODO check that generated functions don't conflict with existing functions
 
-//TODO support generic types
+// TODO support generic types
 
-//TODO open issue about nested functions not having stubs, resulting in annotations not going through processing
+// TODO open issue about nested functions not having stubs, resulting in annotations not going through processing
 
 @AutoService(Processor::class)
 class ImplicitsProcessor : AbstractProcessor() {

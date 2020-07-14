@@ -14,12 +14,11 @@ class KnownException(message: String, val element: Element?) : RuntimeException(
 
 abstract class AbstractProcessor : KotlinAbstractProcessor(), ProcessorUtils {
 
-    override final fun process(annotations: Set<TypeElement>, roundEnv: RoundEnvironment): Boolean {
+    final override fun process(annotations: Set<TypeElement>, roundEnv: RoundEnvironment): Boolean {
         if (!roundEnv.errorRaised()) {
             try {
                 onProcess(annotations, roundEnv)
-            }
-            catch (e: KnownException) {
+            } catch (e: KnownException) {
                 logE(e.message, e.element)
             }
         }

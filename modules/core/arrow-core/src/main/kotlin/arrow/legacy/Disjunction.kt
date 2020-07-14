@@ -10,8 +10,8 @@ sealed class Disjunction<out L, out R> : EitherLike {
         fun <R> right(right: R): Right<Nothing, R> = Right(right)
     }
 
-    operator abstract fun component1(): L?
-    operator abstract fun component2(): R?
+    abstract operator fun component1(): L?
+    abstract operator fun component2(): R?
 
     fun swap(): Disjunction<R, L> = when (this) {
         is Right -> Left(value)
@@ -45,11 +45,12 @@ sealed class Disjunction<out L, out R> : EitherLike {
     }
 
     fun filter(predicate: (R) -> Boolean): Option<Disjunction<L, R>> = when (this) {
-        is Right -> if (predicate(value)) {
-            Some(this)
-        } else {
-            None
-        }
+        is Right ->
+            if (predicate(value)) {
+                Some(this)
+            } else {
+                None
+            }
         is Left -> None
     }
 
@@ -79,7 +80,6 @@ sealed class Disjunction<out L, out R> : EitherLike {
         override fun hashCode(): Int = value.hashCodeForNullable(43) { a, b -> a * b }
 
         override fun toString(): String = "Disjunction.Left($value)"
-
     }
 
     class Right<out L, out R>(val value: R) : Disjunction<L, R>(), RightLike {
@@ -94,7 +94,6 @@ sealed class Disjunction<out L, out R> : EitherLike {
         override fun hashCode(): Int = value.hashCodeForNullable(43) { a, b -> a * b }
 
         override fun toString(): String = "Disjunction.Right($value)"
-
     }
 }
 
@@ -120,4 +119,3 @@ fun <X, L, R> Disjunction<L, R>.flatMap(f: (R) -> Disjunction<L, X>): Disjunctio
 }
 
 fun <L, R, X, Y> Disjunction<L, R>.map(x: Disjunction<L, X>, f: (R, X) -> Y): Disjunction<L, Y> = flatMap { r -> x.map { xx -> f(r, xx) } }
-

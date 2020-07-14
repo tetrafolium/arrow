@@ -16,35 +16,35 @@ class CoreaderTest : UnitSpec() {
         "map should return mapped value" {
             forAll { num: Int ->
                 Coreader<Int, Int> { it -> it * 2 }.map { it -> it * 3 }
-                        .runId(num) == num * 6
+                    .runId(num) == num * 6
             }
         }
 
         "flatMap should map over the inner value" {
             forAll { num: Int ->
                 Coreader<Int, Int>({ it -> it * 2 }).flatMap { a -> Coreader.pure<Int, Int>(a * 3) }
-                        .runId(num) == num * 6
+                    .runId(num) == num * 6
             }
         }
 
         "bimap should map over both sides of the run function" {
             forAll { num: Int ->
                 Coreader<Int, Int>({ it -> it * 2 }).bimap({ a: String -> Integer.parseInt(a) }, { it.toString() })
-                        .runId("$num") == "${num * 2}"
+                    .runId("$num") == "${num * 2}"
             }
         }
 
         "lmap should map over the left side of the function" {
             forAll { num: Int ->
                 Coreader<Int, Int>({ it -> it * 2 }).lmap { a: String -> Integer.parseInt(a) }
-                        .runId("$num") == num * 2
+                    .runId("$num") == num * 2
             }
         }
 
         "contramapValue" {
             forAll { num: Int ->
                 Coreader<Int, Int>({ it -> it * 2 }).contramapValue { a: IdOf<Int> -> Id(a.value() * 3) }
-                        .runId(num) == num * 6
+                    .runId(num) == num * 6
             }
         }
 

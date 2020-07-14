@@ -13,29 +13,29 @@ import io.kotlintest.specs.FreeSpec
 
 class TypeclasslessExamples : FreeSpec() {
 
-    ///////////////////////////////////
-    //// BUILDING THE MACHINERY
-    ///////////////////////////////////
+    // /////////////////////////////////
+    // // BUILDING THE MACHINERY
+    // /////////////////////////////////
 
     // Complete example of syntax using a simple fake typeclass
 
-    interface Identity<F>: TC {
+    interface Identity<F> : TC {
         fun <A> identify(a: Kind<F, A>): Kind<F, A> =
-                a
+            a
     }
 
     interface IdentifySyntax<F> {
         fun ID(): Identity<F>
 
         fun <A> Kind<F, A>.identify(): Kind<F, A> =
-                ID().identify(this)
+            ID().identify(this)
     }
 
     fun <F> Identity<F>.s() =
-            object : IdentifySyntax<F> {
-                override fun ID(): Identity<F> =
-                        this@s
-            }
+        object : IdentifySyntax<F> {
+            override fun ID(): Identity<F> =
+                this@s
+        }
 
     // Syntax for existing typeclass
 
@@ -43,58 +43,56 @@ class TypeclasslessExamples : FreeSpec() {
         fun AP(): Applicative<F>
 
         fun <A> A.pure(): Kind<F, A> =
-                AP().pure(this)
+            AP().pure(this)
 
         fun <A, B> Kind<F, A>.map(f: (A) -> B): Kind<F, B> =
-                AP().map(this, f)
+            AP().map(this, f)
     }
 
     fun <F> Applicative<F>.s() =
-            object : ApplicativeSyntax<F> {
-                override fun AP(): Applicative<F> =
-                        this@s
-            }
+        object : ApplicativeSyntax<F> {
+            override fun AP(): Applicative<F> =
+                this@s
+        }
 
     // How to define a requirement on multiple typeclasses
 
     interface ApplicativeAndIdentifySyntax<F> : ApplicativeSyntax<F>, IdentifySyntax<F>
 
     fun <F> allSyntax(AP: Applicative<F>, ID: Identity<F>): ApplicativeAndIdentifySyntax<F> =
-            object : ApplicativeAndIdentifySyntax<F>, ApplicativeSyntax<F> by AP.s(), IdentifySyntax<F> by ID.s() {}
+        object : ApplicativeAndIdentifySyntax<F>, ApplicativeSyntax<F> by AP.s(), IdentifySyntax<F> by ID.s() {}
 
-
-    ///////////////////////////////////
-    //// DEFINING OUR DEPENDENCIES
-    ///////////////////////////////////
+    // /////////////////////////////////
+    // // DEFINING OUR DEPENDENCIES
+    // /////////////////////////////////
 
     // Define some trivial instances for Identify and Applicative
 
     val ID_LIST: Identity<ForListK> =
-            object : Identity<ForListK> {}
+        object : Identity<ForListK> {}
 
     val AP =
-            ListK.applicative()
+        ListK.applicative()
 
     val ALL_SYNTAX =
-            allSyntax(AP, ID_LIST)
-
+        allSyntax(AP, ID_LIST)
 
     // Functions depending on syntax
 
     object ScopeOne {
         fun <F> ApplicativeSyntax<F>.inScopeOne(): Kind<F, Int> =
-                1.pure()
+            1.pure()
     }
 
     object ScopeTwo {
         fun <F> IdentifySyntax<F>.withIdentify(a: Kind<F, Int>): Kind<F, Int> =
-                a.identify()
+            a.identify()
 
         fun <F> ApplicativeSyntax<F>.withApplicative(): Kind<F, Int> =
-                1.pure().map { inScopeOne() }.map { 1 }
+            1.pure().map { inScopeOne() }.map { 1 }
 
         fun <F> ApplicativeAndIdentifySyntax<F>.withAll(): Kind<F, Int> =
-                withIdentify(withApplicative()).identify().map { it }
+            withIdentify(withApplicative()).identify().map { it }
     }
 
     // It only works inside classes if they extend the syntax, although it's inheritable!
@@ -111,9 +109,9 @@ class TypeclasslessExamples : FreeSpec() {
         fun insideClassFromChild() = insideClass()
     }
 
-    ///////////////////////////////////
-    //// USING TYPECLASSLESS STYLE!
-    ///////////////////////////////////
+    // /////////////////////////////////
+    // // USING TYPECLASSLESS STYLE!
+    // /////////////////////////////////
 
     init {
         val expected = listOf(1).k()

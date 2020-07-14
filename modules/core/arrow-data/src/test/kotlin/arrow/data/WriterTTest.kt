@@ -39,9 +39,11 @@ class WriterTTest : UnitSpec() {
                 WriterT.applicative(),
                 Eq { a, b ->
                     a.fix().value == b.fix().value
-                }),
+                }
+            ),
 
-            MonadWriterLaws.laws(WriterT.monad(Option.monad(), IntMonoid),
+            MonadWriterLaws.laws(
+                WriterT.monad(Option.monad(), IntMonoid),
                 WriterT.monadWriter(Option.monad(), IntMonoid),
                 IntMonoid,
                 genIntSmall(),
@@ -60,16 +62,17 @@ class WriterTTest : UnitSpec() {
                 }
             ),
 
-            MonadFilterLaws.laws(WriterT.monadFilter(Option.monadFilter(), IntMonoid),
+            MonadFilterLaws.laws(
+                WriterT.monadFilter(Option.monadFilter(), IntMonoid),
                 { WriterT(Option(Tuple2(it, it))) },
                 object : Eq<Kind<WriterTPartialOf<ForOption, Int>, Int>> {
                     override fun eqv(a: Kind<WriterTPartialOf<ForOption, Int>, Int>, b: Kind<WriterTPartialOf<ForOption, Int>, Int>): Boolean =
-                            a.fix().value.fix().let { optionA: Option<Tuple2<Int, Int>> ->
-                                val optionB = b.fix().value.fix()
-                                optionA.fold({ optionB.fold({ true }, { false }) }, { value: Tuple2<Int, Int> -> optionB.fold({ false }, { value == it }) })
-                            }
-                })
+                        a.fix().value.fix().let { optionA: Option<Tuple2<Int, Int>> ->
+                            val optionB = b.fix().value.fix()
+                            optionA.fold({ optionB.fold({ true }, { false }) }, { value: Tuple2<Int, Int> -> optionB.fold({ false }, { value == it }) })
+                        }
+                }
+            )
         )
-
     }
 }

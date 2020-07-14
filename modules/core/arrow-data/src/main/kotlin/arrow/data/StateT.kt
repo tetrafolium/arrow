@@ -41,13 +41,13 @@ inline fun <reified F, S, A> StateTOf<F, S, A>.runM(initial: S, MF: Monad<F> = m
  */
 @higherkind
 class StateT<F, S, A>(
-        val runF: StateTFunOf<F, S, A>
+    val runF: StateTFunOf<F, S, A>
 ) : StateTOf<F, S, A>, StateTKindedJ<F, S, A> {
 
     companion object {
 
         inline fun <reified F, S, T> pure(t: T, MF: Monad<F> = monad<F>()): StateT<F, S, T> =
-                StateT { s -> MF.pure(s toT t) }
+            StateT { s -> MF.pure(s toT t) }
 
         /**
          * Constructor to create `StateT<F, S, A>` given a [StateTFun].
@@ -137,13 +137,18 @@ class StateT<F, S, A>(
          * @param MF [Monad] for the context [F].
          */
         fun <F, S, A, B> tailRecM(a: A, f: (A) -> Kind<StateTPartialOf<F, S>, Either<A, B>>, MF: Monad<F>): StateT<F, S, B> =
-                StateT(MF.pure({ s: S ->
-                    MF.tailRecM(Tuple2(s, a), { (s, a0) ->
-                        MF.map(f(a0).runM(MF, s)) { (s, ab) ->
-                            ab.bimap({ a1 -> Tuple2(s, a1) }, { b -> Tuple2(s, b) })
+            StateT(
+                MF.pure({ s: S ->
+                    MF.tailRecM(
+                        Tuple2(s, a),
+                        { (s, a0) ->
+                            MF.map(f(a0).runM(MF, s)) { (s, ab) ->
+                                ab.bimap({ a1 -> Tuple2(s, a1) }, { b -> Tuple2(s, b) })
+                            }
                         }
-                    })
-                }))
+                    )
+                })
+            )
     }
 
     /**
@@ -162,13 +167,15 @@ class StateT<F, S, A>(
      * @param MF [Monad] for the context [F].
      */
     fun <B, Z> map2(sb: StateT<F, S, B>, fn: (A, B) -> Z, MF: Monad<F>): StateT<F, S, Z> =
-            invokeF(MF.map2(runF, sb.runF) { (ssa, ssb) ->
+        invokeF(
+            MF.map2(runF, sb.runF) { (ssa, ssb) ->
                 ssa.andThen { fsa ->
                     MF.flatMap(fsa) { (s, a) ->
                         MF.map(ssb(s)) { (s, b) -> Tuple2(s, fn(a, b)) }
                     }
                 }
-            })
+            }
+        )
 
     /**
      * Controlled combination of [StateT] that is of same context [F] and state [S] using [Eval].
@@ -178,13 +185,13 @@ class StateT<F, S, A>(
      * @param MF [Monad] for the context [F].
      */
     fun <B, Z> map2Eval(sb: Eval<StateT<F, S, B>>, fn: (A, B) -> Z, MF: Monad<F>): Eval<StateT<F, S, Z>> =
-            MF.map2Eval(runF, sb.map { it.runF }) { (ssa, ssb) ->
-                ssa.andThen { fsa ->
-                    MF.flatMap(fsa) { (s, a) ->
-                        MF.map(ssb((s))) { (s, b) -> Tuple2(s, fn(a, b)) }
-                    }
+        MF.map2Eval(runF, sb.map { it.runF }) { (ssa, ssb) ->
+            ssa.andThen { fsa ->
+                MF.flatMap(fsa) { (s, a) ->
+                    MF.map(ssb((s))) { (s, b) -> Tuple2(s, fn(a, b)) }
                 }
-            }.map { invokeF(it) }
+            }
+        }.map { invokeF(it) }
 
     /**
      * Apply a function `(S) -> B` that operates within the [StateT] context.
@@ -193,7 +200,7 @@ class StateT<F, S, A>(
      * @param MF [Monad] for the context [F].
      */
     fun <B> ap(ff: StateTOf<F, S, (A) -> B>, MF: Monad<F>): StateT<F, S, B> =
-            ff.fix().map2(this, { f, a -> f(a) }, MF)
+        ff.fix().map2(this, { f, a -> f(a) }, MF)
 
     /**
      * Create a product of the value types of [StateT].
@@ -210,14 +217,15 @@ class StateT<F, S, A>(
      * @param MF [Monad] for the context [F].
      */
     fun <B> flatMap(fas: (A) -> StateTOf<F, S, B>, MF: Monad<F>): StateT<F, S, B> =
-            invokeF(
-                    MF.map(runF) { sfsa ->
-                        sfsa.andThen { fsa ->
-                            MF.flatMap(fsa) {
-                                fas(it.b).runM(MF, it.a)
-                            }
-                        }
-                    })
+        invokeF(
+            MF.map(runF) { sfsa ->
+                sfsa.andThen { fsa ->
+                    MF.flatMap(fsa) {
+                        fas(it.b).runM(MF, it.a)
+                    }
+                }
+            }
+        )
 
     /**
      * Map the value [A] to a arbitrary type [B] that is within the context of [F].
@@ -226,14 +234,15 @@ class StateT<F, S, A>(
      * @param MF [Monad] for the context [F].
      */
     fun <B> flatMapF(faf: (A) -> Kind<F, B>, MF: Monad<F>): StateT<F, S, B> =
-            invokeF(
-                    MF.map(runF) { sfsa ->
-                        sfsa.andThen { fsa ->
-                            MF.flatMap(fsa) { (s, a) ->
-                                MF.map(faf(a)) { b -> Tuple2(s, b) }
-                            }
-                        }
-                    })
+        invokeF(
+            MF.map(runF) { sfsa ->
+                sfsa.andThen { fsa ->
+                    MF.flatMap(fsa) { (s, a) ->
+                        MF.map(faf(a)) { b -> Tuple2(s, b) }
+                    }
+                }
+            }
+        )
 
     /**
      * Transform the product of state [S] and value [A] to an another product of state [S] and an arbitrary type [B].
@@ -242,12 +251,13 @@ class StateT<F, S, A>(
      * @param FF [Functor] for the context [F].
      */
     fun <B> transform(f: (Tuple2<S, A>) -> Tuple2<S, B>, FF: Functor<F>): StateT<F, S, B> =
-            invokeF(
-                    FF.map(runF) { sfsa ->
-                        sfsa.andThen { fsa ->
-                            FF.map(fsa, f)
-                        }
-                    })
+        invokeF(
+            FF.map(runF) { sfsa ->
+                sfsa.andThen { fsa ->
+                    FF.map(fsa, f)
+                }
+            }
+        )
 
     /**
      * Combine two [StateT] objects using an instance of [SemigroupK] for [F].
@@ -257,7 +267,7 @@ class StateT<F, S, A>(
      * @param SF [SemigroupK] for [F].
      */
     fun combineK(y: StateTOf<F, S, A>, MF: Monad<F>, SF: SemigroupK<F>): StateT<F, S, A> =
-            StateT(MF.pure({ s -> SF.combineK(run(s, MF), y.fix().run(s, MF)) }))
+        StateT(MF.pure({ s -> SF.combineK(run(s, MF), y.fix().run(s, MF)) }))
 
     /**
      * Run the stateful computation within the context `F`.

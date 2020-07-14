@@ -19,12 +19,15 @@ class ReducibleTests : UnitSpec() {
             override fun <A> split(fa: Kind<ForNonEmptyList, A>): Tuple2<A, Kind<ForListK, A>> = Tuple2(fa.fix().head, ListK(fa.fix().tail))
         }
 
-        testLaws(ReducibleLaws.laws(
+        testLaws(
+            ReducibleLaws.laws(
                 nonEmptyReducible,
                 { n: Int -> NonEmptyList(n, listOf()) },
                 Eq.any(),
                 Eq.any(),
-                Eq.any()))
+                Eq.any()
+            )
+        )
 
         "Reducible<NonEmptyList> default size implementation" {
             val nel = NonEmptyList.of(1, 2, 3)

@@ -14,7 +14,6 @@ interface StateTFunctorInstance<F, S> : Functor<StateTPartialOf<F, S>> {
     fun FF(): Functor<F>
 
     override fun <A, B> map(fa: StateTOf<F, S, A>, f: (A) -> B): StateT<F, S, B> = fa.fix().map(f, FF())
-
 }
 
 @instance(StateT::class)
@@ -27,11 +26,10 @@ interface StateTApplicativeInstance<F, S> : StateTFunctorInstance<F, S>, Applica
     override fun <A> pure(a: A): StateT<F, S, A> = StateT(FF().pure({ s: S -> FF().pure(Tuple2(s, a)) }))
 
     override fun <A, B> ap(fa: StateTOf<F, S, A>, ff: StateTOf<F, S, (A) -> B>): StateT<F, S, B> =
-            fa.fix().ap(ff, FF())
+        fa.fix().ap(ff, FF())
 
     override fun <A, B> product(fa: StateTOf<F, S, A>, fb: StateTOf<F, S, B>): StateT<F, S, Tuple2<A, B>> =
-            fa.fix().product(fb.fix(), FF())
-
+        fa.fix().product(fb.fix(), FF())
 }
 
 @instance(StateT::class)
@@ -40,14 +38,13 @@ interface StateTMonadInstance<F, S> : StateTApplicativeInstance<F, S>, Monad<Sta
     override fun <A, B> map(fa: StateTOf<F, S, A>, f: (A) -> B): StateT<F, S, B> = fa.fix().map(f, FF())
 
     override fun <A, B> flatMap(fa: StateTOf<F, S, A>, f: (A) -> StateTOf<F, S, B>): StateT<F, S, B> =
-            fa.fix().flatMap(f, FF())
+        fa.fix().flatMap(f, FF())
 
     override fun <A, B> tailRecM(a: A, f: (A) -> StateTOf<F, S, Either<A, B>>): StateT<F, S, B> =
-            StateT.tailRecM(a, f, FF())
+        StateT.tailRecM(a, f, FF())
 
     override fun <A, B> ap(fa: StateTOf<F, S, A>, ff: StateTOf<F, S, (A) -> B>): StateT<F, S, B> =
-            ff.fix().map2(fa.fix(), { f, a -> f(a) }, FF())
-
+        ff.fix().map2(fa.fix(), { f, a -> f(a) }, FF())
 }
 
 @instance(StateT::class)
@@ -58,8 +55,7 @@ interface StateTSemigroupKInstance<F, S> : SemigroupK<StateTPartialOf<F, S>> {
     fun SS(): SemigroupK<F>
 
     override fun <A> combineK(x: StateTOf<F, S, A>, y: StateTOf<F, S, A>): StateT<F, S, A> =
-            x.fix().combineK(y, FF(), SS())
-
+        x.fix().combineK(y, FF(), SS())
 }
 
 @instance(StateT::class)
@@ -69,7 +65,7 @@ interface StateTApplicativeErrorInstance<F, S, E> : StateTApplicativeInstance<F,
     override fun <A> raiseError(e: E): Kind<StateTPartialOf<F, S>, A> = StateT.lift(FF(), FF().raiseError(e))
 
     override fun <A> handleErrorWith(fa: Kind<StateTPartialOf<F, S>, A>, f: (E) -> Kind<StateTPartialOf<F, S>, A>): StateT<F, S, A> =
-            StateT(FF().pure({ s -> FF().handleErrorWith(fa.runM(FF(), s), { e -> f(e).runM(FF(), s) }) }))
+        StateT(FF().pure({ s -> FF().handleErrorWith(fa.runM(FF(), s), { e -> f(e).runM(FF(), s) }) }))
 }
 
 @instance(StateT::class)
@@ -89,4 +85,3 @@ fun <S> StateApi.functor(): Functor<StateTPartialOf<ForId, S>> = StateT.functor<
  * Alias for [StateT.Companion.monad]
  */
 fun <S> StateApi.monad(): Monad<StateTPartialOf<ForId, S>> = StateT.monad<ForId, S>(arrow.typeclasses.monad<ForId>(), dummy = Unit)
-

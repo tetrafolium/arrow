@@ -12,9 +12,10 @@ typealias Nel<A> = NonEmptyList<A>
  */
 @higherkind
 class NonEmptyList<out A> private constructor(
-        val head: A,
-        val tail: List<A>,
-        val all: List<A>) : NonEmptyListOf<A> {
+    val head: A,
+    val tail: List<A>,
+    val all: List<A>
+) : NonEmptyListOf<A> {
 
     constructor(head: A, tail: List<A>) : this(head, tail, listOf(head) + tail)
     private constructor(list: List<A>) : this(list[0], list.drop(1), list)
@@ -44,22 +45,26 @@ class NonEmptyList<out A> private constructor(
     fun <B> foldRight(lb: Eval<B>, f: (A, Eval<B>) -> Eval<B>): Eval<B> = foldable<ForListK>().foldRight(this.fix().all.k(), lb, f)
 
     fun <G, B> traverse(f: (A) -> Kind<G, B>, GA: Applicative<G>): Kind<G, NonEmptyList<B>> =
-            GA.map2Eval(f(this.fix().head), Eval.always {
+        GA.map2Eval(
+            f(this.fix().head),
+            Eval.always {
                 arrow.typeclasses.traverse<ForListK>().traverse(this.fix().tail.k(), f, GA)
-            }, {
+            },
+            {
                 NonEmptyList(it.a, it.b.fix().list)
-            }).value()
+            }
+        ).value()
 
     fun <B> coflatMap(f: (NonEmptyListOf<A>) -> B): NonEmptyList<B> {
         val buf = mutableListOf<B>()
         tailrec fun consume(list: List<A>): List<B> =
-                if (list.isEmpty()) {
-                    buf
-                } else {
-                    val tail = list.subList(1, list.size)
-                    buf += f(NonEmptyList(list[0], tail))
-                    consume(tail)
-                }
+            if (list.isEmpty()) {
+                buf
+            } else {
+                val tail = list.subList(1, list.size)
+                buf += f(NonEmptyList(list[0], tail))
+                consume(tail)
+            }
         return NonEmptyList(f(this), consume(this.fix().tail))
     }
 
@@ -93,9 +98,10 @@ class NonEmptyList<out A> private constructor(
 
         @Suppress("UNCHECKED_CAST")
         private tailrec fun <A, B> go(
-                buf: ArrayList<B>,
-                f: (A) -> Kind<ForNonEmptyList, Either<A, B>>,
-                v: NonEmptyList<Either<A, B>>) {
+            buf: ArrayList<B>,
+            f: (A) -> Kind<ForNonEmptyList, Either<A, B>>,
+            v: NonEmptyList<Either<A, B>>
+        ) {
             val head: Either<A, B> = v.head
             when (head) {
                 is Either.Right<A, B> -> {
@@ -115,7 +121,6 @@ class NonEmptyList<out A> private constructor(
             go(buf, f, f(a).fix())
             return fromListUnsafe(buf)
         }
-
     }
 }
 

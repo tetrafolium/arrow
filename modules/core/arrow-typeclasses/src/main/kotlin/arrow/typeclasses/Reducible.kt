@@ -44,7 +44,7 @@ interface Reducible<F> : Foldable<F>, TC {
     fun <A, B> reduceRightTo(fa: Kind<F, A>, f: (A) -> B, g: (A, Eval<B>) -> Eval<B>): Eval<B>
 
     override fun <A, B> reduceRightToOption(fa: Kind<F, A>, f: (A) -> B, g: (A, Eval<B>) -> Eval<B>): Eval<Option<B>> =
-            reduceRightTo(fa, f, g).map({ Some(it) })
+        reduceRightTo(fa, f, g).map({ Some(it) })
 
     override fun <A> isEmpty(fa: Kind<F, A>): Boolean = false
 
@@ -67,7 +67,7 @@ inline fun <F, reified G, A> Reducible<F>.reduceK(fga: Kind<F, Kind<G, A>>, SGKG
  * Apply f to each element of fa and combine them using the given Semigroup<B>.
  */
 inline fun <F, A, reified B> Reducible<F>.reduceMap(fa: Kind<F, A>, noinline f: (A) -> B, SB: Semigroup<B> = semigroup()): B =
-        reduceLeftTo(fa, f, { b, a -> SB.combine(b, f(a)) })
+    reduceLeftTo(fa, f, { b, a -> SB.combine(b, f(a)) })
 
 /**
  * This class defines a Reducible<F> in terms of a Foldable<G> together with a split method, F<A> -> (A, G<A>).
@@ -86,7 +86,7 @@ abstract class NonEmptyReducible<F, G> : Reducible<F> {
     }
 
     override fun <A, B> foldRight(fa: Kind<F, A>, lb: Eval<B>, f: (A, Eval<B>) -> Eval<B>): Eval<B> =
-            Eval.Always({ split(fa) }).flatMap { (a, ga) -> f(a, FG().foldRight(ga, lb, f)) }
+        Eval.Always({ split(fa) }).flatMap { (a, ga) -> f(a, FG().foldRight(ga, lb, f)) }
 
     override fun <A, B> reduceLeftTo(fa: Kind<F, A>, f: (A) -> B, g: (B, A) -> B): B {
         val (a, ga) = split(fa)
@@ -94,14 +94,14 @@ abstract class NonEmptyReducible<F, G> : Reducible<F> {
     }
 
     override fun <A, B> reduceRightTo(fa: Kind<F, A>, f: (A) -> B, g: (A, Eval<B>) -> Eval<B>): Eval<B> =
-            Eval.Always({ split(fa) }).flatMap { (a, ga) ->
-                FG().reduceRightToOption(ga, f, g).flatMap { option ->
-                    when (option) {
-                        is Some<B> -> g(a, Eval.Now(option.t))
-                        is None -> Eval.Later({ f(a) })
-                    }
+        Eval.Always({ split(fa) }).flatMap { (a, ga) ->
+            FG().reduceRightToOption(ga, f, g).flatMap { option ->
+                when (option) {
+                    is Some<B> -> g(a, Eval.Now(option.t))
+                    is None -> Eval.Later({ f(a) })
                 }
             }
+        }
 
     override fun <A> fold(ma: Monoid<A>, fa: Kind<F, A>): A {
         val (a, ga) = split(fa)

@@ -55,14 +55,14 @@ class FreeTest : UnitSpec() {
 
         "instances can be resolved implicitly" {
             functor<FreePartialOf<OpsAp.F>>() shouldNotBe null
-            applicative<FreePartialOf<OpsAp.F>>()  shouldNotBe null
-            monad<FreePartialOf<OpsAp.F>>()  shouldNotBe null
+            applicative<FreePartialOf<OpsAp.F>>() shouldNotBe null
+            monad<FreePartialOf<OpsAp.F>>() shouldNotBe null
         }
 
         val EQ: FreeEq<Ops.F, ForId, Int> = FreeEq(idInterpreter)
         testLaws(
-                EqLaws.laws<Free<Ops.F, Int>>(EQ, { Ops.value(it) }),
-                MonadLaws.laws(Ops, EQ)
+            EqLaws.laws<Free<Ops.F, Int>>(EQ, { Ops.value(it) }),
+            MonadLaws.laws(Ops, EQ)
         )
 
         "Can interpret an ADT as Free operations" {
@@ -76,6 +76,5 @@ class FreeTest : UnitSpec() {
             val hugeProg = stackSafeTestProgram(0, n)
             hugeProg.foldMap(idInterpreter, Id.monad()).value() shouldBe n
         }
-
     }
 }

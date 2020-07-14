@@ -34,12 +34,12 @@ sealed class Eval<out A> : EvalOf<A> {
     companion object {
 
         fun <A, B> tailRecM(a: A, f: (A) -> EvalOf<Either<A, B>>): Eval<B> =
-                f(a).fix().flatMap { eval: Either<A, B> ->
-                    when (eval) {
-                        is Either.Left -> tailRecM(eval.a, f)
-                        is Either.Right -> pure(eval.b)
-                    }
+            f(a).fix().flatMap { eval: Either<A, B> ->
+                when (eval) {
+                    is Either.Left -> tailRecM(eval.a, f)
+                    is Either.Right -> pure(eval.b)
                 }
+            }
 
         fun <A> pure(a: A): Eval<A> = now(a)
 
@@ -67,17 +67,17 @@ sealed class Eval<out A> : EvalOf<A> {
          * Collapse the call stack for eager evaluations.
          */
         private tailrec fun <A> collapse(fa: Eval<A>): Eval<A> =
-                when (fa) {
-                    is Defer -> collapse(fa.thunk())
-                    is FlatMap ->
-                        object : FlatMap<A>() {
-                            override fun <S> start(): Eval<S> = fa.start()
-                            override fun <S> run(s: S): Eval<A> = collapse1(fa.run(s))
-                        }
-                    else -> fa
-                }
+            when (fa) {
+                is Defer -> collapse(fa.thunk())
+                is FlatMap ->
+                    object : FlatMap<A>() {
+                        override fun <S> start(): Eval<S> = fa.start()
+                        override fun <S> run(s: S): Eval<A> = collapse1(fa.run(s))
+                    }
+                else -> fa
+            }
 
-        //Enforce tailrec call to collapse inside compute loop
+        // Enforce tailrec call to collapse inside compute loop
         private inline fun <A> collapse1(fa: Eval<A>): Eval<A> = collapse(fa)
 
         private fun <A> evaluate(e: Eval<A>): A = run {
@@ -104,15 +104,15 @@ sealed class Eval<out A> : EvalOf<A> {
                                 }
                                 is Memoize -> {
                                     cc.result.fold(
-                                            {
-                                                curr = cc.eval
-                                                fs.add(0) { currComp.run(it) }
-                                                fs.add(0, addToMemo(cc as Memoize<Any?>))
-                                            },
-                                            {
-                                                curr = Now(it)
-                                                fs.add(0) { currComp.run(it) }
-                                            }
+                                        {
+                                            curr = cc.eval
+                                            fs.add(0) { currComp.run(it) }
+                                            fs.add(0, addToMemo(cc as Memoize<Any?>))
+                                        },
+                                        {
+                                            curr = Now(it)
+                                            fs.add(0) { currComp.run(it) }
+                                        }
                                     )
                                 }
                                 else -> {
@@ -125,16 +125,16 @@ sealed class Eval<out A> : EvalOf<A> {
                         val currComp = curr as Memoize<A>
                         val eval = currComp.eval
                         currComp.result.fold(
-                                {
-                                    curr = eval
-                                    fs.add(0, addToMemo(currComp as Memoize<Any?>))
-                                },
-                                {
-                                    if (fs.isNotEmpty()) {
-                                        curr = fs[0](it)
-                                        fs.removeAt(0)
-                                    }
+                            {
+                                curr = eval
+                                fs.add(0, addToMemo(currComp as Memoize<Any?>))
+                            },
+                            {
+                                if (fs.isNotEmpty()) {
+                                    curr = fs[0](it)
+                                    fs.removeAt(0)
                                 }
+                            }
                         )
                     }
                     else ->
@@ -160,24 +160,24 @@ sealed class Eval<out A> : EvalOf<A> {
     fun <B> ap(ff: EvalOf<(A) -> B>): Eval<B> = ff.fix().flatMap { f -> map(f) }.fix()
 
     fun <B> flatMap(f: (A) -> EvalOf<B>): Eval<B> =
-            when (this) {
-                is FlatMap<A> -> object : FlatMap<B>() {
-                    override fun <S> start(): Eval<S> = (this@Eval).start()
-                    override fun <S> run(s: S): Eval<B> =
-                            object : FlatMap<B>() {
-                                override fun <S1> start(): Eval<S1> = (this@Eval).run(s) as Eval<S1>
-                                override fun <S1> run(s1: S1): Eval<B> = f(s1 as A).fix()
-                            }
-                }
-                is Defer<A> -> object : FlatMap<B>() {
-                    override fun <S> start(): Eval<S> = this@Eval.thunk() as Eval<S>
-                    override fun <S> run(s: S): Eval<B> = f(s as A).fix()
-                }
-                else -> object : FlatMap<B>() {
-                    override fun <S> start(): Eval<S> = this@Eval as Eval<S>
-                    override fun <S> run(s: S): Eval<B> = f(s as A).fix()
-                }
+        when (this) {
+            is FlatMap<A> -> object : FlatMap<B>() {
+                override fun <S> start(): Eval<S> = (this@Eval).start()
+                override fun <S> run(s: S): Eval<B> =
+                    object : FlatMap<B>() {
+                        override fun <S1> start(): Eval<S1> = (this@Eval).run(s) as Eval<S1>
+                        override fun <S1> run(s1: S1): Eval<B> = f(s1 as A).fix()
+                    }
             }
+            is Defer<A> -> object : FlatMap<B>() {
+                override fun <S> start(): Eval<S> = this@Eval.thunk() as Eval<S>
+                override fun <S> run(s: S): Eval<B> = f(s as A).fix()
+            }
+            else -> object : FlatMap<B>() {
+                override fun <S> start(): Eval<S> = this@Eval as Eval<S>
+                override fun <S> run(s: S): Eval<B> = f(s as A).fix()
+            }
+        }
 
     fun <B> coflatMap(f: (EvalOf<A>) -> B): Eval<B> = Later { f(this) }
 

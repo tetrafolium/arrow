@@ -43,7 +43,6 @@ typealias CofreeEval<S, A> = Kind<S, Cofree<S, A>>
         inline fun <reified S, A> unfold(a: A, noinline f: (A) -> Kind<S, A>, FS: Functor<S> = arrow.typeclasses.functor<S>()): Cofree<S, A> = create(a, f, FS)
 
         fun <S, A> create(a: A, f: (A) -> Kind<S, A>, FS: Functor<S>): Cofree<S, A> = Cofree(FS, a, Eval.later { FS.map(f(a), { create(it, f, FS) }) })
-
     }
 }
 

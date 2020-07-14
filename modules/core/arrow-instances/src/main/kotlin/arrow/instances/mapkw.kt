@@ -16,14 +16,14 @@ interface MapKFoldableInstance<K> : Foldable<MapKPartialOf<K>> {
     override fun <A, B> foldLeft(fa: Kind<MapKPartialOf<K>, A>, b: B, f: (B, A) -> B): B = fa.fix().foldLeft(b, f)
 
     override fun <A, B> foldRight(fa: Kind<MapKPartialOf<K>, A>, lb: Eval<B>, f: (A, Eval<B>) -> Eval<B>): Eval<B> =
-            fa.fix().foldRight(lb, f)
+        fa.fix().foldRight(lb, f)
 }
 
 @instance(MapK::class)
 interface MapKTraverseInstance<K> : MapKFoldableInstance<K>, Traverse<MapKPartialOf<K>> {
 
     override fun <G, A, B> traverse(fa: Kind<MapKPartialOf<K>, A>, f: (A) -> Kind<G, B>, GA: Applicative<G>): Kind<G, Kind<MapKPartialOf<K>, B>> =
-            fa.fix().traverse(f, GA)
+        fa.fix().traverse(f, GA)
 }
 
 @instance(MapK::class)
@@ -32,9 +32,8 @@ interface MapKSemigroupInstance<K, A> : Semigroup<MapKOf<K, A>> {
     fun SG(): Semigroup<A>
 
     override fun combine(a: MapKOf<K, A>, b: MapKOf<K, A>): MapK<K, A> =
-            if (a.fix().size < b.fix().size) a.fix().foldLeft<A>(b.fix(), { my, (k, b) -> my.updated(k, SG().maybeCombine(b, my.get(k))) })
-            else b.fix().foldLeft<A>(a.fix(), { my, (k, a) -> my.updated(k, SG().maybeCombine(a, my.get(k))) })
-
+        if (a.fix().size < b.fix().size) a.fix().foldLeft<A>(b.fix(), { my, (k, b) -> my.updated(k, SG().maybeCombine(b, my.get(k))) })
+        else b.fix().foldLeft<A>(a.fix(), { my, (k, a) -> my.updated(k, SG().maybeCombine(a, my.get(k))) })
 }
 
 @instance(MapK::class)
@@ -51,18 +50,17 @@ interface MapKEqInstance<K, A> : Eq<MapK<K, A>> {
     fun EQA(): Eq<A>
 
     override fun eqv(a: MapK<K, A>, b: MapK<K, A>): Boolean =
-            if (SetKEqInstanceImplicits.instance(EQK()).eqv(a.keys.k(), b.keys.k())) {
-                a.keys.map { key ->
-                    b[key]?.let {
-                        EQA().eqv(a.getValue(key), it)
-                    } ?: false
-                }.fold(true) { b1, b2 -> b1 && b2 }
-            } else false
-
+        if (SetKEqInstanceImplicits.instance(EQK()).eqv(a.keys.k(), b.keys.k())) {
+            a.keys.map { key ->
+                b[key]?.let {
+                    EQA().eqv(a.getValue(key), it)
+                } ?: false
+            }.fold(true) { b1, b2 -> b1 && b2 }
+        } else false
 }
 
 @instance(MapK::class)
 interface MapKShowInstance<K, A> : Show<MapK<K, A>> {
     override fun show(a: MapK<K, A>): String =
-            a.toString()
+        a.toString()
 }

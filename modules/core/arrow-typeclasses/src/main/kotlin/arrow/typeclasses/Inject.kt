@@ -14,5 +14,4 @@ interface Inject<F, G> : TC {
     fun inj(): FunctionK<F, G>
 
     fun <A> invoke(fa: Kind<F, A>): Kind<G, A> = inj()(fa)
-
 }

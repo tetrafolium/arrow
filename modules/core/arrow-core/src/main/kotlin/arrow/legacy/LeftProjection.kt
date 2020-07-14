@@ -43,7 +43,6 @@ class LeftProjection<out L, out R>(val e: Either<L, R>) {
         is Either.Left -> Some(e.a)
         is Either.Right -> None
     }
-
 }
 
 fun <L, R, X> LeftProjection<L, R>.flatMap(f: (L) -> Either<X, R>): Either<X, R> = when (e) {

@@ -9,7 +9,7 @@ import kotlin.coroutines.experimental.intrinsics.suspendCoroutineOrReturn
 
 @RestrictsSuspension
 open class StackSafeMonadContinuation<F, A>(M: Monad<F>, override val context: CoroutineContext = EmptyCoroutineContext) :
-        Continuation<Free<F, A>>, Monad<F> by M {
+    Continuation<Free<F, A>>, Monad<F> by M {
 
     override fun resume(value: Free<F, A>) {
         returnedMonad = value
@@ -53,9 +53,9 @@ open class StackSafeMonadContinuation<F, A>(M: Monad<F>, override val context: C
  * over any stack-unsafe monads.
  */
 fun <F, B> Monad<F>.bindingStackSafe(c: suspend StackSafeMonadContinuation<F, *>.() -> B):
-        Free<F, B> {
-    val continuation = StackSafeMonadContinuation<F, B>(this)
-    val wrapReturn: suspend StackSafeMonadContinuation<F, *>.() -> Free<F, B> = { Free.pure(c()) }
-    wrapReturn.startCoroutine(continuation, continuation)
-    return continuation.returnedMonad()
-}
+    Free<F, B> {
+        val continuation = StackSafeMonadContinuation<F, B>(this)
+        val wrapReturn: suspend StackSafeMonadContinuation<F, *>.() -> Free<F, B> = { Free.pure(c()) }
+        wrapReturn.startCoroutine(continuation, continuation)
+        return continuation.returnedMonad()
+    }

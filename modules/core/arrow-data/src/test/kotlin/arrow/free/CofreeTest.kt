@@ -25,15 +25,24 @@ class CofreeTest : UnitSpec() {
             comonad<CofreePartialOf<ForOption>>() shouldNotBe null
         }
 
-        testLaws(ComonadLaws.laws(Cofree.comonad<ForOption>(), {
-            val sideEffect = SideEffect()
-            unfold(sideEffect.counter, {
-                sideEffect.increment()
-                if (it % 2 == 0) None else Some(it + 1)
-            })
-        }, Eq { a, b ->
-            a.fix().run().fix() == b.fix().run().fix()
-        }))
+        testLaws(
+            ComonadLaws.laws(
+                Cofree.comonad<ForOption>(),
+                {
+                    val sideEffect = SideEffect()
+                    unfold(
+                        sideEffect.counter,
+                        {
+                            sideEffect.increment()
+                            if (it % 2 == 0) None else Some(it + 1)
+                        }
+                    )
+                },
+                Eq { a, b ->
+                    a.fix().run().fix() == b.fix().run().fix()
+                }
+            )
+        )
 
         "tailForced should evaluate and return" {
             val sideEffect = SideEffect()
@@ -53,10 +62,13 @@ class CofreeTest : UnitSpec() {
 
         "run should fold until completion" {
             val sideEffect = SideEffect()
-            val start: Cofree<ForOption, Int> = unfold(sideEffect.counter, {
-                sideEffect.increment()
-                if (it == 5) None else Some(it + 1)
-            })
+            val start: Cofree<ForOption, Int> = unfold(
+                sideEffect.counter,
+                {
+                    sideEffect.increment()
+                    if (it == 5) None else Some(it + 1)
+                }
+            )
             sideEffect.counter shouldBe 0
             start.run()
             sideEffect.counter shouldBe 6
@@ -67,10 +79,13 @@ class CofreeTest : UnitSpec() {
             try {
                 val limit = 10000
                 val counter = SideEffect()
-                val startThousands: Cofree<ForOption, Int> = unfold(counter.counter, {
-                    counter.increment()
-                    if (it == limit) None else Some(it + 1)
-                })
+                val startThousands: Cofree<ForOption, Int> = unfold(
+                    counter.counter,
+                    {
+                        counter.increment()
+                        if (it == limit) None else Some(it + 1)
+                    }
+                )
                 startThousands.run()
                 throw AssertionError("Run should overflow on a stack-unsafe monad")
             } catch (e: StackOverflowError) {
@@ -80,10 +95,13 @@ class CofreeTest : UnitSpec() {
 
         "run with an stack-safe monad should not blow up the stack" {
             val counter = SideEffect()
-            val startThousands: Cofree<ForEval, Int> = unfold(counter.counter, {
-                counter.increment()
-                Eval.now(it + 1)
-            })
+            val startThousands: Cofree<ForEval, Int> = unfold(
+                counter.counter,
+                {
+                    counter.increment()
+                    Eval.now(it + 1)
+                }
+            )
             startThousands.run()
             counter.counter shouldBe 1
         }
@@ -93,7 +111,7 @@ class CofreeTest : UnitSpec() {
         "mapBranchingRoot should modify the value of the functor" {
             val mapped = startHundred.mapBranchingRoot(object : FunctionK<ForOption, ForOption> {
                 override fun <A> invoke(fa: Kind<ForOption, A>): Kind<ForOption, A> =
-                        None
+                    None
             })
             val expected = NonEmptyList.of(0)
             cofreeOptionToNel(mapped) shouldBe expected
@@ -109,8 +127,8 @@ class CofreeTest : UnitSpec() {
 
         "cata should traverse the structure" {
             val cata: NonEmptyList<Int> = startHundred.cata<ForOption, Int, NonEmptyList<Int>>(
-                    { i, lb -> Eval.now(NonEmptyList(i, lb.fix().fold({ emptyList<Int>() }, { it.all }))) },
-                    Option.traverse()
+                { i, lb -> Eval.now(NonEmptyList(i, lb.fix().fold({ emptyList<Int>() }, { it.all }))) },
+                Option.traverse()
             ).value()
 
             val expected = NonEmptyList.fromListUnsafe((0..100).toList())
@@ -123,8 +141,8 @@ class CofreeTest : UnitSpec() {
         "cata with an stack-unsafe monad should blow up the stack" {
             try {
                 startTwoThousand.cata<ForOption, Int, NonEmptyList<Int>>(
-                        { i, lb -> Eval.now(NonEmptyList(i, lb.fix().fold({ emptyList<Int>() }, { it.all }))) },
-                        Option.traverse()
+                    { i, lb -> Eval.now(NonEmptyList(i, lb.fix().fold({ emptyList<Int>() }, { it.all }))) },
+                    Option.traverse()
                 ).value()
                 throw AssertionError("Run should overflow on a stack-unsafe monad")
             } catch (e: StackOverflowError) {
@@ -138,7 +156,7 @@ class CofreeTest : UnitSpec() {
             }
             val inclusion = object : FunctionK<ForEval, EvalOptionF> {
                 override fun <A> invoke(fa: Kind<ForEval, A>): Kind<EvalOptionF, A> =
-                        OptionT(fa.fix().map { Some(it) })
+                    OptionT(fa.fix().map { Some(it) })
             }
             val cataHundred = startTwoThousand.cataM(folder, inclusion, Option.traverse(), OptionT.monad(Eval.monad())).fix().value.fix().value()
             val newCof = Cofree(Option.functor(), 2001, Eval.now(Some(startTwoThousand)))
@@ -147,7 +165,6 @@ class CofreeTest : UnitSpec() {
             cataHundred shouldBe Some(NonEmptyList.fromListUnsafe((0..2000).toList()))
             cataHundredOne shouldBe None
         }
-
     }
 }
 

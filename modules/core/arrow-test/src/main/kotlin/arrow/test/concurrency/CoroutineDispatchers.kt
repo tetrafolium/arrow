@@ -8,8 +8,11 @@ import java.util.concurrent.ThreadPoolExecutor
 import java.util.concurrent.TimeUnit
 
 fun newCoroutineDispatcher(name: String): CoroutineDispatcher =
-        ThreadPoolExecutor(10, 50, 30, TimeUnit.SECONDS, LinkedBlockingDeque(), ThreadFactory { run ->
+    ThreadPoolExecutor(
+        10, 50, 30, TimeUnit.SECONDS, LinkedBlockingDeque(),
+        ThreadFactory { run ->
             Thread(run).apply {
                 this.name = name
             }
-        }).asCoroutineDispatcher()
+        }
+    ).asCoroutineDispatcher()
