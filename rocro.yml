@@ -3,37 +3,7 @@ inspecode:
 
   detekt:
   - thresholds: { num-issues: 999 }
-  - config-file: .rocro/detekt-config.yml
+  - config-file: .rocro/detekt_1.2.2-config.yml
     thresholds: { num-issues: 999 }
-
-  fossology:
-    thresholds: { num-issues: 999 }
-
-  grep:
-    thresholds: { num-issues: 999 }
-
-  jscpd:
-    thresholds: { num-issues: 999 }
-
-  ktlint:
-  - &base-settings
-    auto-fix: true
-    thresholds: { num-issues: 999 }
-  - options:
-      --editorconfig: .rocro/.editorconfig
-    <<: *base-settings
-  - options:
-      --disabled_rules:
-      - indent
-    <<: *base-settings
-  - options:
-      --disabled_rules:
-      - indent
-      - parameter-list-wrapping
-      - no-wildcard-imports
-      - modifier-order
-    <<: *base-settings
-
-  misspell:
-    auto-fix: true
+  - config-file: .rocro/detekt_1.10.0-config.yml
     thresholds: { num-issues: 999 }
