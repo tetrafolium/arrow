@@ -61,7 +61,7 @@ import arrow.typeclasses.*
                 }))
     }
 
-    fun tell(w: W, SG: Semigroup<W>, MF: Monad<F>): WriterT<F, W, A> = mapAcc ({ SG.combine(it, w) }, MF)
+    fun tell(w: W, SG: Semigroup<W>, MF: Monad<F>): WriterT<F, W, A> = mapAcc({ SG.combine(it, w) }, MF)
 
     fun listen(MF: Monad<F>): Kind<WriterTPartialOf<F, W>, Tuple2<W, A>> =
             WriterT(MF.flatMap(content(MF), { a -> MF.map(write(MF), { l -> Tuple2(l, Tuple2(l, a)) }) }))
@@ -70,13 +70,13 @@ import arrow.typeclasses.*
 
     fun write(FF: Functor<F>): Kind<F, W> = FF.map(value, { it.a })
 
-    fun reset(MM: Monoid<W>, MF: Monad<F>): WriterT<F, W, A> = mapAcc ({ MM.empty() }, MF)
+    fun reset(MM: Monoid<W>, MF: Monad<F>): WriterT<F, W, A> = mapAcc({ MM.empty() }, MF)
 
     fun <B> map(f: (A) -> B, FF: Functor<F>): WriterT<F, W, B> = WriterT(FF.map(value, { it.a toT f(it.b) }))
 
-    inline fun <U> mapAcc(crossinline f: (W) -> U, MF: Monad<F>): WriterT<F, U, A> = transform ({ f(it.a) toT it.b }, MF)
+    inline fun <U> mapAcc(crossinline f: (W) -> U, MF: Monad<F>): WriterT<F, U, A> = transform({ f(it.a) toT it.b }, MF)
 
-    inline fun <C, U> bimap(crossinline g: (W) -> U, crossinline f: (A) -> C, MF: Monad<F>): WriterT<F, U, C> = transform ({ g(it.a) toT f(it.b) }, MF)
+    inline fun <C, U> bimap(crossinline g: (W) -> U, crossinline f: (A) -> C, MF: Monad<F>): WriterT<F, U, C> = transform({ g(it.a) toT f(it.b) }, MF)
 
     fun swap(MF: Monad<F>): WriterT<F, A, W> = transform({ it.b toT it.a }, MF)
 

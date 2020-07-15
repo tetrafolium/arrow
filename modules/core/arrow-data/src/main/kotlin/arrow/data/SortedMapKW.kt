@@ -9,7 +9,7 @@ import arrow.typeclasses.Foldable
 import java.util.*
 
 @higherkind
-data class SortedMapK<A: Comparable<A>, B>(val map: SortedMap<A, B>) : SortedMapKOf<A, B>, SortedMapKKindedJ<A, B>, SortedMap<A, B> by map {
+data class SortedMapK<A : Comparable<A>, B>(val map: SortedMap<A, B>) : SortedMapKOf<A, B>, SortedMapKKindedJ<A, B>, SortedMap<A, B> by map {
 
     fun <C> map(f: (B) -> C): SortedMapK<A, C> =
             this.map.map { it.key to f(it.value) }.toMap().toSortedMap().k()
@@ -55,19 +55,19 @@ data class SortedMapK<A: Comparable<A>, B>(val map: SortedMap<A, B>) : SortedMap
     companion object
 }
 
-fun <A: Comparable<A>, B> SortedMap<A, B>.k(): SortedMapK<A, B> = SortedMapK(this)
+fun <A : Comparable<A>, B> SortedMap<A, B>.k(): SortedMapK<A, B> = SortedMapK(this)
 
-fun <A: Comparable<A>, B> Option<Tuple2<A, B>>.k(): SortedMapK<A, B> = this.fold(
+fun <A : Comparable<A>, B> Option<Tuple2<A, B>>.k(): SortedMapK<A, B> = this.fold(
         { sortedMapOf<A, B>().k() },
         { mapEntry -> sortedMapOf<A, B>(mapEntry.a to mapEntry.b).k() }
 )
 
-fun <A: Comparable<A>, B> List<Map.Entry<A, B>>.k(): SortedMapK<A, B> =
+fun <A : Comparable<A>, B> List<Map.Entry<A, B>>.k(): SortedMapK<A, B> =
         this.map { it.key to it.value }.toMap().toSortedMap().k()
 
 fun <A, B> SortedMap<A, B>.getOption(k: A): Option<B> = Option.fromNullable(this[k])
 
-fun <A: Comparable<A>, B> SortedMapK<A, B>.updated(k: A, value: B): SortedMapK<A, B> {
+fun <A : Comparable<A>, B> SortedMapK<A, B>.updated(k: A, value: B): SortedMapK<A, B> {
     val sortedMutableMap = this.toSortedMap()
     sortedMutableMap.put(k, value)
 
@@ -80,5 +80,5 @@ fun <A, B, C> SortedMap<A, B>.foldLeft(b: SortedMap<A, C>, f: (SortedMap<A, C>, 
     return result
 }
 
-fun <A: Comparable<A>, B, C> SortedMap<A, B>.foldRight(b: SortedMap<A, C>, f: (Map.Entry<A, B>, SortedMap<A, C>) -> SortedMap<A, C>): SortedMap<A, C> =
+fun <A : Comparable<A>, B, C> SortedMap<A, B>.foldRight(b: SortedMap<A, C>, f: (Map.Entry<A, B>, SortedMap<A, C>) -> SortedMap<A, C>): SortedMap<A, C> =
         this.entries.reversed().k().map.foldLeft(b) { x: SortedMap<A, C>, y -> f(y, x) }

@@ -43,7 +43,6 @@ class RightProjection<out L, out R>(val e: Either<L, R>) {
         is Either.Right -> Some(e.b)
         is Either.Left -> None
     }
-
 }
 
 fun <L, R> RightProjection<L, R>.getOrElse(default: () -> R): R = when (e) {

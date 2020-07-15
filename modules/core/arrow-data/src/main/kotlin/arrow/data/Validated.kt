@@ -41,7 +41,6 @@ typealias Invalid<E> = Validated.Invalid<E>
                         { Invalid(ifNone()) },
                         { Valid(it) }
                 )
-
     }
 
     data class Valid<out A>(val a: A) : Validated<Nothing, A>()

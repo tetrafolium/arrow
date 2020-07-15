@@ -14,6 +14,5 @@ import arrow.typeclasses.*
 
         inline fun <F> embedT(compFG: Kind<Nested<ForFix, F>, FixOf<F>>, FF: Functor<F>): FixOf<F> =
                 Fix(FF, compFG.unnest().fix())
-
     }
 }

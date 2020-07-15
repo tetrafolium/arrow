@@ -18,7 +18,6 @@ interface StateTMonadStateInstance<F, S> : StateTMonadInstance<F, S>, MonadState
     override fun get(): StateT<F, S, S> = StateT.get(FF())
 
     override fun set(s: S): StateT<F, S, Unit> = StateT.set(FF(), s)
-
 }
 
 @instance(StateT::class)

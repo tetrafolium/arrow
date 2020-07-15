@@ -1,9 +1,9 @@
 package arrow.optics
 
 import arrow.core.Either
+import arrow.core.Try
 import arrow.core.applicative
 import arrow.core.fix
-import arrow.core.Try
 import arrow.data.applicative
 import arrow.syntax.either.right
 import arrow.test.UnitSpec
@@ -48,7 +48,5 @@ class ValidatedInstancesTest : UnitSpec() {
                     override fun empty(): Try<Int> = Try.Success(0)
                 })
         )
-
     }
-
 }

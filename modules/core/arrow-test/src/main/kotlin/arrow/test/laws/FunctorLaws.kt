@@ -37,8 +37,4 @@ object FunctorLaws {
                         FF.map(FF.map(fa, f), g).equalUnderTheLaw(FF.map(fa, f andThen g), EQ)
                     }
             )
-
 }
-
-
-

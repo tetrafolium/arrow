@@ -18,7 +18,6 @@ abstract class MapKInstances<L> {
 
     @Provides
     fun mapKTraverse(ev: DaggerMapKTraverseInstance<L>): Traverse<MapKPartialOf<L>> = ev
-
 }
 
 class DaggerMapKFunctorInstance<K> @Inject constructor() : MapKFunctorInstance<K>

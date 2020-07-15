@@ -1,8 +1,6 @@
 package arrow.optics
 
 import arrow.data.*
-import arrow.optics.Iso
-import arrow.optics.PIso
 
 /**
  * [PIso] that defines the equality between a [Set] and a [arrow.SetK]

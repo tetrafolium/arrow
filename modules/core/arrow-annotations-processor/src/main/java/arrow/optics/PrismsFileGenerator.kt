@@ -42,5 +42,4 @@ class PrismsFileGenerator(
                |import arrow.syntax.either.*
                |
                |""".trimMargin()
-
 }

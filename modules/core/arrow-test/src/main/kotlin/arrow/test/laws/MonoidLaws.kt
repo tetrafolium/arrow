@@ -16,5 +16,4 @@ object MonoidLaws {
 
     inline fun <reified F> monoidRightIdentity(M: Monoid<F>, A: F, EQ: Eq<F>): Boolean =
             M.combine(A, M.empty()).equalUnderTheLaw(A, EQ)
-
 }

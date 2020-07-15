@@ -85,7 +85,5 @@ class FoldTest : UnitSpec() {
                 intFold.nonEmpty(ints.k()) == ints.isNotEmpty()
             })
         }
-
     }
-
 }

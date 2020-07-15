@@ -47,5 +47,4 @@ class IsosFileGenerator(
 
     private fun classConstructorFromTuple(sourceClassName: String, propertiesSize: Int) =
             (0 until propertiesSize).joinToString(prefix = "$sourceClassName(", postfix = ")", transform = { "tuple.${letters[it]}" })
-
 }

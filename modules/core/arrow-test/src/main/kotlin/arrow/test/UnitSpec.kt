@@ -1,20 +1,18 @@
 package arrow.test
 
-import arrow.data.NonEmptyList
-import arrow.typeclasses.Eq
 import arrow.test.laws.Law
+import arrow.typeclasses.Eq
 import io.kotlintest.TestCase
 import io.kotlintest.specs.StringSpec
 import java.util.*
-
 
 /**
  * Base class for unit tests
  */
 abstract class UnitSpec : StringSpec() {
-    
-    fun testLaws(vararg laws: List<Law>): List<TestCase>{
-        val flattened = laws.flatMap { list: List<Law> ->  list.asIterable() }
+
+    fun testLaws(vararg laws: List<Law>): List<TestCase> {
+        val flattened = laws.flatMap { list: List<Law> -> list.asIterable() }
         val distinct = flattened.distinctBy { law: Law -> law.name }
         return distinct.map { law: Law ->
             val tc = TestCase(suite = rootTestSuite, name = law.name, test = law.test, config = defaultTestCaseConfig)

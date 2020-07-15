@@ -1,11 +1,11 @@
 package arrow.syntax.collections
 
-import arrow.syntax.option.*
 import arrow.core.Option
 import arrow.core.Some
 import arrow.data.State
 import arrow.data.map
 import arrow.legacy.*
+import arrow.syntax.option.*
 
 /**
  * Returns a list containing all elements except the first element

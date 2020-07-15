@@ -24,7 +24,6 @@ abstract class WriterTInstances<F, W> {
 
     @Provides
     fun writerTMonoidK(ev: DaggerWriterTSemigroupKInstance<F, W>): SemigroupK<WriterTPartialOf<F, W>> = ev
-
 }
 
 class DaggerWriterTFunctorInstance<F, W> @Inject constructor(val FF: Functor<F>) : WriterTFunctorInstance<F, W> {

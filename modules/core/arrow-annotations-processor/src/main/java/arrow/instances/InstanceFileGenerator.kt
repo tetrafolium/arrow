@@ -1,6 +1,5 @@
 package arrow.instances
 
-import java.io.File
 import arrow.common.Package
 import arrow.common.utils.ClassOrPackageDataWrapper
 import arrow.common.utils.extractFullName
@@ -10,6 +9,7 @@ import me.eugeniomarletti.kotlin.metadata.modality
 import org.jetbrains.kotlin.serialization.ProtoBuf
 import org.jetbrains.kotlin.serialization.deserialization.TypeTable
 import org.jetbrains.kotlin.serialization.deserialization.supertypes
+import java.io.File
 
 data class FunctionMapping(
         val name: String,
@@ -59,8 +59,8 @@ data class Instance(
                 val retType = func.function.returnType.extractFullName(func.typeclass, failOnGeneric = false).removeBackticks()
                 val existingParamInfo = getParamInfo(func.name to retType)
                 when {
-                    acc.contains(func) -> acc //if the same param was already added ignore it
-                    else -> { //remove accumulated functions whose return types  supertypes of the current evaluated one and add the current one
+                    acc.contains(func) -> acc // if the same param was already added ignore it
+                    else -> { // remove accumulated functions whose return types  supertypes of the current evaluated one and add the current one
                         val remove = acc.find { av ->
                             val avRetType = av.function.returnType.extractFullName(av.typeclass, failOnGeneric = false)
                                     .removeBackticks().replace(".", "/").substringBefore("<")
@@ -148,7 +148,6 @@ data class Instance(
                 "      override fun ${it.first}(): ${it.second} = ${it.first}"
             }
     )
-
 }
 
 class InstanceFileGenerator(
@@ -207,5 +206,4 @@ class InstanceFileGenerator(
 
     private fun classToTypeclassMethodCall(typeclassWGenerics: String): String =
             "${typeclassWGenerics.substringBefore("<").split(".").map { it.decapitalize() }.joinToString(".")}<${typeclassWGenerics.substringAfter("<")}()"
-
 }

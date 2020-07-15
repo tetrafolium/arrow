@@ -1,9 +1,5 @@
 package arrow
 
-import io.kotlintest.matchers.Matcher
-import io.kotlintest.matchers.Result
-import io.kotlintest.matchers.shouldBe
-import io.kotlintest.specs.FreeSpec
 import arrow.Problem.*
 import arrow.core.*
 import arrow.data.*
@@ -11,8 +7,11 @@ import arrow.syntax.applicative.tupled
 import arrow.syntax.either.left
 import arrow.syntax.either.right
 import arrow.typeclasses.binding
+import io.kotlintest.matchers.Matcher
+import io.kotlintest.matchers.Result
+import io.kotlintest.matchers.shouldBe
+import io.kotlintest.specs.FreeSpec
 import kotlin.reflect.KClass
-
 
 /*** Arrow.io documentation as runnable code ***/
 class DataTypeExamples : FreeSpec() { init {
@@ -53,15 +52,14 @@ class DataTypeExamples : FreeSpec() { init {
 
         "Fold" {
             // Fold will extract the value from the option, or provide a default if the value is None
-            someValue.fold({ 1}, { it * 3}) shouldBe 126
-            noneValue.fold({ 1}, { it * 3}) shouldBe 1
+            someValue.fold({ 1 }, { it * 3 }) shouldBe 126
+            noneValue.fold({ 1 }, { it * 3 }) shouldBe 1
         }
 
         "Applicative" {
             // Computing over independent values
             val tuple = Option.applicative().tupled(Option(1), Option("Hello"), Option(20.0))
             tuple shouldBe Some(Tuple3(a = 1, b = "Hello", c = 20.0))
-
         }
 
         "Monad" {
@@ -82,9 +80,7 @@ class DataTypeExamples : FreeSpec() { init {
             }
             none shouldBe None
         }
-
     }
-
 
     // http://arrow-kt.io/docs/datatypes/try/
     "Try and recover" - {
@@ -105,7 +101,6 @@ class DataTypeExamples : FreeSpec() { init {
             gain shouldBe aFailureOfType(AuthorizationException::class)
 
             gain.getOrElse { 0 } shouldBe 0
-
         }
 
         "filter" {
@@ -136,7 +131,7 @@ class DataTypeExamples : FreeSpec() { init {
 
         "Functor" {
             // Transforming the value, if the computation is a success:
-            val actual = Try.functor().map(Try { "3".toInt() }, { it + 1})
+            val actual = Try.functor().map(Try { "3".toInt() }, { it + 1 })
             actual shouldBe Try.Success(4)
         }
 
@@ -148,28 +143,26 @@ class DataTypeExamples : FreeSpec() { init {
                     Try { "nope".toInt() }
             )
             tryHarder shouldBe aFailureOfType(NumberFormatException::class)
-
         }
     }
-
 
     // Either http://arrow.io/docs/datatypes/either/
     "Either left or right" - {
         fun parse(s: String): ProblemOrInt = Try { s.toInt().right() }.getOrElse { invalidInt.left() }
-        fun reciprocal(i: Int) : Either<Problem, Double> = when(i) {
+        fun reciprocal(i: Int): Either<Problem, Double> = when (i) {
             0 -> noReciprocal.left()
             else -> Either.Right(1.0 / i)
         }
         fun magic(s: String): Either<Problem, String> =
-                parse(s).flatMap{ reciprocal(it) }.map{ it.toString() }
+                parse(s).flatMap { reciprocal(it) }.map { it.toString() }
 
-        var either : ProblemOrInt
+        var either: ProblemOrInt
 
         "Right" {
             either = 5.right()
             either shouldBe Either.Right(5)
             either.getOrElse { 0 } shouldBe 5
-            either.map { it+1 } shouldBe 6.right()
+            either.map { it + 1 } shouldBe 6.right()
             either.flatMap { 6.right() } shouldBe 6.right()
             either.flatMap { somethingWentWRong.left() } shouldBe somethingWentWRong.left()
         }
@@ -181,11 +174,10 @@ class DataTypeExamples : FreeSpec() { init {
             either.getOrElse { 0 } shouldBe 0
             either.map { it + 1 } shouldBe either
             either.flatMap { somethingExploded.left() } shouldBe either
-
         }
 
         "Either rather than exception" {
-            parse("Not an number") shouldBe  invalidInt.left()
+            parse("Not an number") shouldBe invalidInt.left()
             parse("2") shouldBe 2.right()
         }
 
@@ -193,14 +185,9 @@ class DataTypeExamples : FreeSpec() { init {
             magic("0") shouldBe noReciprocal.left()
             magic("Not a number") shouldBe invalidInt.left()
             magic("1") shouldBe "1.0".right()
-
-
         }
-
-
     }
 }
-
 
     fun aFailureOfType(expected: KClass<*>): Matcher<Try<Int>> = object : Matcher<Try<Int>> {
         override fun test(value: Try<Int>): Result = when (value) {
@@ -222,14 +209,14 @@ private enum class Problem(val message: String) {
     noReciprocal("Cannot take noReciprocal of 0.")
 }
 
-private open class GeneralException: Exception()
+private open class GeneralException : Exception()
 
-private object NoConnectionException: GeneralException()
+private object NoConnectionException : GeneralException()
 
-private object AuthorizationException: GeneralException()
+private object AuthorizationException : GeneralException()
 
 fun playLottery(guess: Int): Int {
-    return when (guess){
+    return when (guess) {
         42 -> 1000 // jackpot
         in 10..41 -> 1
         in 0..9 -> throw AuthorizationException

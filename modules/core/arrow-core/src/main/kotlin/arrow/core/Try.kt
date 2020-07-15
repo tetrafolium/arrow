@@ -31,7 +31,6 @@ sealed class Try<out A> : TryOf<A> {
                     }
                 }
             }
-
         }
 
         inline operator fun <A> invoke(f: () -> A): Try<A> =
@@ -42,7 +41,6 @@ sealed class Try<out A> : TryOf<A> {
                 }
 
         fun <A> raise(e: Throwable): Try<A> = Failure(e)
-
     }
 
     @Deprecated(DeprecatedUnsafeAccess, ReplaceWith("getOrElse { ifEmpty }"))
@@ -178,7 +176,7 @@ fun <B> Try<B>.getOrDefault(default: () -> B): B = fold({ default() }, { it })
  */
 fun <B> Try<B>.getOrElse(default: (Throwable) -> B): B = fold(default, { it })
 
-fun <B, A: B> Try<A>.orElse(f: () -> Try<B>): Try<B> = when (this) {
+fun <B, A : B> Try<A>.orElse(f: () -> Try<B>): Try<B> = when (this) {
     is Try.Success -> this
     is Try.Failure -> f()
 }

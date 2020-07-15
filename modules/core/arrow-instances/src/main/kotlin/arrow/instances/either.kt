@@ -96,7 +96,6 @@ interface EitherEqInstance<L, R> : Eq<Either<L, R>> {
             is Either.Right -> EQR().eqv(a.b, b.b)
         }
     }
-
 }
 
 @instance(Either::class)

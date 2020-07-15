@@ -31,5 +31,4 @@ class DeferredKInstances {
 
     @Provides
     fun deferredKEffect(): Effect<ForDeferredK> = DeferredK.effect()
-
 }

@@ -3,10 +3,10 @@ package arrow.data
 import arrow.core.case
 import arrow.core.then
 import arrow.syntax.collections.collect
-import io.kotlintest.KTestJUnitRunner
-import org.junit.runner.RunWith
 import arrow.test.UnitSpec
+import io.kotlintest.KTestJUnitRunner
 import io.kotlintest.matchers.shouldBe
+import org.junit.runner.RunWith
 
 @RunWith(KTestJUnitRunner::class)
 class IterableTests : UnitSpec() {
@@ -18,6 +18,5 @@ class IterableTests : UnitSpec() {
                     case({ n: Int -> n % 2 == 0 } then { (it * 2).toString() })
             ) shouldBe listOf("4", "8")
         }
-
     }
 }

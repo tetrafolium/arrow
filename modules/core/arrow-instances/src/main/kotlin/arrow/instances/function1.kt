@@ -1,11 +1,11 @@
 package arrow.instances
 
-import arrow.typeclasses.Applicative
-import arrow.typeclasses.Functor
-import arrow.typeclasses.Monad
 import arrow.core.*
 import arrow.data.*
 import arrow.instance
+import arrow.typeclasses.Applicative
+import arrow.typeclasses.Functor
+import arrow.typeclasses.Monad
 
 @instance(Function1::class)
 interface Function1FunctorInstance<I> : Functor<Function1PartialOf<I>> {
@@ -41,4 +41,3 @@ interface Function1MonadInstance<I> : Function1ApplicativeInstance<I>, Monad<Fun
     override fun <A, B> tailRecM(a: A, f: (A) -> Function1Of<I, Either<A, B>>): Function1<I, B> =
             Function1.tailRecM(a, f)
 }
-

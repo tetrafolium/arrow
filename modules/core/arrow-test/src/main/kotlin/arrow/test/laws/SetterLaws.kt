@@ -1,12 +1,12 @@
 package arrow.test.laws
 
-import arrow.typeclasses.Eq
 import arrow.core.compose
 import arrow.core.identity
+import arrow.optics.Setter
+import arrow.typeclasses.Eq
+import arrow.typeclasses.eq
 import io.kotlintest.properties.Gen
 import io.kotlintest.properties.forAll
-import arrow.optics.Setter
-import arrow.typeclasses.eq
 
 object SetterLaws {
 
@@ -32,5 +32,4 @@ object SetterLaws {
     inline fun <reified A, reified B> consistentSetModify(setter: Setter<A, B>, aGen: Gen<A>, bGen: Gen<B>, EQA: Eq<A>): Unit = forAll(aGen, bGen, { a, b ->
         setter.modify(a) { b }.equalUnderTheLaw(setter.set(a, b), EQA)
     })
-
 }

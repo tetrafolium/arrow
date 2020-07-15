@@ -79,7 +79,6 @@ sealed class Disjunction<out L, out R> : EitherLike {
         override fun hashCode(): Int = value.hashCodeForNullable(43) { a, b -> a * b }
 
         override fun toString(): String = "Disjunction.Left($value)"
-
     }
 
     class Right<out L, out R>(val value: R) : Disjunction<L, R>(), RightLike {
@@ -94,7 +93,6 @@ sealed class Disjunction<out L, out R> : EitherLike {
         override fun hashCode(): Int = value.hashCodeForNullable(43) { a, b -> a * b }
 
         override fun toString(): String = "Disjunction.Right($value)"
-
     }
 }
 
@@ -120,4 +118,3 @@ fun <X, L, R> Disjunction<L, R>.flatMap(f: (R) -> Disjunction<L, X>): Disjunctio
 }
 
 fun <L, R, X, Y> Disjunction<L, R>.map(x: Disjunction<L, X>, f: (R, X) -> Y): Disjunction<L, Y> = flatMap { r -> x.map { xx -> f(r, xx) } }
-

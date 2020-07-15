@@ -82,7 +82,6 @@ interface POptional<S, T, A, B> : POptionalOf<S, T, A, B> {
                 { Either.Left(it) },
                 { _ -> ::identity }
         )
-
     }
 
     /**
@@ -229,7 +228,6 @@ interface POptional<S, T, A, B> : POptionalOf<S, T, A, B> {
         override fun <F> modifyF(FA: Applicative<F>, s: S, f: (A) -> Kind<F, B>): Kind<F, T> =
                 this@POptional.modifyF(FA, s, f)
     }
-
 }
 
 /**

@@ -55,7 +55,6 @@ interface Fold<S, A> : FoldOf<S, A> {
         inline fun <reified F, S> fromFoldable(Foldable: Foldable<F> = foldable()) = object : Fold<Kind<F, S>, S> {
             override fun <R> foldMap(M: Monoid<R>, s: Kind<F, S>, f: (S) -> R): R = Foldable.foldMap(M, s, f)
         }
-
     }
 
     /**

@@ -1,8 +1,6 @@
 package arrow.test.laws
 
 import arrow.*
-import io.kotlintest.properties.Gen
-import io.kotlintest.properties.forAll
 import arrow.core.*
 import arrow.mtl.*
 import arrow.syntax.applicative.*
@@ -13,10 +11,12 @@ import arrow.test.generators.genIntSmall
 import arrow.typeclasses.Applicative
 import arrow.typeclasses.Eq
 import arrow.typeclasses.applicative
+import io.kotlintest.properties.Gen
+import io.kotlintest.properties.forAll
 
 object TraverseFilterLaws {
 
-    //FIXME(paco): TraverseLaws cannot receive AP::pure due to a crash caused by the inliner. Check in TraverseLaws why.
+    // FIXME(paco): TraverseLaws cannot receive AP::pure due to a crash caused by the inliner. Check in TraverseLaws why.
     inline fun <reified F> laws(TF: TraverseFilter<F> = traverseFilter<F>(), GA: Applicative<F> = applicative<F>(), crossinline cf: (Int) -> Kind<F, Int>, EQ: Eq<Kind<F, Int>>, EQ_NESTED: Eq<Kind<F, Kind<F, Int>>> = Eq.any()): List<Law> =
             TraverseLaws.laws(TF, GA, cf, EQ) + listOf(
                     Law("TraverseFilter Laws: Identity", { identityTraverseFilter(TF, GA, EQ_NESTED) }),

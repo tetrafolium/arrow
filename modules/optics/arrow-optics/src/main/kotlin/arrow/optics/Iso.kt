@@ -247,7 +247,6 @@ interface PIso<S, T, A, B> : PIsoOf<S, T, A, B> {
         override fun <F> modifyF(FA: Applicative<F>, s: S, f: (A) -> Kind<F, B>): Kind<F, T> =
                 FA.map(f(get(s)), this@PIso::reverseGet)
     }
-
 }
 
 /**

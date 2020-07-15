@@ -34,7 +34,6 @@ import arrow.typeclasses.*
     companion object {
         inline operator fun <reified F, reified G, A> invoke(run: Either<Kind<F, A>, Kind<G, A>>): Coproduct<F, G, A> = Coproduct(run)
     }
-
 }
 
 inline fun <reified F, reified G, A> Either<Kind<F, A>, Kind<G, A>>.coproduct(): Coproduct<F, G, A> =

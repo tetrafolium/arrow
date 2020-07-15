@@ -62,7 +62,6 @@ interface MapKFilterIndexInstance<K, V> : FilterIndex<MapKOf<K, V>, K, V> {
                         it.toMap().k()
                     }
                 }
-
     }
 }
 

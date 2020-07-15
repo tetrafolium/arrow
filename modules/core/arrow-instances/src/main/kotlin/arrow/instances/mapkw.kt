@@ -34,7 +34,6 @@ interface MapKSemigroupInstance<K, A> : Semigroup<MapKOf<K, A>> {
     override fun combine(a: MapKOf<K, A>, b: MapKOf<K, A>): MapK<K, A> =
             if (a.fix().size < b.fix().size) a.fix().foldLeft<A>(b.fix(), { my, (k, b) -> my.updated(k, SG().maybeCombine(b, my.get(k))) })
             else b.fix().foldLeft<A>(a.fix(), { my, (k, a) -> my.updated(k, SG().maybeCombine(a, my.get(k))) })
-
 }
 
 @instance(MapK::class)
@@ -58,7 +57,6 @@ interface MapKEqInstance<K, A> : Eq<MapK<K, A>> {
                     } ?: false
                 }.fold(true) { b1, b2 -> b1 && b2 }
             } else false
-
 }
 
 @instance(MapK::class)

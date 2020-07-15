@@ -77,7 +77,7 @@ sealed class Eval<out A> : EvalOf<A> {
                     else -> fa
                 }
 
-        //Enforce tailrec call to collapse inside compute loop
+        // Enforce tailrec call to collapse inside compute loop
         private inline fun <A> collapse1(fa: Eval<A>): Eval<A> = collapse(fa)
 
         private fun <A> evaluate(e: Eval<A>): A = run {

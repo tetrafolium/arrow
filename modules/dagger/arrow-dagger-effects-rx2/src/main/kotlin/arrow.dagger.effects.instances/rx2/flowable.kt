@@ -31,5 +31,4 @@ class FlowableKInstances {
 
     @Provides
     fun flowableKEffect(): Effect<ForFlowableK> = FlowableK.effect()
-
 }

@@ -18,8 +18,7 @@ abstract class AbstractProcessor : KotlinAbstractProcessor(), ProcessorUtils {
         if (!roundEnv.errorRaised()) {
             try {
                 onProcess(annotations, roundEnv)
-            }
-            catch (e: KnownException) {
+            } catch (e: KnownException) {
                 logE(e.message, e.element)
             }
         }

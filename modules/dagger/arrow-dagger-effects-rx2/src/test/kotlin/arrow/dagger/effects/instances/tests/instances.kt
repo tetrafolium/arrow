@@ -37,6 +37,3 @@ interface Runtime {
 object Arrow {
     val instances = DaggerRuntime.builder().build()
 }
-
-
-

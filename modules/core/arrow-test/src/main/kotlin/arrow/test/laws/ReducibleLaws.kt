@@ -1,6 +1,5 @@
 package arrow.test.laws
 
-import io.kotlintest.properties.forAll
 import arrow.*
 import arrow.core.Eval
 import arrow.core.Option
@@ -11,6 +10,7 @@ import arrow.test.generators.genFunctionAAToA
 import arrow.test.generators.genFunctionAToB
 import arrow.test.generators.genIntSmall
 import arrow.typeclasses.*
+import io.kotlintest.properties.forAll
 
 object ReducibleLaws {
     inline fun <reified F> laws(RF: Reducible<F> = reducible(), crossinline cf: (Int) -> Kind<F, Int>, EQ: Eq<Int>, EQOptionInt: Eq<Option<Int>>, EQLong: Eq<Long>): List<Law> =

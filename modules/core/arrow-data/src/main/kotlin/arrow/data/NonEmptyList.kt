@@ -115,7 +115,6 @@ class NonEmptyList<out A> private constructor(
             go(buf, f, f(a).fix())
             return fromListUnsafe(buf)
         }
-
     }
 }
 

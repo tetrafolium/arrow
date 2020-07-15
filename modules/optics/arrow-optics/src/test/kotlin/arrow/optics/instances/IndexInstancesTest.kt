@@ -84,7 +84,5 @@ class IndexInstanceTest : UnitSpec() {
                 bGen = genChars(),
                 funcGen = genFunctionAToB(genChars())
         ))
-
     }
-
 }

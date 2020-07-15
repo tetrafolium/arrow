@@ -1,18 +1,16 @@
 package arrow.optics
 
+import arrow.core.Tuple2
+import arrow.core.toT
+import arrow.data.k
+import arrow.syntax.either.left
+import arrow.syntax.either.right
+import arrow.syntax.foldable.combineAll
+import arrow.syntax.option.some
+import arrow.test.UnitSpec
 import io.kotlintest.KTestJUnitRunner
 import io.kotlintest.properties.Gen
 import io.kotlintest.properties.forAll
-import arrow.core.Tuple2
-import arrow.core.getOrElse
-import arrow.test.UnitSpec
-import arrow.syntax.either.left
-import arrow.syntax.either.right
-import arrow.core.toT
-import arrow.data.k
-import arrow.syntax.collections.firstOption
-import arrow.syntax.foldable.combineAll
-import arrow.syntax.option.some
 import org.junit.runner.RunWith
 
 @RunWith(KTestJUnitRunner::class)
@@ -127,7 +125,5 @@ class GetterTest : UnitSpec() {
                 first.get(int toT token) == int toT token.value
             })
         }
-
     }
-
 }

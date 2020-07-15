@@ -82,7 +82,6 @@ data class FlowableK<A>(val flowable: Flowable<A>) : FlowableKOf<A>, FlowableKKi
                             emitter.onNext(it)
                             emitter.onComplete()
                         })
-
                     }
                 }, mode).k()
 

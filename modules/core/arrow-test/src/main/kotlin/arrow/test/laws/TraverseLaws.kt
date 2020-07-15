@@ -66,13 +66,11 @@ object TraverseLaws {
                     override fun <A> pure(a: A): Kind<TIF, A> =
                             TIC(Id(a) toT Id(a))
 
-
                     override fun <A, B> ap(fa: Kind<TIF, A>, ff: Kind<TIF, (A) -> B>): Kind<TIF, B> {
                         val (fam, fan) = fa.fix().ti
                         val (fm, fn) = ff.fix().ti
                         return TIC(Id.applicative().ap(fam, fm) toT Id.applicative().ap(fan, fn))
                     }
-
                 }
 
                 val TIEQ: Eq<TI<Kind<F, Int>>> = Eq<TI<Kind<F, Int>>> { a, b ->

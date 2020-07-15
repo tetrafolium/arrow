@@ -59,6 +59,4 @@ class AutoFoldFileGenerator(
             """package $packageName
                |
                |""".trimMargin()
-
 }
-

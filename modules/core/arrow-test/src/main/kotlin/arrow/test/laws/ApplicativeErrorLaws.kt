@@ -62,5 +62,4 @@ object ApplicativeErrorLaws {
             forAll(genEither(genThrowable(), Gen.int()), { either: Either<Throwable, Int> ->
                 AP.catch({ either.fold({ throw it }, { it }) }).equalUnderTheLaw(either.fold({ AP.raiseError<Int>(it) }, { AP.pure(it) }), EQ)
             })
-
 }

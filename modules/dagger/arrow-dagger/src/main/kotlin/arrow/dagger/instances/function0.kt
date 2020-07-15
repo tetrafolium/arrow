@@ -22,6 +22,4 @@ class Function0Instances {
 
     @Provides
     fun function0Bimonad(): Bimonad<ForFunction0> = Function0.bimonad()
-
 }
-

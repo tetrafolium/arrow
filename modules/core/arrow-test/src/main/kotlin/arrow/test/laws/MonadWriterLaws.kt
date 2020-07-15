@@ -28,7 +28,7 @@ object MonadWriterLaws {
 
     inline fun <reified F, reified W> monadWriterWriterPure(MW: MonadWriter<F, W>,
                                                             MOW: Monoid<W> = monoid<W>(),
-                                                            EQ: Eq<Kind<F, Int>>): Unit {
+                                                            EQ: Eq<Kind<F, Int>>) {
         forAll(Gen.int(), { a: Int ->
             MW.writer(Tuple2(MOW.empty(), a)).equalUnderTheLaw(MW.pure(a), EQ)
         })
@@ -36,7 +36,7 @@ object MonadWriterLaws {
 
     inline fun <reified F, reified W> monadWriterTellFusion(genW: Gen<W>,
                                                             MW: MonadWriter<F, W>,
-                                                            MOW: Monoid<W> = monoid<W>()): Unit {
+                                                            MOW: Monoid<W> = monoid<W>()) {
         forAll(genW, genW, { x: W, y: W ->
             MW.flatMap(MW.tell(x), { MW.tell(y) }).equalUnderTheLaw(MW.tell(MOW.combine(x, y)), Eq.any())
         })
@@ -44,7 +44,7 @@ object MonadWriterLaws {
 
     inline fun <reified F, reified W> monadWriterListenPure(MW: MonadWriter<F, W>,
                                                             MOW: Monoid<W> = monoid<W>(),
-                                                            EqTupleWA: Eq<Kind<F, Tuple2<W, Int>>>): Unit {
+                                                            EqTupleWA: Eq<Kind<F, Tuple2<W, Int>>>) {
         forAll(Gen.int(), { a: Int ->
             MW.listen(MW.pure(a)).equalUnderTheLaw(MW.pure(Tuple2(MOW.empty(), a)), EqTupleWA)
         })
@@ -52,7 +52,7 @@ object MonadWriterLaws {
 
     fun <F, W> monadWriterListenWriter(genTupleWA: Gen<Tuple2<W, Int>>,
                                        MW: MonadWriter<F, W>,
-                                       EqTupleWA: Eq<Kind<F, Tuple2<W, Int>>>): Unit {
+                                       EqTupleWA: Eq<Kind<F, Tuple2<W, Int>>>) {
         forAll(genTupleWA, { tupleWA: Tuple2<W, Int> ->
             MW.listen(MW.writer(tupleWA)).equalUnderTheLaw(MW.map(MW.tell(tupleWA.a), { tupleWA }), EqTupleWA)
         })

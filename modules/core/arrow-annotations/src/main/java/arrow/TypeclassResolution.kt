@@ -55,7 +55,6 @@ class InstanceParametrizedType(val raw: Type, val typeArgs: List<Type>) : Parame
             hashCode(rawType)
 
     private fun hashCode(o: Any?): Int = o?.hashCode() ?: 0
-
 }
 
 /**
@@ -78,8 +77,8 @@ inline fun <reified T> typeLiteral(): Type {
  */
 object GlobalInstances : ConcurrentHashMap<Type, Any>()
 
-data class TypeClassInstanceNotFound(val type: Type)
-    : RuntimeException("Thread: ${Thread.currentThread().name} Time: ${System.nanoTime()} : \n$type not found in Global Typeclass Instances registry. " +
+data class TypeClassInstanceNotFound(val type: Type) :
+    RuntimeException("Thread: ${Thread.currentThread().name} Time: ${System.nanoTime()} : \n$type not found in Global Typeclass Instances registry. " +
         "\nPlease ensure your instances implement `GlobalInstance<$type>` for automatic registration." +
         "\nAlternatively invoke `GlobalInstances.put(typeLiteral<$type>(), instance)` if you wish to register " +
         "\nor override a typeclass manually" +
@@ -195,7 +194,6 @@ private fun instanceFromImplicitObject(t: InstanceParametrizedType): Any? {
         } else {
             factoryFunction.invoke(instance, *values)
         }
-
     } else null
 }
 

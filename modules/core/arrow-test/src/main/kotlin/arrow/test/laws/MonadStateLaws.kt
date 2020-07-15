@@ -1,10 +1,10 @@
 package arrow.test.laws
 
-import arrow.typeclasses.Eq
 import arrow.Kind
 import arrow.mtl.MonadState
 import arrow.mtl.monadState
 import arrow.test.generators.genIntSmall
+import arrow.typeclasses.Eq
 import io.kotlintest.properties.forAll
 
 object MonadStateLaws {

@@ -21,7 +21,7 @@ class SetKTest : UnitSpec() {
             eq<SetK<Int>>() shouldNotBe null
             show<SetK<Int>>() shouldNotBe null
         }
-        
+
         testLaws(
             EqLaws.laws { SetK.pure(it) },
             ShowLaws.laws { SetK.pure(it) },

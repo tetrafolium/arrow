@@ -30,7 +30,6 @@ interface ConstFoldableInstance<A> : Foldable<ConstPartialOf<A>> {
     override fun <T, U> foldLeft(fa: ConstOf<A, T>, b: U, f: (U, T) -> U): U = b
 
     override fun <T, U> foldRight(fa: ConstOf<A, T>, lb: Eval<U>, f: (T, Eval<U>) -> Eval<U>): Eval<U> = lb
-
 }
 
 @instance(Const::class)
@@ -48,7 +47,6 @@ interface ConstSemigroupInstance<A, T> : Semigroup<ConstOf<A, T>> {
     fun SA(): Semigroup<A>
 
     override fun combine(a: ConstOf<A, T>, b: ConstOf<A, T>): Const<A, T> = a.combine(b, SA())
-
 }
 
 @instance(Const::class)
@@ -57,7 +55,6 @@ interface ConstMonoidInstance<A, T> : ConstSemigroupInstance<A, T>, Monoid<Const
     override fun SA(): Monoid<A>
 
     override fun empty(): Const<A, T> = Const(SA().empty())
-
 }
 
 @instance(Const::class)

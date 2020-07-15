@@ -63,6 +63,5 @@ class OptionInstancesTest : UnitSpec() {
                     override fun empty(): Either<Unit, Int> = 0.right()
                 }
         ))
-
     }
 }

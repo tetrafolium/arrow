@@ -6,7 +6,6 @@ import arrow.typeclasses.order
 import io.kotlintest.properties.Gen
 import io.kotlintest.properties.forAll
 
-
 object OrderLaws {
 
     inline fun <reified F> laws(O: Order<F> = order(), fGen: Gen<F>, funcGen: Gen<(F) -> F>): List<Law> = listOf(
@@ -104,5 +103,4 @@ object OrderLaws {
                 else if (c == 0) (m == x) && (m == y)
                 else m == x
             })
-
 }

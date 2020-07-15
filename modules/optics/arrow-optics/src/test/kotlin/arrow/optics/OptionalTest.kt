@@ -196,6 +196,5 @@ class OptionalTest : UnitSpec() {
                 joinedOptional.getOption(listOf(int).left()) == joinedOptional.getOption(int.right())
             })
         }
-
     }
 }

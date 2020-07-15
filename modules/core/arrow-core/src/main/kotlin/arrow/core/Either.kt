@@ -194,7 +194,6 @@ import arrow.legacy.*
         }
 
         fun <L, R> cond(test: Boolean, r: () -> R, l: () -> L): Either<L, R> = if (test) right(r()) else left(l())
-
     }
 }
 

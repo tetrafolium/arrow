@@ -1,14 +1,14 @@
 package arrow.test.laws
 
-import arrow.typeclasses.Eq
-import arrow.typeclasses.Monoid
 import arrow.core.*
 import arrow.data.*
-import io.kotlintest.properties.Gen
-import io.kotlintest.properties.forAll
 import arrow.optics.Prism
 import arrow.optics.modify
 import arrow.syntax.option.some
+import arrow.typeclasses.Eq
+import arrow.typeclasses.Monoid
+import io.kotlintest.properties.Gen
+import io.kotlintest.properties.forAll
 
 object PrismLaws {
 
@@ -62,5 +62,4 @@ object PrismLaws {
                     override fun empty(): Option<B> = None
                 }), a, { Const(Some(it)) }).value().equalUnderTheLaw(prism.getOption(a), EQOptionB)
             })
-
 }

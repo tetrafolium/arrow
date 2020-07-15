@@ -1,10 +1,10 @@
 package arrow.fold
 
-import com.google.auto.service.AutoService
 import arrow.common.utils.AbstractProcessor
 import arrow.common.utils.asClassOrPackageDataWrapper
 import arrow.common.utils.isSealed
 import arrow.common.utils.knownError
+import com.google.auto.service.AutoService
 import me.eugeniomarletti.kotlin.metadata.KotlinClassMetadata
 import me.eugeniomarletti.kotlin.metadata.kotlinMetadata
 import java.io.File
@@ -61,5 +61,4 @@ class AutoFoldProcessor : AbstractProcessor() {
             AutoFoldFileGenerator(annotatedList, generatedDir).generate()
         }
     }
-
 }

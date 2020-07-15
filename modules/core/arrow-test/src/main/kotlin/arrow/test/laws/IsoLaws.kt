@@ -4,14 +4,14 @@ import arrow.core.*
 import arrow.data.Const
 import arrow.data.applicative
 import arrow.data.value
-import io.kotlintest.properties.Gen
-import io.kotlintest.properties.forAll
 import arrow.optics.Iso
 import arrow.optics.modify
 import arrow.typeclasses.Eq
 import arrow.typeclasses.Monoid
 import arrow.typeclasses.eq
 import arrow.typeclasses.monoid
+import io.kotlintest.properties.Gen
+import io.kotlintest.properties.forAll
 
 object IsoLaws {
 
@@ -59,5 +59,4 @@ object IsoLaws {
             forAll(aGen, { a ->
                 iso.get(a).equalUnderTheLaw(iso.modifyF(Const.applicative(bMonoid), a, ::Const).value(), EQB)
             })
-
 }

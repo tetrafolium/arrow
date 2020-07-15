@@ -59,5 +59,4 @@ class TypeclassesProcessor : AbstractProcessor() {
         }.firstOrNull() ?: true
         return AnnotatedTypeclass(element, proto, superTypes, diamondTypes, syntax)
     }
-
 }

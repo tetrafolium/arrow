@@ -14,7 +14,6 @@ interface Monoid<A> : Semigroup<A>, TC {
      */
     fun combineAll(elems: Collection<A>): A =
             if (elems.isEmpty()) empty() else elems.reduce { a, b -> combine(a, b) }
-
 }
 
 /**

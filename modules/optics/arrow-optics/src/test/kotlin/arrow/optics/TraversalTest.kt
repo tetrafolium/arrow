@@ -130,7 +130,5 @@ class TraversalTest : UnitSpec() {
                 Traversal.fromTraversable<ForListK, Int, Int>().size(ints.k()) == ints.size
             })
         }
-
     }
-
 }

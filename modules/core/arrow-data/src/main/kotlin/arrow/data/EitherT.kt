@@ -81,7 +81,7 @@ import arrow.typeclasses.monad
                 }
             })
 
-    fun <C> ap(ff: EitherTOf<F, A, (B) -> C>, MF: Monad<F>): EitherT<F, A, C> = ff.fix().flatMap ({ f -> map(f, MF) }, MF)
+    fun <C> ap(ff: EitherTOf<F, A, (B) -> C>, MF: Monad<F>): EitherT<F, A, C> = ff.fix().flatMap({ f -> map(f, MF) }, MF)
 }
 
 fun <F, A, B> EitherTOf<F, A, B>.value(): Kind<F, Either<A, B>> = this.fix().value

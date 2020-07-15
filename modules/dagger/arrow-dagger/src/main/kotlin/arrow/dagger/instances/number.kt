@@ -82,5 +82,4 @@ class NumberInstances {
 
     @Provides
     fun floatEq(): Eq<@JvmSuppressWildcards Float> = FloatEqInstance
-
 }

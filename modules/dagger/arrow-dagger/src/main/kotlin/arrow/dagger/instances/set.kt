@@ -23,7 +23,6 @@ class SetKInstances {
 
     @Provides
     fun setKSemigroupK(): SemigroupK<ForSetK> = SetK.semigroupK()
-
 }
 
 class DaggerSetKSemigroupInstance<A> : SetKSemigroupInstance<A>

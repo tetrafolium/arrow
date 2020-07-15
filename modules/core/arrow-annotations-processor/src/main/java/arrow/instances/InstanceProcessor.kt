@@ -56,5 +56,4 @@ class InstanceProcessor : AbstractProcessor() {
                 recurseTypeclassInterfaces(proto, typeTable, emptyList()).map { it as ClassOrPackageDataWrapper.Class }
         return AnnotatedInstance(element, proto, superTypes, this, dataType[0])
     }
-
 }

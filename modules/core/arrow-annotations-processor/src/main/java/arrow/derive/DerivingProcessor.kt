@@ -1,7 +1,7 @@
 package arrow.derive
 
-import com.google.auto.service.AutoService
 import arrow.common.utils.*
+import com.google.auto.service.AutoService
 import org.jetbrains.kotlin.serialization.deserialization.TypeTable
 import java.io.File
 import javax.annotation.processing.Processor
@@ -28,7 +28,7 @@ class DerivingProcessor : AbstractProcessor() {
                 .map { element ->
                     when (element.kind) {
                         ElementKind.CLASS -> processClass(element as TypeElement)
-                        else -> knownError("${derivingAnnotationName} can only be used on classes")
+                        else -> knownError("$derivingAnnotationName can only be used on classes")
                     }
                 }
 
@@ -66,5 +66,4 @@ class DerivingProcessor : AbstractProcessor() {
         val companionProto = getClassOrPackageDataWrapper(typeClassElement)
         return AnnotatedDeriving(element, proto, companionProto, typeClasses, typeclassSuperTypes)
     }
-
 }

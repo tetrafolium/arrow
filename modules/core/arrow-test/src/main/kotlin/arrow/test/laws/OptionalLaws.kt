@@ -1,13 +1,13 @@
 package arrow.test.laws
 
-import arrow.typeclasses.Eq
-import arrow.typeclasses.Monoid
 import arrow.core.*
 import arrow.data.*
+import arrow.optics.*
+import arrow.typeclasses.Eq
+import arrow.typeclasses.Monoid
+import arrow.typeclasses.eq
 import io.kotlintest.properties.Gen
 import io.kotlintest.properties.forAll
-import arrow.optics.*
-import arrow.typeclasses.eq
 
 object OptionalLaws {
 
@@ -46,7 +46,6 @@ object OptionalLaws {
                         .equalUnderTheLaw(a, EQA)
             })
 
-
     inline fun <reified A, reified B> composeModify(optional: Optional<A, B>, aGen: Gen<A>, funcGen: Gen<(B) -> B>, EQA: Eq<A>): Unit =
             forAll(aGen, funcGen, funcGen, { a, f, g ->
                 optional.modify(optional.modify(a, f), g)
@@ -65,7 +64,7 @@ object OptionalLaws {
                         .equalUnderTheLaw(optional.modifyF(Id.applicative(), a, { Id.pure(f(it)) }).value(), EQA)
             })
 
-    inline fun <reified A, reified B> consistentGetOptionModifyId(optional: Optional<A, B>, aGen: Gen<A>, EQOptionB: Eq<Option<B>>): Unit {
+    inline fun <reified A, reified B> consistentGetOptionModifyId(optional: Optional<A, B>, aGen: Gen<A>, EQOptionB: Eq<Option<B>>) {
         val firstMonoid = object : Monoid<FirstOption<B>> {
             override fun empty(): FirstOption<B> = FirstOption(None)
             override fun combine(a: FirstOption<B>, b: FirstOption<B>): FirstOption<B> = if (a.option.fold({ false }, { true })) a else b
@@ -79,5 +78,4 @@ object OptionalLaws {
     }
 
     @PublishedApi internal data class FirstOption<A>(val option: Option<A>)
-
 }

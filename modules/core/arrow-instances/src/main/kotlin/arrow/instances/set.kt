@@ -27,7 +27,6 @@ interface SetKEqInstance<A> : Eq<SetK<A>> {
                 acc && bool
             }
             else false
-
 }
 
 @instance(SetK::class)

@@ -304,6 +304,5 @@ class TryTest : UnitSpec() {
             (Try { failure }.flatten().isFailure()) shouldBe true
             (Try<Try<Int>> { throw RuntimeException("") }.flatten().isFailure()) shouldBe true
         }
-
     }
 }

@@ -1,9 +1,9 @@
 package arrow.optics
 
 import arrow.core.*
-import arrow.data.*
 import arrow.core.Failure
 import arrow.core.Success
+import arrow.data.*
 
 /**
  * [PIso] that defines equality between [Validated] and [Either]

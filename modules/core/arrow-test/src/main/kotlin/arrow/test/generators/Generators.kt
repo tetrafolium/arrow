@@ -1,10 +1,10 @@
 package arrow.test.generators
 
-import arrow.typeclasses.Applicative
 import arrow.Kind
-import arrow.typeclasses.applicative
 import arrow.core.*
 import arrow.data.*
+import arrow.typeclasses.Applicative
+import arrow.typeclasses.applicative
 import io.kotlintest.properties.Gen
 import java.util.concurrent.TimeUnit
 

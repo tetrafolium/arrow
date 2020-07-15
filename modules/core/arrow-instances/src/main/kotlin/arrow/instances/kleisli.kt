@@ -51,7 +51,6 @@ interface KleisliMonadInstance<F, D> : KleisliApplicativeInstance<F, D>, Monad<K
 
     override fun <A, B> tailRecM(a: A, f: (A) -> KleisliOf<F, D, Either<A, B>>): Kleisli<F, D, B> =
             Kleisli.tailRecM(a, f, FF())
-
 }
 
 @instance(Kleisli::class)
@@ -64,7 +63,6 @@ interface KleisliApplicativeErrorInstance<F, D, E> : ApplicativeError<KleisliPar
 
     override fun <A> raiseError(e: E): Kleisli<F, D, A> =
             Kleisli.raiseError(e, FF())
-
 }
 
 @instance(Kleisli::class)

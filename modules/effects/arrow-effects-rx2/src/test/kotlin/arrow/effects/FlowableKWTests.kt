@@ -35,7 +35,6 @@ class FlowableKTests : UnitSpec() {
                     }
                     errA == errB
                 }
-
     }
 
     init {

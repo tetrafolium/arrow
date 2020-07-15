@@ -83,6 +83,5 @@ class TryInstancesTest : UnitSpec() {
                     override fun empty() = 0.valid<Throwable, Int>()
                 }
         ))
-
     }
 }

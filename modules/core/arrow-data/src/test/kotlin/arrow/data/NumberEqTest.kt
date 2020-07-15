@@ -1,10 +1,10 @@
 package arrow.data
 
+import arrow.test.UnitSpec
+import arrow.test.laws.EqLaws
+import arrow.typeclasses.eq
 import io.kotlintest.KTestJUnitRunner
 import io.kotlintest.matchers.shouldNotBe
-import arrow.test.UnitSpec
-import arrow.typeclasses.eq
-import arrow.test.laws.EqLaws
 import org.junit.runner.RunWith
 
 @RunWith(KTestJUnitRunner::class)
@@ -29,6 +29,5 @@ class NumberEqTest : UnitSpec() {
             EqLaws.laws { it.toByte() },
             EqLaws.laws { it.toShort() }
         )
-
     }
 }

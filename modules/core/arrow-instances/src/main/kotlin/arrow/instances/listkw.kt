@@ -24,7 +24,6 @@ interface ListKEqInstance<A> : Eq<ListK<A>> {
             a.zip(b) { aa, bb -> EQ().eqv(aa, bb) }.fold(true) { acc, bool ->
                 acc && bool
             }
-
 }
 
 @instance(ListK::class)

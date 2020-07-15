@@ -50,7 +50,6 @@ interface MapKEachInstance<K, V> : Each<Map<K, V>, V> {
                         it.fix().map
                     }
                 }
-
     }
 }
 

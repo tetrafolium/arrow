@@ -22,5 +22,4 @@ class IdInstances {
 
     @Provides
     fun idBimonad(): Bimonad<ForId> = Id.bimonad()
-
 }

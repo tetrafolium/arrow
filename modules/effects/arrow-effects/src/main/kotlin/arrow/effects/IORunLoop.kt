@@ -94,7 +94,6 @@ internal object IORunLoop {
                     bFirst = null
                 }
             }
-
         } while (true)
     }
 
@@ -124,7 +123,7 @@ internal object IORunLoop {
             cb: (Either<Throwable, Any?>) -> Unit,
             rcbRef: RestartCallback?,
             bFirstRef: BindF?,
-            bRestRef: CallStack?): Unit {
+            bRestRef: CallStack?) {
         var currentIO: Current? = source
         var bFirst: BindF? = bFirstRef
         var bRest: CallStack? = bRestRef
@@ -215,7 +214,6 @@ internal object IORunLoop {
                     bFirst = null
                 }
             }
-
         } while (true)
     }
 
@@ -276,13 +274,13 @@ internal object IORunLoop {
         private var bFirst: BindF? = null
         private var bRest: CallStack? = null
 
-        fun prepare(bFirst: BindF?, bRest: CallStack?): Unit {
+        fun prepare(bFirst: BindF?, bRest: CallStack?) {
             canCall = true
             this.bFirst = bFirst
             this.bRest = bRest
         }
 
-        override operator fun invoke(either: Either<Throwable, Any?>): Unit {
+        override operator fun invoke(either: Either<Throwable, Any?>) {
             if (canCall) {
                 canCall = false
                 when (either) {

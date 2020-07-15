@@ -1,10 +1,10 @@
 package arrow.optics
 
-import io.kotlintest.properties.Gen
 import arrow.core.identity
 import arrow.syntax.either.left
 import arrow.syntax.either.right
 import arrow.typeclasses.Eq
+import io.kotlintest.properties.Gen
 
 sealed class SumType {
     data class A(val string: String) : SumType()

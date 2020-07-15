@@ -147,7 +147,6 @@ class CofreeTest : UnitSpec() {
             cataHundred shouldBe Some(NonEmptyList.fromListUnsafe((0..2000).toList()))
             cataHundredOne shouldBe None
         }
-
     }
 }
 

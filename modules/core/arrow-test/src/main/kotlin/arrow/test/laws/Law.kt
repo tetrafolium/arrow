@@ -8,7 +8,7 @@ data class Law(val name: String, val test: () -> Unit)
 inline fun <reified A> A.equalUnderTheLaw(b: A, eq: Eq<A>): Boolean =
         eq.eqv(this, b)
 
-fun <A> forFew(amount: Int, gena: Gen<A>, fn: (a: A) -> Boolean): Unit {
+fun <A> forFew(amount: Int, gena: Gen<A>, fn: (a: A) -> Boolean) {
     for (k in 0..amount) {
         val a = gena.generate()
         val passed = fn(a)
@@ -18,7 +18,7 @@ fun <A> forFew(amount: Int, gena: Gen<A>, fn: (a: A) -> Boolean): Unit {
     }
 }
 
-fun <A, B> forFew(amount: Int, gena: Gen<A>, genb: Gen<B>, fn: (a: A, b: B) -> Boolean): Unit {
+fun <A, B> forFew(amount: Int, gena: Gen<A>, genb: Gen<B>, fn: (a: A, b: B) -> Boolean) {
     for (k in 0..amount) {
         val a = gena.generate()
         val b = genb.generate()
@@ -29,8 +29,7 @@ fun <A, B> forFew(amount: Int, gena: Gen<A>, genb: Gen<B>, fn: (a: A, b: B) -> B
     }
 }
 
-
-fun <A, B, C> forFew(amount: Int, gena: Gen<A>, genb: Gen<B>, genc: Gen<C>, fn: (a: A, b: B, c: C) -> Boolean): Unit {
+fun <A, B, C> forFew(amount: Int, gena: Gen<A>, genb: Gen<B>, genc: Gen<C>, fn: (a: A, b: B, c: C) -> Boolean) {
     for (k in 0..amount) {
         val a = gena.generate()
         val b = genb.generate()
@@ -42,8 +41,7 @@ fun <A, B, C> forFew(amount: Int, gena: Gen<A>, genb: Gen<B>, genc: Gen<C>, fn: 
     }
 }
 
-
-fun <A, B, C, D> forFew(amount: Int, gena: Gen<A>, genb: Gen<B>, genc: Gen<C>, gend: Gen<D>, fn: (a: A, b: B, c: C, d: D) -> Boolean): Unit {
+fun <A, B, C, D> forFew(amount: Int, gena: Gen<A>, genb: Gen<B>, genc: Gen<C>, gend: Gen<D>, fn: (a: A, b: B, c: C, d: D) -> Boolean) {
     for (k in 0..amount) {
         val a = gena.generate()
         val b = genb.generate()
@@ -56,14 +54,14 @@ fun <A, B, C, D> forFew(amount: Int, gena: Gen<A>, genb: Gen<B>, genc: Gen<C>, g
     }
 }
 
-fun <A, B, C, D, E> forFew(amount: Int, gena: Gen<A>, genb: Gen<B>, genc: Gen<C>, gend: Gen<D>, gene: Gen<E>, fn: (a: A, b: B, c: C, d: D, e: E) -> Boolean): Unit {
+fun <A, B, C, D, E> forFew(amount: Int, gena: Gen<A>, genb: Gen<B>, genc: Gen<C>, gend: Gen<D>, gene: Gen<E>, fn: (a: A, b: B, c: C, d: D, e: E) -> Boolean) {
     for (k in 0..amount) {
         val a = gena.generate()
         val b = genb.generate()
         val c = genc.generate()
         val d = gend.generate()
         val e = gene.generate()
-        val passed = fn(a, b, c, d , e)
+        val passed = fn(a, b, c, d, e)
         if (!passed) {
             throw AssertionError("Property failed for\n$a\n$b\n$c\n$d\$e)")
         }

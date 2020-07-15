@@ -26,7 +26,6 @@ interface SequenceKEqInstance<A> : Eq<SequenceK<A>> {
             a.zip(b) { aa, bb -> EQ().eqv(aa, bb) }.fold(true) { acc, bool ->
                 acc && bool
             }
-
 }
 
 @instance(SequenceK::class)

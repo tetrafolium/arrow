@@ -132,4 +132,3 @@ fun ClassOrPackageDataWrapper.typeConstraints(): String =
                         ""
                     }
                 }
-

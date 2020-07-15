@@ -24,7 +24,7 @@ class DeferredKTest : UnitSpec() {
     init {
         testLaws(AsyncLaws.laws(DeferredK.async(), EQ(), EQ()))
 
-        "instances can be resolved implicitly"{
+        "instances can be resolved implicitly" {
             functor<ForDeferredK>() shouldNotBe null
             applicative<ForDeferredK>() shouldNotBe null
             monad<ForDeferredK>() shouldNotBe null
@@ -95,7 +95,6 @@ class DeferredKTest : UnitSpec() {
                 either.fold({ fail("") }, { DeferredK { it shouldBe expected } })
             }
         }
-
 
         "should complete when running a return value with runAsync" {
             val expected = 0

@@ -59,7 +59,7 @@ class FilterIndexInstanceTest : UnitSpec() {
         ))
 
         testLaws(TraversalLaws.laws(
-                traversal =  FilterIndex.filterIndex<SequenceK<Char>, Int, Char> { true },
+                traversal = FilterIndex.filterIndex<SequenceK<Char>, Int, Char> { true },
                 aGen = genSequenceK(genChars()),
                 bGen = genChars(),
                 funcGen = genFunctionAToB(genChars())
@@ -86,7 +86,5 @@ class FilterIndexInstanceTest : UnitSpec() {
                 bGen = genChars(),
                 funcGen = genFunctionAToB(genChars())
         ))
-
     }
-
 }

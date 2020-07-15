@@ -1,15 +1,15 @@
 package arrow.implicits
 
-import arrow.common.Type
 import arrow.common.Package
+import arrow.common.Type
+import arrow.common.utils.ClassOrPackageDataWrapper
+import arrow.common.utils.extractFullName
+import arrow.common.utils.knownError
 import arrow.implicits.AnnotatedImplicits.Consumer
 import arrow.implicits.AnnotatedImplicits.Consumer.ValueParameter
 import arrow.implicits.AnnotatedImplicits.Provider
 import arrow.implicits.AnnotatedImplicits.Provider.Function
 import arrow.implicits.AnnotatedImplicits.Provider.Property
-import arrow.common.utils.ClassOrPackageDataWrapper
-import arrow.common.utils.extractFullName
-import arrow.common.utils.knownError
 import me.eugeniomarletti.kotlin.metadata.escapedClassName
 import me.eugeniomarletti.kotlin.metadata.jvm.getJvmMethodSignature
 import me.eugeniomarletti.kotlin.metadata.plusIfNotBlank

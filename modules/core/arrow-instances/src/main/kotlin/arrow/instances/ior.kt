@@ -38,7 +38,6 @@ interface IorMonadInstance<L> : IorApplicativeInstance<L>, Monad<IorPartialOf<L>
 
     override fun <A, B> tailRecM(a: A, f: (A) -> IorOf<L, Either<A, B>>): Ior<L, B> =
             Ior.tailRecM(a, f, SL())
-
 }
 
 @instance(Ior::class)
@@ -48,7 +47,6 @@ interface IorFoldableInstance<L> : Foldable<IorPartialOf<L>> {
 
     override fun <B, C> foldRight(fa: Kind<Kind<ForIor, L>, B>, lb: Eval<C>, f: (B, Eval<C>) -> Eval<C>): Eval<C> =
             fa.fix().foldRight(lb, f)
-
 }
 
 @instance(Ior::class)
@@ -56,7 +54,6 @@ interface IorTraverseInstance<L> : IorFoldableInstance<L>, Traverse<IorPartialOf
 
     override fun <G, B, C> traverse(fa: IorOf<L, B>, f: (B) -> Kind<G, C>, GA: Applicative<G>): Kind<G, Ior<L, C>> =
             fa.fix().traverse(f, GA)
-
 }
 
 @instance(Ior::class)
@@ -82,7 +79,6 @@ interface IorEqInstance<L, R> : Eq<Ior<L, R>> {
             is Ior.Both -> false
             is Ior.Right -> EQR().eqv(a.value, b.value)
         }
-
     }
 }
 

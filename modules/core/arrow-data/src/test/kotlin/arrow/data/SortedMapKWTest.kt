@@ -30,7 +30,6 @@ class SortedMapKTest : UnitSpec() {
             show<SortedMapKOf<String, Int>>() shouldNotBe null
         }
 
-
         testLaws(
                 ShowLaws.laws(show(), EQ) { sortedMapOf("key" to 1).k() },
                 MonoidLaws.laws(SortedMapK.monoid<String, Int>(), sortedMapOf("key" to 1).k(), EQ),
@@ -44,8 +43,5 @@ class SortedMapKTest : UnitSpec() {
                     SortedMapK.traverse<String>(),
                     { a: Int -> sortedMapOf("key" to a).k() },
                     EQ))
-
     }
-
-
 }

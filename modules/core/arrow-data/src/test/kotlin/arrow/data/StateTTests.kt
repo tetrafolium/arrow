@@ -54,6 +54,5 @@ class StateTTests : UnitSpec() {
                 { StateT.lift(ListK.pure({ s: Int -> s * 2 }), ListK.monad()) },
                 EQ_LIST)
         )
-
     }
 }

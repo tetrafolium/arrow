@@ -1,6 +1,5 @@
 package arrow.test.laws
 
-import arrow.typeclasses.Eq
 import arrow.Kind
 import arrow.mtl.MonadFilter
 import arrow.mtl.bindingFilter
@@ -9,6 +8,7 @@ import arrow.syntax.monad.flatMap
 import arrow.test.generators.genApplicative
 import arrow.test.generators.genConstructor
 import arrow.test.generators.genFunctionAToB
+import arrow.typeclasses.Eq
 import io.kotlintest.properties.Gen
 import io.kotlintest.properties.forAll
 
@@ -52,5 +52,4 @@ object MonadFilterLaws {
                     x
                 }.equalUnderTheLaw(if (!guard) MF.empty() else MF.pure(n), EQ)
             })
-
 }

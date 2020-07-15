@@ -2,15 +2,11 @@ package arrow.optics
 
 import arrow.core.*
 import arrow.data.k
-import io.kotlintest.KTestJUnitRunner
-import io.kotlintest.properties.Gen
-import io.kotlintest.properties.forAll
 import arrow.instances.IntMonoid
 import arrow.instances.StringMonoidInstance
 import arrow.syntax.either.left
 import arrow.syntax.either.right
 import arrow.syntax.option.some
-import org.junit.runner.RunWith
 import arrow.test.UnitSpec
 import arrow.test.generators.genFunctionAToB
 import arrow.test.laws.LensLaws
@@ -18,6 +14,10 @@ import arrow.test.laws.OptionalLaws
 import arrow.test.laws.SetterLaws
 import arrow.test.laws.TraversalLaws
 import arrow.typeclasses.Eq
+import io.kotlintest.KTestJUnitRunner
+import io.kotlintest.properties.Gen
+import io.kotlintest.properties.forAll
+import org.junit.runner.RunWith
 
 @RunWith(KTestJUnitRunner::class)
 class LensTest : UnitSpec() {
@@ -119,7 +119,7 @@ class LensTest : UnitSpec() {
 
         "asGetter should behave as valid Getter: get" {
             forAll(TokenGen) { token ->
-                tokenLens.asGetter().get(token) ==  tokenGetter.get(token)
+                tokenLens.asGetter().get(token) == tokenGetter.get(token)
             }
         }
 
@@ -191,5 +191,4 @@ class LensTest : UnitSpec() {
             })
         }
     }
-
 }

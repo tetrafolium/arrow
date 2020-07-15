@@ -1,15 +1,9 @@
 package arrow.optics
 
-import io.kotlintest.KTestJUnitRunner
-import io.kotlintest.properties.Gen
-import io.kotlintest.properties.forAll
 import arrow.core.Some
 import arrow.core.getOrElse
 import arrow.data.k
-import arrow.prisms
-import arrow.syntax.collections.firstOption
 import arrow.syntax.foldable.combineAll
-import org.junit.runner.RunWith
 import arrow.test.UnitSpec
 import arrow.test.generators.genEither
 import arrow.test.generators.genFunctionAToB
@@ -19,6 +13,10 @@ import arrow.test.laws.PrismLaws
 import arrow.test.laws.SetterLaws
 import arrow.test.laws.TraversalLaws
 import arrow.typeclasses.Eq
+import io.kotlintest.KTestJUnitRunner
+import io.kotlintest.properties.Gen
+import io.kotlintest.properties.forAll
+import org.junit.runner.RunWith
 
 @RunWith(KTestJUnitRunner::class)
 class PrismTest : UnitSpec() {
@@ -179,7 +177,7 @@ class PrismTest : UnitSpec() {
             })
         }
 
-        "Setting a target on a prism should set the correct target"{
+        "Setting a target on a prism should set the correct target" {
             forAll(AGen, Gen.string(), { a, string ->
                 sumPrism.setOption(a, string) == Some(a.copy(string = string))
             })
@@ -202,7 +200,5 @@ class PrismTest : UnitSpec() {
                 sumPrism.all(sum) { predicate } == (predicate || sum is SumType.B)
             })
         }
-
     }
-
 }

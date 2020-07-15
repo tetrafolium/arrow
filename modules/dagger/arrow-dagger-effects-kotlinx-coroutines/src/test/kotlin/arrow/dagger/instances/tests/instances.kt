@@ -2,8 +2,8 @@ package arrow.dagger.instances.tests
 
 import arrow.dagger.effects.instances.coroutines.ArrowEffectsCoroutinesInstances
 import arrow.effects.Async
-import arrow.effects.ForDeferredK
 import arrow.effects.Effect
+import arrow.effects.ForDeferredK
 import arrow.effects.MonadSuspend
 import arrow.typeclasses.*
 import dagger.Component
@@ -32,6 +32,3 @@ interface Runtime {
 object Arrow {
     val instances = DaggerRuntime.builder().build()
 }
-
-
-

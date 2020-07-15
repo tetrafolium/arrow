@@ -19,7 +19,6 @@ inline fun <reified M, S, A> FreeOf<S, A>.foldMapK(f: FunctionK<S, M>, MM: Monad
                 object : FunctionK<F, FreePartialOf<F>> {
                     override fun <A> invoke(fa: Kind<F, A>): Free<F, A> =
                             liftF(fa)
-
                 }
 
         internal fun <F> applicativeF(): Applicative<FreePartialOf<F>> =

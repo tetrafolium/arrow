@@ -21,9 +21,9 @@ class Function1Test : UnitSpec() {
 
         "instances can be resolved implicitly" {
             functor<Function1PartialOf<Int>>() shouldNotBe null
-            applicative<Function1PartialOf<Int>>()  shouldNotBe null
-            monad<Function1PartialOf<Int>>()  shouldNotBe null
-            monadReader<Function1PartialOf<Int>, Int>()  shouldNotBe null
+            applicative<Function1PartialOf<Int>>() shouldNotBe null
+            monad<Function1PartialOf<Int>>() shouldNotBe null
+            monadReader<Function1PartialOf<Int>, Int>() shouldNotBe null
         }
 
         testLaws(MonadLaws.laws(Function1.monad<Int>(), EQ))

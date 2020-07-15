@@ -1,16 +1,16 @@
 package arrow.test.laws
 
-import arrow.typeclasses.Eq
 import arrow.core.Option
 import arrow.core.compose
 import arrow.core.identity
 import arrow.data.ListK
-import io.kotlintest.properties.Gen
-import io.kotlintest.properties.forAll
 import arrow.optics.Traversal
 import arrow.optics.modify
 import arrow.syntax.collections.firstOption
+import arrow.typeclasses.Eq
 import arrow.typeclasses.eq
+import io.kotlintest.properties.Gen
+import io.kotlintest.properties.forAll
 
 object TraversalLaws {
 
@@ -45,11 +45,9 @@ object TraversalLaws {
                 traversal.modify(a, ::identity).equalUnderTheLaw(a, EQA)
             })
 
-
     inline fun <reified A, reified B> composeModify(traversal: Traversal<A, B>, aGen: Gen<A>, funcGen: Gen<(B) -> B>, EQA: Eq<A>): Unit =
             forAll(aGen, funcGen, funcGen, { a, f, g ->
                 traversal.modify(traversal.modify(a, f), g)
                         .equalUnderTheLaw(traversal.modify(a, g compose f), EQA)
             })
-
 }

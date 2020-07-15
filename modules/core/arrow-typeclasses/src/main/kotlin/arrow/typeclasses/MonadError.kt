@@ -13,7 +13,6 @@ interface MonadError<F, E> : ApplicativeError<F, E>, Monad<F>, TC {
                 if (predicate(it)) pure(it)
                 else raiseError(error())
             })
-
 }
 
 /**

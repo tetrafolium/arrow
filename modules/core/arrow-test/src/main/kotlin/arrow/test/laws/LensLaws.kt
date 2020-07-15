@@ -1,7 +1,6 @@
 package arrow.test.laws
 
 import arrow.core.Id
-import arrow.typeclasses.Eq
 import arrow.core.compose
 import arrow.core.functor
 import arrow.core.identity
@@ -9,13 +8,14 @@ import arrow.core.value
 import arrow.data.Const
 import arrow.data.applicative
 import arrow.data.value
-import io.kotlintest.properties.Gen
-import io.kotlintest.properties.forAll
 import arrow.optics.Lens
 import arrow.optics.modify
+import arrow.typeclasses.Eq
 import arrow.typeclasses.Monoid
 import arrow.typeclasses.eq
 import arrow.typeclasses.monoid
+import io.kotlintest.properties.Gen
+import io.kotlintest.properties.forAll
 
 object LensLaws {
 
@@ -71,5 +71,4 @@ object LensLaws {
                 lens.get(a)
                         .equalUnderTheLaw(lens.modifyF(Const.applicative(MA), a, ::Const).value(), EQB)
             })
-
 }

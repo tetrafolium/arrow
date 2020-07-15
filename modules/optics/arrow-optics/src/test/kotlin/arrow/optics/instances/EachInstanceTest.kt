@@ -3,9 +3,9 @@ package arrow.optics.instances
 import arrow.core.Either
 import arrow.core.EitherPartialOf
 import arrow.core.Option
+import arrow.core.Try
 import arrow.data.ListK
 import arrow.data.MapK
-import arrow.core.Try
 import arrow.optics.typeclasses.each
 import arrow.test.UnitSpec
 import arrow.test.generators.genEither
@@ -85,7 +85,5 @@ class EachInstanceTest : UnitSpec() {
                 bGen = Gen.string(),
                 funcGen = genFunctionAToB(Gen.string())
         ))
-
     }
-
 }

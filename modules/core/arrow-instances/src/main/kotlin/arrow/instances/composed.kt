@@ -158,8 +158,8 @@ interface ComposedApplicative<F, G> : Applicative<Nested<F, G>>, ComposedFunctor
     fun <A, B> apC(fa: Kind<F, Kind<G, A>>, ff: Kind<F, Kind<G, (A) -> B>>): Kind<F, Kind<G, B>> = ap(fa.nest(), ff.nest()).unnest()
 
     companion object {
-        operator fun <F, G> invoke(FF: Applicative<F>, GF: Applicative<G>)
-                : Applicative<Nested<F, G>> =
+        operator fun <F, G> invoke(FF: Applicative<F>, GF: Applicative<G>):
+                Applicative<Nested<F, G>> =
                 object : ComposedApplicative<F, G> {
                     override fun F(): Applicative<F> = FF
 
@@ -174,8 +174,8 @@ interface ComposedAlternative<F, G> : Alternative<Nested<F, G>>, ComposedApplica
     override fun F(): Alternative<F>
 
     companion object {
-        operator fun <F, G> invoke(AF: Alternative<F>, AG: Applicative<G>)
-                : Alternative<Nested<F, G>> =
+        operator fun <F, G> invoke(AF: Alternative<F>, AG: Applicative<G>):
+                Alternative<Nested<F, G>> =
                 object : ComposedAlternative<F, G> {
                     override fun F(): Alternative<F> = AF
 

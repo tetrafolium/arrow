@@ -25,7 +25,7 @@ data class HigherKind(
     val typeConstraints = target.classOrPackageProto.typeConstraints()
     val name: String = "${kindName}$KindPostFix"
     val nameJ: String = "${kindName}$KindedJPostFix"
-    val markerName = "$HKMarkerPreFix${kindName}"
+    val markerName = "$HKMarkerPreFix$kindName"
 }
 
 class HigherKindsFileGenerator(
@@ -83,5 +83,4 @@ class HigherKindsFileGenerator(
 
     private fun genKindMarker(hk: HigherKind): String =
             "class ${hk.markerName} private constructor()"
-
 }

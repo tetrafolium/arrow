@@ -1,8 +1,8 @@
 package arrow.higherkinds
 
-import com.google.auto.service.AutoService
 import arrow.common.utils.AbstractProcessor
 import arrow.common.utils.knownError
+import com.google.auto.service.AutoService
 import java.io.File
 import javax.annotation.processing.Processor
 import javax.annotation.processing.RoundEnvironment
@@ -43,5 +43,4 @@ class HigherKindsProcessor : AbstractProcessor() {
         val proto = getClassOrPackageDataWrapper(element)
         return AnnotatedHigherKind(element, proto)
     }
-
 }

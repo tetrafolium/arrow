@@ -20,5 +20,4 @@ object ShowLaws {
                 val b = cf(int)
                 EQ.eqv(a, b) && S.show(a) == S.show(b)
             })
-
 }

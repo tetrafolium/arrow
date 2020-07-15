@@ -54,7 +54,6 @@ class OptionalFileGenerator(
                     |        }
                     |)
                     """.trimMargin()
-
                 } else {
                     ""
                 }
@@ -65,5 +64,4 @@ class OptionalFileGenerator(
                |import arrow.syntax.either.*
                |import arrow.syntax.option.toOption
                |""".trimMargin()
-
 }

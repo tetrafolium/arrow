@@ -2,7 +2,7 @@ package arrow.ap.tests
 
 import arrow.optics.OptikalProcessor
 
-class OptionalTest: APTest() {
+class OptionalTest : APTest() {
 
     init {
 
@@ -19,7 +19,5 @@ class OptionalTest: APTest() {
                 processor = OptikalProcessor(),
                 errorMessage = "It can only be used on data class."
         ))
-
     }
-
 }

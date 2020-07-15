@@ -60,6 +60,5 @@ class AtInstanceTest : UnitSpec() {
                 EQA = Eq.any(),
                 MB = AndMonoid
         ))
-
     }
 }

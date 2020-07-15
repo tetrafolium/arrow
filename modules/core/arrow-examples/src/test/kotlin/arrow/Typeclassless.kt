@@ -13,13 +13,13 @@ import io.kotlintest.specs.FreeSpec
 
 class TypeclasslessExamples : FreeSpec() {
 
-    ///////////////////////////////////
-    //// BUILDING THE MACHINERY
-    ///////////////////////////////////
+    // /////////////////////////////////
+    // // BUILDING THE MACHINERY
+    // /////////////////////////////////
 
     // Complete example of syntax using a simple fake typeclass
 
-    interface Identity<F>: TC {
+    interface Identity<F> : TC {
         fun <A> identify(a: Kind<F, A>): Kind<F, A> =
                 a
     }
@@ -62,10 +62,9 @@ class TypeclasslessExamples : FreeSpec() {
     fun <F> allSyntax(AP: Applicative<F>, ID: Identity<F>): ApplicativeAndIdentifySyntax<F> =
             object : ApplicativeAndIdentifySyntax<F>, ApplicativeSyntax<F> by AP.s(), IdentifySyntax<F> by ID.s() {}
 
-
-    ///////////////////////////////////
-    //// DEFINING OUR DEPENDENCIES
-    ///////////////////////////////////
+    // /////////////////////////////////
+    // // DEFINING OUR DEPENDENCIES
+    // /////////////////////////////////
 
     // Define some trivial instances for Identify and Applicative
 
@@ -77,7 +76,6 @@ class TypeclasslessExamples : FreeSpec() {
 
     val ALL_SYNTAX =
             allSyntax(AP, ID_LIST)
-
 
     // Functions depending on syntax
 
@@ -111,9 +109,9 @@ class TypeclasslessExamples : FreeSpec() {
         fun insideClassFromChild() = insideClass()
     }
 
-    ///////////////////////////////////
-    //// USING TYPECLASSLESS STYLE!
-    ///////////////////////////////////
+    // /////////////////////////////////
+    // // USING TYPECLASSLESS STYLE!
+    // /////////////////////////////////
 
     init {
         val expected = listOf(1).k()

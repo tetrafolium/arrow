@@ -71,7 +71,6 @@ data class SequenceK<out A> constructor(val sequence: Sequence<A>) : SequenceKOf
             go(buf, f, f(a).fix())
             return SequenceK(buf.asSequence())
         }
-
     }
 }
 

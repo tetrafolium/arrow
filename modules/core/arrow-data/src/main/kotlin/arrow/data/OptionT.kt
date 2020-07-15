@@ -36,7 +36,6 @@ import arrow.typeclasses.applicative
                         })
                     })
                 }))
-
     }
 
     inline fun <B> fold(crossinline default: () -> B, crossinline f: (A) -> B, FF: Functor<F>): Kind<F, B> = FF.map(value, { option -> option.fold(default, f) })

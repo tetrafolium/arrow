@@ -37,7 +37,6 @@ interface At<S, I, A> : TC {
             override fun at(i: I): Lens<S, A> = iso compose AT.at(i)
         }
     }
-
 }
 
 /**

@@ -120,7 +120,6 @@ class IOTest : UnitSpec() {
             }
         }
 
-
         "should complete when running a return value with unsafeRunAsync" {
             val expected = 0
             IO { expected }.unsafeRunAsync { either ->
@@ -168,7 +167,6 @@ class IOTest : UnitSpec() {
                 either.fold({ fail("") }, { IO { it shouldBe expected } })
             }
         }
-
 
         "should complete when running a return value with runAsync" {
             val expected = 0

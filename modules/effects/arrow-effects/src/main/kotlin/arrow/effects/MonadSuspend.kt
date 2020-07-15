@@ -35,7 +35,7 @@ interface MonadSuspendSyntax<F> : MonadErrorSyntax<F, Throwable> {
 
     fun monadSuspend(): MonadSuspend<F>
 
-    override fun monadError() : MonadError <F, Throwable> = monadSuspend()
+    override fun monadError(): MonadError <F, Throwable> = monadSuspend()
 
     fun <A> kotlin.Function0<arrow.core.Either<kotlin.Throwable, A>>.`deferUnsafe`(dummy: Unit = Unit): arrow.Kind<F, A> =
             this@MonadSuspendSyntax.monadSuspend().`deferUnsafe`(this)

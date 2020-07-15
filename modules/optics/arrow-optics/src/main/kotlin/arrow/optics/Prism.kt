@@ -75,7 +75,6 @@ interface PPrism<S, T, A, B> : PPrismOf<S, T, A, B> {
                 getOrModify = { a2 -> (if (EQA.eqv(a, a2)) Either.Left(a) else Either.Right(Unit)) },
                 reverseGet = { a }
         )
-
     }
 
     /**
@@ -221,7 +220,6 @@ interface PPrism<S, T, A, B> : PPrismOf<S, T, A, B> {
                 { FA.map(f(it), this@PPrism::reverseGet) }
         )
     }
-
 }
 
 /**

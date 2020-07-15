@@ -1,9 +1,9 @@
 package arrow.test.laws
 
-import arrow.typeclasses.Eq
 import arrow.Kind
 import arrow.mtl.MonadCombine
 import arrow.mtl.monadCombine
+import arrow.typeclasses.Eq
 
 object MonadCombineLaws {
 

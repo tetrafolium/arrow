@@ -19,7 +19,6 @@ interface FreeApplicativeInstance<S> : FreeFunctorInstance<S>, Applicative<FreeP
 
     override fun <A, B> ap(fa: FreeOf<S, A>, ff: FreeOf<S, (A) -> B>): Free<S, B> =
             fa.fix().ap(ff.fix())
-
 }
 
 @instance(Free::class)
@@ -38,7 +37,6 @@ interface FreeMonadInstance<S> : FreeApplicativeInstance<S>, Monad<FreePartialOf
             is Either.Right -> pure(it.b)
         }
     }
-
 }
 
 data class FreeEq<F, G, A>(private val interpreter: FunctionK<F, G>, private val MG: Monad<G>) : Eq<Kind<FreePartialOf<F>, A>> {

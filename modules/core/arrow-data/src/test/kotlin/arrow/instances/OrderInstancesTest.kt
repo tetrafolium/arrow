@@ -1,14 +1,14 @@
 package arrow.instances
 
 import arrow.syntax.order.toOrder
-import io.kotlintest.KTestJUnitRunner
-import io.kotlintest.matchers.shouldNotBe
-import io.kotlintest.properties.Gen
-import arrow.test.laws.OrderLaws
 import arrow.test.UnitSpec
 import arrow.test.generators.genFunctionAToB
+import arrow.test.laws.OrderLaws
 import arrow.typeclasses.order
+import io.kotlintest.KTestJUnitRunner
 import io.kotlintest.matchers.shouldBe
+import io.kotlintest.matchers.shouldNotBe
+import io.kotlintest.properties.Gen
 import org.junit.runner.RunWith
 
 @RunWith(KTestJUnitRunner::class)
@@ -34,9 +34,8 @@ class OrderInstancesTest : UnitSpec() {
 
         "from comparable" {
             val toOrder = toOrder<Int>()
-            toOrder.gt(10,1) shouldBe true
-            toOrder.lt(10,1) shouldBe false
+            toOrder.gt(10, 1) shouldBe true
+            toOrder.lt(10, 1) shouldBe false
         }
-
     }
 }

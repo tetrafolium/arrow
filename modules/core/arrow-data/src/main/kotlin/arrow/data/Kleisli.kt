@@ -141,9 +141,7 @@ class Kleisli<F, D, A> private constructor(val run: KleisliFun<F, D, A>, dummy: 
          * @param ME [MonadError] for context [F].
          */
         fun <F, D, E, A> raiseError(e: E, ME: MonadError<F, E>): Kleisli<F, D, A> = Kleisli { ME.raiseError(e) }
-
     }
-
 }
 
 /**

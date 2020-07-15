@@ -196,7 +196,3 @@ object test {
         println(Arrow.instances.optionApplicative().pure(1))
     }
 }
-
-
-
-

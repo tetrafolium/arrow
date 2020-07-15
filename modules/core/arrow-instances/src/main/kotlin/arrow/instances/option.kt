@@ -59,7 +59,6 @@ interface OptionEqInstance<A> : Eq<Option<A>> {
             is Some -> false
         }
     }
-
 }
 
 @instance(Option::class)

@@ -3,7 +3,6 @@ package arrow.data
 import arrow.core.Either
 import arrow.core.None
 import arrow.core.Some
-import arrow.data.*
 import arrow.data.Ior.Right
 import arrow.test.UnitSpec
 import arrow.test.laws.EqLaws
@@ -139,14 +138,12 @@ class IorTest : UnitSpec() {
             }
         }
 
-
         "getOrElse() should return value" {
             forAll { a: Int, b: Int ->
                 Ior.Right(a).getOrElse { b } == a &&
                         Ior.Left(a).getOrElse { b } == b &&
                         Ior.Both(a, b).getOrElse { a * 2 } == b
             }
-
         }
 
         "Ior.monad.flatMap should combine left values" {
@@ -154,6 +151,5 @@ class IorTest : UnitSpec() {
             val iorResult = intIorMonad.flatMap(ior1, { Ior.Left(7) })
             iorResult shouldBe Ior.Left(10)
         }
-
     }
 }

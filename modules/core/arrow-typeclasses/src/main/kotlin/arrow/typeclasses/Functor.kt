@@ -22,7 +22,6 @@ interface Functor<F> : TC {
     fun <A, B> tupleLeft(fa: Kind<F, A>, b: B): Kind<F, Tuple2<B, A>> = map(fa, { a -> Tuple2(b, a) })
 
     fun <A, B> tupleRight(fa: Kind<F, A>, b: B): Kind<F, Tuple2<A, B>> = map(fa, { a -> Tuple2(a, b) })
-
 }
 
 fun <F, B, A : B> Functor<F>.widen(fa: Kind<F, A>): Kind<F, B> = fa

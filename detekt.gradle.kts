@@ -1,6 +1,6 @@
 repositories {
     mavenCentral()
-    maven( url = "http://dl.bintray.com/arturbosch/code-analysis")
+    maven(url = "http://dl.bintray.com/arturbosch/code-analysis")
 }
 
 val detektConf by configurations.creating

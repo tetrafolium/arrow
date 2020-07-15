@@ -3,7 +3,6 @@ package arrow.data
 import arrow.Kind
 import arrow.core.*
 import arrow.core.Eval.Now
-import arrow.syntax.collections.prependTo
 import arrow.test.UnitSpec
 import arrow.test.concurrency.SideEffect
 import arrow.test.laws.*
@@ -172,9 +171,9 @@ class EvalTest : UnitSpec() {
                             val o = os[i]
                             when (o) {
                                 is O.Defer -> Eval.defer { step(i + 1, leaf, cbs) }
-                                is O.Memoize -> step(i + 1, leaf, cbs.also { it.add(0) { e: Eval<Int> -> e.memoize() }})
-                                is O.Map -> step(i + 1, leaf, cbs.also { it.add(0) { e: Eval<Int> -> e.map(o.f) }})
-                                is O.FlatMap -> step(i + 1, leaf, cbs.also { it.add(0) { e: Eval<Int> -> e.flatMap(o.f) }})
+                                is O.Memoize -> step(i + 1, leaf, cbs.also { it.add(0) { e: Eval<Int> -> e.memoize() } })
+                                is O.Map -> step(i + 1, leaf, cbs.also { it.add(0) { e: Eval<Int> -> e.map(o.f) } })
+                                is O.FlatMap -> step(i + 1, leaf, cbs.also { it.add(0) { e: Eval<Int> -> e.flatMap(o.f) } })
                             }
                         }
 

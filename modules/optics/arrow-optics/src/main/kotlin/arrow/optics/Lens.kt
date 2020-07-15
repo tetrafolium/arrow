@@ -200,7 +200,6 @@ interface PLens<S, T, A, B> : PLensOf<S, T, A, B> {
         override fun <F> modifyF(FA: Applicative<F>, s: S, f: (A) -> Kind<F, B>): Kind<F, T> =
                 FA.map(f(get(s)), { b -> this@PLens.set(s, b) })
     }
-
 }
 
 /**

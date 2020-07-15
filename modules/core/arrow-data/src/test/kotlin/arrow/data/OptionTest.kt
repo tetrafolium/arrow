@@ -63,7 +63,7 @@ class OptionTest : UnitSpec() {
         testLaws(
                 EqLaws.laws(eq(), { genOption(Gen.int()).generate() }),
                 ShowLaws.laws(show(), eq(), { it.some() }),
-                //testLaws(MonadErrorLaws.laws(monadError<ForOption, Unit>(), Eq.any(), EQ_EITHER)) TODO reenable once the MonadErrorLaws are parametric to `E`
+                // testLaws(MonadErrorLaws.laws(monadError<ForOption, Unit>(), Eq.any(), EQ_EITHER)) TODO reenable once the MonadErrorLaws are parametric to `E`
                 TraverseFilterLaws.laws(Option.traverseFilter(), Option.monad(), ::Some, Eq.any()),
                 MonadFilterLaws.laws(Option.monadFilter(), ::Some, Eq.any())
         )
@@ -97,7 +97,6 @@ class OptionTest : UnitSpec() {
                 is Some<String> -> fail("")
                 is None -> otherOption shouldBe None
             }
-
         }
 
         "getOrElse" {
@@ -160,7 +159,6 @@ class OptionTest : UnitSpec() {
             none.forEach {
                 fail("")
             }
-
         }
 
         "orElse" {
@@ -207,7 +205,6 @@ class OptionTest : UnitSpec() {
             x and None shouldBe None
             None and x shouldBe None
             None and None shouldBe None
-
         }
 
         "or" {
@@ -217,8 +214,6 @@ class OptionTest : UnitSpec() {
             x or None shouldBe Some(2)
             None or x shouldBe Some(2)
             None or None shouldBe None
-
         }
     }
-
 }

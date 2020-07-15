@@ -106,8 +106,8 @@ object MonadSuspendLaws {
                     b
                 }
                 Try { Thread.sleep(250); dispose() }.recover { throw it }
-                binding.equalUnderTheLaw(SC.raiseError(BindingCancellationException()), EQ)
-                        && sideEffect.counter == 0
+                binding.equalUnderTheLaw(SC.raiseError(BindingCancellationException()), EQ) &&
+                        sideEffect.counter == 0
             })
 
     inline fun <reified F> inContextCancellationBefore(SC: MonadSuspend<F> = monadSuspend(), EQ: Eq<Kind<F, Int>>): Unit =
@@ -134,8 +134,8 @@ object MonadSuspendLaws {
                     b
                 }
                 Try { Thread.sleep(250); dispose() }.recover { throw it }
-                binding.equalUnderTheLaw(SC.raiseError(BindingCancellationException()), EQ)
-                        && sideEffect.counter == 0
+                binding.equalUnderTheLaw(SC.raiseError(BindingCancellationException()), EQ) &&
+                        sideEffect.counter == 0
             })
 
     inline fun <reified F> inContextErrorThrow(SC: MonadSuspend<F> = monadSuspend(), EQ: Eq<Kind<F, Int>>): Unit =

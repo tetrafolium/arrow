@@ -19,7 +19,6 @@ inline fun <reified F, A> (() -> A).catch(FT: ApplicativeError<F, Throwable> = a
 fun <F, A> ApplicativeError<F, Throwable>.catch(f: () -> A): Kind<F, A> =
         try {
             pure(f())
-        }
-        catch (e: Throwable) {
+        } catch (e: Throwable) {
             raiseError(e)
         }

@@ -70,7 +70,6 @@ data class ListK<out A> constructor(val list: List<A>) : ListKOf<A>, List<A> by 
             return ListK(buf)
         }
     }
-
 }
 
 fun <A> ListK<A>.combineK(y: ListKOf<A>): ListK<A> = (this.list + y.fix().list).k()

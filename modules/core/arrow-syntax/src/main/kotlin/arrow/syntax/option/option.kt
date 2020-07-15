@@ -4,9 +4,9 @@ import arrow.core.Either
 import arrow.core.None
 import arrow.core.Option
 import arrow.core.Some
+import arrow.legacy.Disjunction
 import arrow.syntax.either.left
 import arrow.syntax.either.right
-import arrow.legacy.Disjunction
 
 fun <T> T?.toOption(): Option<T> = if (this != null) {
     Some(this)

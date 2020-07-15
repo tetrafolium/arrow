@@ -1,10 +1,10 @@
 package arrow.optics
 
-import com.google.auto.service.AutoService
 import arrow.common.utils.AbstractProcessor
 import arrow.common.utils.asClassOrPackageDataWrapper
 import arrow.common.utils.isSealed
 import arrow.common.utils.knownError
+import com.google.auto.service.AutoService
 import me.eugeniomarletti.kotlin.metadata.KotlinClassMetadata
 import me.eugeniomarletti.kotlin.metadata.extractFullName
 import me.eugeniomarletti.kotlin.metadata.isDataClass
@@ -15,9 +15,8 @@ import java.io.File
 import javax.annotation.processing.Processor
 import javax.annotation.processing.RoundEnvironment
 import javax.lang.model.SourceVersion
-import javax.lang.model.element.TypeElement
-
 import javax.lang.model.element.Element
+import javax.lang.model.element.TypeElement
 
 @AutoService(Processor::class)
 class OptikalProcessor : AbstractProcessor() {
@@ -132,5 +131,4 @@ class OptikalProcessor : AbstractProcessor() {
             .let { it as KotlinClassMetadata }
             .data
             .asClassOrPackageDataWrapper(elementUtils.getPackageOf(element).toString())
-
 }

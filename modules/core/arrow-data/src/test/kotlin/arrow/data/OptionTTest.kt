@@ -87,6 +87,5 @@ class OptionTTest : UnitSpec() {
                 OptionT.fromOption<ForNonEmptyList, String>(None).toRight({ a }, NELM) == EitherT.left<ForNonEmptyList, Int, String>(a, applicative())
             }
         }
-
     }
 }
