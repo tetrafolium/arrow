@@ -168,7 +168,7 @@ fun <F, A> Foldable<F>.get(fa: Kind<F, A>, idx: Long): Option<A> {
 /**
  * The size of this Foldable.
  *
- * This is overriden in structures that have more efficient size implementations
+ * This is overridden in structures that have more efficient size implementations
  * (e.g. Vector, Set, Map).
  *
  * Note: will not terminate for infinite-sized collections.
